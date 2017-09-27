@@ -1,0 +1,12 @@
+[
+  "CartActivity",
+  "ActivityShippingMethod",
+  "ActivityCheckoutPaymentMethod",
+  "ActivityStripePaymentGateway",
+  "ActivityCheckoutOrderReview",
+  "ForgotPasswordActivity",
+  "RegistrationActivity",
+  "AddUpdateAddressActivity",
+  "StoreListingActivity",
+  "LoginActivity"
+]
