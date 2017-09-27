@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 Vikram Kakkar
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/profile_framelayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/margin_10"
+    android:paddingBottom="@dimen/margin_10"
+    android:background="@android:color/black"
+    android:theme="@style/ThemeOverlay.AppCompat.Light">
+
+    <ImageView
+        android:id="@+id/menu_close_icon"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_close_white_24dp"
+        android:scaleType="fitXY"
+
+        android:layout_width="36dp"
+        android:layout_height="36dp" />
+    <RelativeLayout
+        android:id="@+id/user_details_rleativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="36dp"
+        android:visibility="visible"
+        android:layout_marginTop="@dimen/margin_5">
+
+
+        <TextView
+            android:id="@+id/tvNamePlate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal"
+            android:paddingLeft="@dimen/margin_5"
+            android:text="JOHN DOE"
+            android:layout_centerVertical="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/textsize_18" />
+
+        <ImageView
+            android:id="@+id/update_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_10"
+            android:visibility="visible"
+            android:src="@drawable/edit_logo_white" />
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/NAV_HEADER_PROFILE_IMG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvNamePlate"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/margin_10"
+        android:background="@drawable/user_bg"
+        android:padding="@dimen/margin_5"
+        android:src="@drawable/ic_person_black_70dp"
+        android:visibility="gone" />
+
+
+</FrameLayout>

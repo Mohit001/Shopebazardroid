@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/order_review_place_order_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="PLACE ORDER"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@color/white" />
+
+    <ScrollView
+        android:id="@+id/order_review_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/order_review_place_order_btn"
+        android:layout_marginBottom="5dp"
+        android:background="@color/white"
+        android:descendantFocusability="beforeDescendants">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:descendantFocusability="beforeDescendants"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
+
+            <!--<android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">-->
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/order_review_cartitem_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/margin_5"
+                android:text="Cart Items"
+                android:background="@color/bg_grey_light"
+                android:textColor="@color/bg_grey"
+                android:textSize="16sp" />
+
+            <com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView
+                android:id="@+id/order_review_cartitem_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/order_review_cartitem_lbl"
+                android:layout_marginTop="@dimen/margin_5" />
+
+            <RelativeLayout
+                android:id="@+id/rel1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/order_review_cartitem_listview">
+
+
+                <RelativeLayout
+                    android:id="@+id/order_review_cart_total_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bg_grey_light"
+                    android:padding="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_cart_total_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_cart_total_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_cart_total_content"
+                        android:text="Total"
+                        android:textColor="@color/bg_grey"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/order_review_divider1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_cart_total_rl"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/order_review_shipping_address_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_cart_total_rl"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:background="@color/bg_grey_light"
+                    android:padding="@dimen/margin_5"
+                    android:text="Shipping Address"
+                    android:textColor="@color/bg_grey"
+                    android:textSize="15sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/order_review_shipping_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_shipping_address_lbl"
+                    android:layout_marginTop="8dp"
+                    android:padding="@dimen/margin_5"
+                    android:text=""
+                    android:textColor="@color/order_review_gray"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/order_review_divider2"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_shipping_address"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/order_review_billing_address_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_shipping_address"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:background="@color/bg_grey_light"
+                    android:padding="@dimen/margin_5"
+                    android:text="Billing Address"
+                    android:textColor="@color/bg_grey"
+                    android:textSize="15sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/order_review_billing_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_billing_address_lbl"
+                    android:layout_marginTop="8dp"
+                    android:padding="@dimen/margin_5"
+                    android:text=""
+                    android:textColor="@color/order_review_gray"
+                    android:textSize="15sp" />
+                <!--order_review_shipping_address-->
+                <TextView
+                    android:id="@+id/order_review_divider_ship"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_billing_address"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+
+                <RelativeLayout
+                    android:id="@+id/order_review_payment_method_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_billing_address"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:padding="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_payment_method_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_payment_method_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_payment_method_content"
+                        android:text="Payment Method"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/order_review_divider3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_payment_method_rl"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/order_review_coupan_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_divider3">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_coupan_verify_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:paddingBottom="@dimen/margin_5"
+                        android:paddingLeft="@dimen/margin_10"
+                        android:paddingRight="@dimen/margin_10"
+                        android:paddingTop="@dimen/margin_5"
+                        android:text="APPLY"
+                        android:background="@color/colorPrimary"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:textAllCaps="false" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/order_review_coupan_inputlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_5"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_coupan_verify_btn"
+                        android:hint="Enter Coupon Code">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/order_review_coupan_content_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="@dimen/margin_5"
+                            android:paddingLeft="@dimen/margin_10"
+                            android:paddingRight="@dimen/margin_10"
+                            android:paddingTop="@dimen/margin_5"
+                            android:textSize="13sp" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rl_redeem_points"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/order_review_coupan_rl"
+                    android:visibility="gone"
+                    android:padding="@dimen/margin_5">
+
+                    <TextView
+                        android:id="@+id/txt_lbl_redeem_points"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_5"
+                        android:text="@string/points_to_redeem" />
+
+                    <EditText
+                        android:id="@+id/edt_points"
+                        android:layout_width="@dimen/margin_40"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_5"
+                        android:layout_toRightOf="@+id/txt_lbl_redeem_points"
+                        android:inputType="number"
+                        android:singleLine="true" />
+
+                    <SeekBar
+                        android:id="@+id/seekBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/edt_points"
+                        android:layout_toLeftOf="@+id/order_review_reward_verify_button"
+                        android:layout_margin="@dimen/margin_5" />
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Use maximum(24 Points)"
+                        android:id="@+id/chk_use_maximum_points"/>
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_reward_verify_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/edt_points"
+                        android:layout_centerVertical="true"
+                        android:paddingBottom="@dimen/margin_5"
+                        android:paddingLeft="@dimen/margin_10"
+                        android:paddingRight="@dimen/margin_10"
+                        android:paddingTop="@dimen/margin_5"
+                        android:text="APPLY"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:textAllCaps="false" />
+
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/order_review_divider4"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_coupan_rl"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/gray"
+                    android:visibility="gone" />
+
+                <RelativeLayout
+                    android:id="@+id/order_review_pincode_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_divider4"
+                    android:layout_marginTop="8dp"
+                    android:padding="@dimen/margin_5"
+                    android:visibility="gone">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_verify_pincode_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Verify Delivery Address"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/order_review_verify_pincode_btn"
+                        style="?android:attr/borderlessButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/order_review_verify_pincode_lbl"
+                        android:layout_marginLeft="8dp"
+                        android:text="Verify" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/order_review_verify_pincode_inputlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/order_review_verify_pincode_lbl"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_toLeftOf="@id/order_review_verify_pincode_btn"
+                        android:hint="postcode/zipcode">
+
+                        <android.support.v7.widget.AppCompatEditText
+                            android:id="@+id/order_review_verify_pincode_txt"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </android.support.design.widget.TextInputLayout>
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/order_review_divider5"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/order_review_pincode_rl"
+                    android:layout_marginTop="4dp"
+                    android:background="@android:color/darker_gray"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_redeem_points">
+
+
+                </android.support.v7.widget.RecyclerView>
+
+                <!--<RelativeLayout-->
+                <!--android:id="@+id/order_review_delivery_charges_rl"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_below="@id/order_review_divider5"-->
+                <!--android:layout_marginTop="@dimen/margin_5"-->
+                <!--android:padding="@dimen/margin_5">-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/order_review_delivery_charges_content"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:text="0"-->
+                <!--android:textColor="@color/order_review_gray"-->
+                <!--android:textSize="15sp" />-->
+
+                <!--<android.support.v7.widget.AppCompatTextView-->
+                <!--android:id="@+id/order_review_delivery_charges_lbl"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginRight="@dimen/margin_5"-->
+                <!--android:layout_toLeftOf="@id/order_review_delivery_charges_content"-->
+                <!--android:text="Delivery Charges"-->
+                <!--android:textColor="@color/order_review_gray"-->
+                <!--android:textSize="15sp" />-->
+                <!--</RelativeLayout>-->
+
+                <!--<RelativeLayout
+                    android:id="@+id/order_review_discount_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_delivery_charges_rl"
+                    android:padding="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_discount_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_discount_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_discount_content"
+                        android:text="Extra Discount"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/order_review_tax_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_discount_rl"
+                    android:padding="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_tax_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_tax_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_tax_content"
+                        android:text="Tax"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/order_review_gross_total_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/order_review_tax_rl"
+                    android:padding="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_gross_total_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="0"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/order_review_gross_total_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/order_review_gross_total_content"
+                        android:text="Grand Total"
+                        android:textColor="@color/order_review_gray"
+                        android:textSize="15sp" />
+                </RelativeLayout>-->
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

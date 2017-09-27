@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.msp.cart60.views.CustomeTextviewforSpinner xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txtCategoryname"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true"
+    android:drawableRight="@drawable/drop_down"
+    android:gravity="left|center_vertical"
+    android:padding="5dp"
+    android:drawablePadding="@dimen/margin_10"
+    android:text="Category"
+    android:textColor="#ffffff"
+    android:textSize="@dimen/textsize_14" />

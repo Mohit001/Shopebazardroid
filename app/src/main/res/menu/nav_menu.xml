@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2015 Vikram Kakkar
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Text
+        android:id="@+id/nav_menu_home"
+        android:title="Home"
+        android:checkable="false"/>
+    <Separator
+        android:id="@+id/nav_menu_separator1" />
+    <!--<Group
+        android:id="@+id/group_1"
+        app:collapsible="true"
+        app:collapsed="true"
+        android:checkableBehavior="single">
+
+        <GroupHeader
+            android:id="@+id/nav_cat1"
+            android:title="Category1" />
+
+        <Text
+            android:id="@+id/cat1_itme1"
+            android:title="item1"
+            android:checkable="false"/>
+
+        <Text
+            android:id="@+id/cat1_item2"
+            android:title="item2"
+            android:checkable="false"/>
+    </Group>-->
+
+    <Text
+        android:id="@+id/nav_cat1"
+        android:title="Category1"
+        android:checkable="false"/>
+
+    <Separator
+        android:id="@+id/nav_menu_separator2" />
+
+    <!--<Group
+        android:id="@+id/group_2"
+        app:collapsible="true"
+        app:collapsed="true"
+        android:checkableBehavior="single">
+
+        <GroupHeader
+            android:id="@+id/nav_cat2"
+            android:title="Category2"/>
+
+        <Text
+            android:id="@+id/cat2_itme1"
+            android:title="item1"
+            android:checkable="false" />
+
+        <Text
+            android:id="@+id/cat2_item2"
+            android:title="item2"
+            android:checkable="false" />
+
+        <Text
+            android:id="@+id/cat2_itme3"
+            android:title="item3"
+            android:checkable="false"
+            />
+
+        <Text
+            android:id="@+id/cat2_item4"
+            android:title="item4"
+            android:checkable="false"/>
+
+        <Text
+            android:id="@+id/cat2_item5"
+            android:title="item5"
+            android:checkable="false"/>
+
+    </Group>-->
+
+    <Text
+        android:id="@+id/nav_cat2"
+        android:title="Category2"
+        android:checkable="false"
+        />
+
+
+    <Separator
+        android:id="@+id/nav_menu_separator3" />
+
+    <Text
+        android:id="@+id/nav_menu_order_history"
+        android:title="Order History"
+        android:checkable="false"
+         />
+
+    <Separator
+        android:id="@+id/nav_menu_separator4" />
+
+    <Text
+        android:id="@+id/nav_menu_manage_Address"
+        android:title="Manage Address"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator5" />
+
+    <Text
+        android:id="@+id/nav_menu_setting"
+        android:title="Setting"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator6" />
+
+    <Text
+        android:id="@+id/nav_menu_feedback"
+        android:title="Feedback"
+        android:checkable="false"
+         />
+
+    <Separator
+        android:id="@+id/nav_menu_separator7" />
+
+    <Text
+        android:id="@+id/nav_menu_rate_review"
+        android:title="Rate And Review"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator8" />
+
+    <Text
+        android:id="@+id/nav_menu_faq"
+        android:title="FAQ"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator9"
+        />
+
+    <Text
+        android:id="@+id/nav_menu_about_us"
+        android:title="About US"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator10" />
+
+    <Text
+        android:id="@+id/nav_menu_tc"
+        android:title="Terms And Conditions"
+        android:checkable="false"
+        />
+
+    <Separator
+        android:id="@+id/nav_menu_separator11" />
+
+    <Text
+        android:id="@+id/nav_menu_logout"
+        android:title="Logout"
+        android:checkable="false"
+        />
+
+
+
+</menu>

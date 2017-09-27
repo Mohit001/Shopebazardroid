@@ -1,6 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#54555e</color>
+    <color name="colorPrimaryDark">#3F4048</color>
+    <color name="colorAccent">#54555e</color>
+
+
+
+    <color name="bg_grey">#989898</color>
+    <color name="bg_grey_light">#EBEBEB</color>
+
+    <color name="bg_shipping_method">#333333</color>
+
+    <color name="subtotle">#989898</color>
+
+    <color name="bg_order_details">#EBEBEB</color>
+    <color name="txt_price_color">#960000 </color>
+
+    <color name="order_review_gray">#333333</color>
+
+
+
+    <color name="expandable">#F3F3F9</color>
+
+    <!-- extra -->
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="fuchsia">#FF00FF</color>
+    <color name="red">#FF0000</color>
+    <color name="silver">#C0C0C0</color>
+    <color name="gray">#808080</color>
+    <color name="gray_light">#CECFCF</color>
+    <color name="olive">#808000</color>
+    <color name="orange">#F7664B</color>
+    <color name="purple">#800080</color>
+    <color name="maroon">#800000</color>
+    <color name="aqua">#00FFFF</color>
+    <color name="lime">#00FF00</color>
+    <color name="teal">#008080</color>
+    <color name="green">#008000</color>
+    <color name="blue">#0000FF</color>
+    <color name="navy">#000080</color>
+    <color name="black">#000000</color>
+
+    <color name="gridone">#508786bf</color>
+    <color name="gridto">#507575b5</color>
+    <color name="gridtodummy">#8786bf</color>
+
+    <color name="lightgray">#e7e7e7</color>
+    <color name="dark">#000015</color>
+    <color name="lightgray02">#bfbfbf</color>
+    <color name="orrange">#e33d1b</color>
+
+    <color name="divider_border">#f6d5af</color>
+
+    <color name="reigister_text">#cecfcf</color>
+
+    <color name="divider_color">#333333</color>
+    <color name="invite_search_bg">#d7d7d7</color>
+    <color name="text_bg_color">#767676</color>
+
+    <color name="edt_bg_color">#7270b4</color>
+    <color name="add_event_bg">#229d9bcb</color>
+    <color name="change_password">#ff0000</color>
+
+    <color name="color_theme_blue">#1E88E5</color>
 </resources>

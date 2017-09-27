@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="size_array">
+        <item>Select</item>
+        <item>S</item>
+        <item>M</item>
+        <item>XL</item>
+        <item>XXL</item>
+        <item>XXXL</item>
+    </string-array>
+
+    <array name="nav_menu_item">
+        <item>Order History</item>
+        <item>Manage Address</item>
+        <item>Notification</item>
+        <item>Setting</item>
+        <item>Feedback</item>
+        <item>My WishList</item>
+        <item>Rate and review</item>
+    </array>
+</resources>

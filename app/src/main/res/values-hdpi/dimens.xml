@@ -1,0 +1,50 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="nav_drawer_width">270dp</dimen>
+
+    <dimen name="margin_5">5dp</dimen>
+    <dimen name="margin_8">10dp</dimen>
+    <dimen name="margin_10">10dp</dimen>
+    <dimen name="margin_15">15dp</dimen>
+    <dimen name="margin_20">20dp</dimen>
+    <dimen name="margin_25">25dp</dimen>
+    <dimen name="margin_30">30dp</dimen>
+    <dimen name="margin_35">35dp</dimen>
+    <dimen name="margin_40">45dp</dimen>
+    <dimen name="margin_50">55dp</dimen>
+
+    <dimen name="button_size">40dp</dimen>
+    <dimen name="profile_pic_size">100dp</dimen>
+    <dimen name="update_profile_pic_size">110dp</dimen>
+
+    <dimen name="radio_padding">5dp</dimen>
+
+    <dimen name="radio_button_conner_radius">5dp</dimen>
+    <dimen name="margin_115">105dp</dimen>
+    <!--appcompaq theme-->
+
+    <dimen name="contentInset">10dp</dimen>
+    <dimen name="header_txt_size">17sp</dimen>
+    <dimen name="header_submenu__textsize">15sp</dimen>
+    <dimen name="header_textview_margine">5dp</dimen>
+    <dimen name="header_textview_margineRight">5dp</dimen>
+
+    <dimen name="calendar_item_textsize">12sp</dimen>
+
+
+    <!--FONT SIZE -->
+    <dimen name="textsize_10">10sp</dimen>
+    <dimen name="textsize_12">12sp</dimen>
+    <dimen name="textsize_14">14sp</dimen>
+    <dimen name="textsize_16">16sp</dimen>
+    <dimen name="textsize_18">18sp</dimen>
+    <dimen name="textsize_20">20sp</dimen>
+    <dimen name="textsize_22">22sp</dimen>
+    <dimen name="textsize_24">24sp</dimen>
+    <dimen name="textsize_26">26sp</dimen>
+    <dimen name="textsize_28">28sp</dimen>
+    <dimen name="textsize_30">30sp</dimen>
+
+
+</resources>

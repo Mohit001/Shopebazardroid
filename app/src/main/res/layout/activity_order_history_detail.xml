@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_alignParentBottom="true"
+        android:id="@+id/reorder_button"
+        android:visibility="visible"
+        android:textSize="@dimen/textsize_16"
+        android:textAllCaps="false"
+        android:text="@string/reorder"
+        android:textColor="@color/white"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <ScrollView
+        android:layout_above="@id/reorder_button"
+        android:id="@+id/order_review_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!--<android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">-->
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/order_review_cartitem_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:padding="@dimen/margin_5"
+                android:background="@color/bg_order_details"
+                android:text="Cart Items"
+                android:textColor="@color/bg_grey"
+                android:textSize="16sp" />
+
+            <com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView
+                android:id="@+id/ohd_cartitem_listview"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/order_review_cartitem_lbl"
+                android:layout_marginTop="@dimen/margin_5"
+                android:divider="@color/white"
+                android:dividerHeight="@dimen/margin_5" />
+
+            <RelativeLayout
+                android:id="@+id/ohd_cart_total_rl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_cartitem_listview"
+                android:background="@color/bg_order_details"
+                android:padding="@dimen/margin_5">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/ohd_total_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text="0"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="15sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/ohd_total_lbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/margin_5"
+                    android:layout_toLeftOf="@id/ohd_total_content"
+                    android:text="Total"
+                    android:textColor="@color/bg_grey"
+                    android:textSize="15sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/ohd_divider1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/ohd_cart_total_rl"
+                android:layout_marginTop="4dp"
+                android:background="@android:color/darker_gray"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/ohd_shippingaddress_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_divider1"
+                android:layout_marginTop="8dp"
+                android:background="@color/bg_order_details"
+                android:gravity="left"
+                android:padding="@dimen/margin_5"
+                android:text="Shipping Address"
+                android:textColor="@color/bg_grey" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/ohd_shippingaddress_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_shippingaddress_lbl"
+                android:layout_marginTop="4dp"
+                android:padding="@dimen/margin_5"
+                android:text=""
+                android:textColor="@color/bg_shipping_method"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/ohd_billingaddress_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_shippingaddress_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/bg_order_details"
+                android:gravity="left"
+                android:padding="@dimen/margin_5"
+                android:text="Billing Address"
+                android:textColor="@color/bg_grey"
+                android:textSize="15sp" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/ohd_billingaddress_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_billingaddress_lbl"
+                android:layout_marginTop="4dp"
+                android:padding="@dimen/margin_5"
+                android:text=""
+                android:textColor="@color/bg_shipping_method"
+                android:textSize="15sp" />
+
+
+            <!--<TextView-->
+            <!--android:id="@+id/ohd_divider2"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"-->
+            <!--android:layout_below="@id/ohd_shippingaddress_content"-->
+            <!--android:layout_marginTop="4dp"-->
+            <!--android:background="@android:color/darker_gray" />-->
+
+            <LinearLayout
+                android:id="@+id/ohd_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ohd_billingaddress_content"
+                android:orientation="vertical"
+                android:padding="@dimen/margin_5">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_status_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_status_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_status_content"
+                        android:text="Order Status"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_payment_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_payment_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_payment_content"
+                        android:text="Payment Method"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_coupan_code_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_coupan_code_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_coupan_code_content"
+                        android:text="Coupan code"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/ohd_del_charges_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_delivery_charges_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_delivery_charges_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_delivery_charges_content"
+                        android:text="Delivery Charges"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ohd_extra_disc_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_discount_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_discount_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_discount_content"
+                        android:text="Extra Discount"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/ohd_total_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_5">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_gross_total_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text=""
+                        android:textColor="@color/order_review_gray" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/ohd_gross_total_lbl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/margin_5"
+                        android:layout_toLeftOf="@id/ohd_gross_total_content"
+                        android:text="Gross Total"
+                        android:textColor="@color/order_review_gray" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/rel_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ohd_ll">
+
+                <TextView
+                    android:id="@+id/txt_lbl_order_comments"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/bg_order_details"
+                    android:padding="@dimen/margin_5"
+                    android:text="Order Comments"
+                    android:textColor="@color/order_review_gray" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_lbl_order_comments" />
+
+                <TextView
+                    android:id="@+id/txt_lbl_cust_order"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/recyclerview"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:padding="@dimen/margin_5"
+                    android:text="Customer Order Comment"
+                    android:textColor="@color/order_review_gray" />
+
+                <EditText
+                    android:id="@+id/edt_add_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_lbl_cust_order"
+                    android:layout_marginLeft="@dimen/margin_20"
+                    android:layout_marginRight="@dimen/margin_20"
+                    android:layout_marginTop="@dimen/margin_5"
+                    android:background="@drawable/btn_border_home"
+                    android:gravity="start"
+                    android:hint="Write comment"
+                    android:lines="3"
+                    android:maxLines="3"
+                    android:padding="@dimen/margin_5"
+                    android:textColor="@color/order_review_gray" />
+
+                <Button
+                    android:id="@+id/btn_send"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/edt_add_comment"
+                    android:layout_marginRight="@dimen/margin_20"
+                    android:paddingLeft="@dimen/margin_30"
+                    android:paddingRight="@dimen/margin_30"
+                    android:text="Send"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/rel_comments"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <Button
+                    android:id="@+id/btn_order_tracking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Order Tracking"
+                    android:textAllCaps="true"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/btn_refund_process"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Order return"
+                    android:textAllCaps="true"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+            <!--</android.support.v7.widget.RecyclerView>-->
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

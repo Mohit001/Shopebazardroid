@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/cart_footer_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_5"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/cart_gross_total_rl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@color/bg_order_details"
+            android:padding="@dimen/margin_5"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_5"
+            android:paddingRight="@dimen/margin_10">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/gross_total_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="0"
+                android:layout_centerVertical="true"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:id="@+id/gross_total_lbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_5"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/gross_total_content"
+                android:text="Grand Total"
+                android:textColor="@color/bg_grey" />
+        </RelativeLayout>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/proceed_checkout_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:padding="@dimen/margin_10"
+            android:text="checkout"
+            android:textAllCaps="true"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/cart_footer_rl" />
+
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/cart_footer_rl"
+        android:visibility="gone"
+
+        />
+    <!--<com.msp.ecommerce.utility.AnimatedFloatingActionButtonBottom-->
+    <!--android:id="@+id/add_address_fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_above="@id/cart_footer_rl"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_margin="16dp"-->
+    <!--android:src="@drawable/ic_add_white_24dp"-->
+    <!--android:visibility="gone"-->
+    <!--app:layout_anchor="@+id/recyclerview"-->
+    <!--app:layout_anchorGravity="bottom|end"-->
+    <!--app:layout_behavior="com.msp.ecommerce.utility.ScrollAwareFABBehavior"/>-->
+</RelativeLayout>

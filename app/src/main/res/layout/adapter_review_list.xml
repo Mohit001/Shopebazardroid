@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_5">
+
+    <TextView
+        android:id="@+id/txt_review"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="test" />
+
+    <TextView
+        android:id="@+id/txt_lbl_review_by"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@+id/txt_review"
+        android:text="Review by " />
+
+    <TextView
+        android:id="@+id/txt_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="3dp"
+        android:layout_toRightOf="@+id/txt_lbl_review_by"
+        android:text="test" />
+
+    <LinearLayout
+        android:id="@+id/linear_dynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txt_review"
+        android:layout_marginTop="@dimen/margin_5"
+        android:orientation="horizontal">
+
+        <!--<TextView-->
+            <!--android:id="@+id/txt_title"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Qualityhgfghfhfh" />-->
+
+        <!--<RatingBar-->
+            <!--android:id="@+id/ratingBar"-->
+            <!--style="?android:attr/ratingBarStyleSmall"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginLeft="@dimen/margin_5" />-->
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_posted_date"
+        android:layout_below="@+id/linear_dynamic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txt_posted_date"
+        android:layout_marginTop="@dimen/margin_5"
+        android:background="@color/gray"/>
+
+
+</RelativeLayout>

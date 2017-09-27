@@ -1,21 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.mohit.shopebazardroid">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- gcm permission -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
-        android:allowBackup="true"
+        android:name=".MyApplication"
+        android:allowBackup="false"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        android:theme="@style/AppTheme"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".activity.login_registration.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.login_registration.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.Main.NavigationDrawerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.login_registration.RegistrationActivity"
+            android:parentActivityName=".activity.login_registration.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+
+        <!-- start gcm -->
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".gcm.MyGcmListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".gcm.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".RegistrationIntentService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".activity.login_registration.ForgotPasswordActivity"
+            android:parentActivityName=".activity.login_registration.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <!-- end gcm -->
+
+        <activity
+            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@style/FinestWebViewTheme.Light" />
+        <activity
+            android:name=".activity.products.ProductDetailActivity"
+            android:label="Product Detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.products.SubcategoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.products.ProductGridActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.offer.TrendingSaleShowAllActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.CartActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.ActivityBillingAddress"
+            android:parentActivityName=".activity.Checkout.CartActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.ActivityCheckoutPaymentMethod"
+            android:parentActivityName=".activity.Checkout.ActivityBillingAddress"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.ActivityCheckoutOrderReview"
+            android:parentActivityName=".activity.Checkout.ActivityCheckoutPaymentMethod"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.history.OrderHistoryActivity"
+            android:parentActivityName=".activity.Checkout.ActivityCheckoutPaymentMethod"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.history.OrderHistoryDetailActivity"
+            android:parentActivityName=".activity.Checkout.ActivityCheckoutPaymentMethod"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Address.AddUpdateAddressActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.products.SearchResultActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.ActivityShippingAddress"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.Checkout.ActivityShippingMethod"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+
+        <activity
+            android:name=".activity.products.AddreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+        <activity
+            android:name=".activity.products.CustomerReviewListingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeActivity" />
+
+
     </application>
 
 </manifest>
