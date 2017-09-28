@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<string name="base_url">http://localhost:8080/</string>-->
+    <string name="api_base_url">http://10.0.2.2:8080/</string>
+
+    <string name="api_login">shppebazar/rest/user/login</string>
+    <string name="api_user_register">shppebazar/rest/user/registerUser</string>
+    <!--variable will be user id-->
+    <string name="api_user_profile">shppebazar/rest/user/userProfile/%1$s</string>
+    <!--  Variable will be user email -->
+    <string name="api_forgot_password">shppebazar/rest/user/forgotPassowrd/%1$s</string>
+    <string name="api_category">/shppebazar/rest/Category</string>
+    <!-- Variable will be category id-->
+    <string name="api_category_product_list">shppebazar/rest/Category/getProducts/%1$s</string>
+
+    <!--variable will be product id-->
+    <string name="api_product_details">shppebazar/rest/product/$1$s</string>
+
+    <!--variable will be user id-->
+    <string name="api_get_address_list">shppebazar/rest/address/get/%1$s</string>
+    <string name="api_add_new_address">shppebazar/rest/address/add</string>
+    <!--variable will be address id-->
+    <string name="api_delete_address">shppebazar/rest/address/remove/%1$s</string>
+    <string name="api_update_address">shppebazar/rest/address/update</string>
+</resources>

@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 
 import com.mohit.shopebazardroid.MyApplication;
+import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.AddCommentInOrderRequest;
 import com.mohit.shopebazardroid.model.request.AddRemoveWishListRequest;
@@ -64,6 +65,13 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_LOGIN, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
+
+    public static void Login(Context context, String request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_login);
+        new OKHttpAsyncTask(context, url,request, context.getString(R.string.dialog_msg_authenticating),AppConstants.APICode.LOGIN, false, fragmentManager).execute(apiResponse);
+    }
+
+
     public static void UserDetail(Context context, UserDetailsRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         postDataParams = new HashMap<String, String>();
@@ -76,10 +84,8 @@ public class HTTPWebRequest {
 
     public static void ForgotPassword(Context context, String emailString, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.EMAIL, emailString);
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_FORGOT_PASSWORD, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_forgot_password, emailString);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void Registration(Context context, RegistrationRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

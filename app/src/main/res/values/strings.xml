@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">60Cart</string>
+    <string name="app_name">ShopEBazar</string>
 
     <string name="powerby">Powered by Sales Genie</string>
 
@@ -155,4 +155,5 @@
     <string name="reorder">Reorder</string>
     <string name="empty_billing_address">Please enter atleast one billing address</string>
     <string name="continue_shopping">Continue Shopping</string>
+    <string name="dialog_msg_authenticating">Authenticating...</string>
 </resources>

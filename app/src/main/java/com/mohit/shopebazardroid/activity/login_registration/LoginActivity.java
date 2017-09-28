@@ -16,11 +16,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.RegistrationIntentService;
@@ -28,13 +29,13 @@ import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.gcm.QuickstartPreferences;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.LoginRequest;
-import com.mohit.shopebazardroid.model.response.LoginResponse;
-import com.mohit.shopebazardroid.model.response.Result;
-import com.mohit.shopebazardroid.model.response.Userinfo;
+import com.mohit.shopebazardroid.models.Person;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
+
+import java.lang.reflect.Type;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, ApiResponse {
 
@@ -182,19 +183,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     return;
                 }
 
-                // remove error text below edittext
-//                emailEditText.setErrorEnabled(false);
-//                passwordEditText.setErrorEnabled(false);
 
+                Person user = new Person();
+                user.setEmail(emailString);
+                user.setPassword(passwordString);
+                String requestJson = new Gson().toJson(user);
 
-                LoginRequest loginRequest = new LoginRequest();
-                loginRequest.setEmail(emailString);
-                loginRequest.setPassword(passwordString);
-                loginRequest.setDevice_type("1");
-                loginRequest.setDevice_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, FirebaseInstanceId.getInstance().getToken()));
-                loginRequest.setShoppingCartID(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, ""));
                 // network call
-                HTTPWebRequest.Login(mContext, loginRequest, AppConstants.APICode.LOGIN, this, getSupportFragmentManager());
+                HTTPWebRequest.Login(mContext, requestJson, AppConstants.APICode.LOGIN, this, getSupportFragmentManager());
                 break;
             case R.id.forgot_password_lbl:
 //                Log.d(TAG, "Forgot password click");
@@ -222,38 +218,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                 try {
 
-                    LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+                    Type type = new TypeToken<BaseResponse<Person>>() {}.getType();
 
-                    if (loginResponse.getStatus().equalsIgnoreCase("success")) {
-                        Result result = loginResponse.getResult();
-                        Utility.toastMessage(mContext, result.getMessage());
-                        Userinfo userinfo = result.getUserinfo();
-                        Log.d(TAG, "User Id==" + userinfo.getEntity_id());
-                        Log.d(TAG, "ShoppingCart Id==" + userinfo.getShoppingcartid());
-                        MyApplication.preferencePutBoolean(AppConstants.SharedPreferenceKeys.IS_LOGGED_IN, true);
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, userinfo.getEntity_id());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, userinfo.getEmail());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, userinfo.getFirstname());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.SESSIONID, userinfo.getSessionId());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(userinfo.getShoppingcartid()));
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IS_NOTIFICATION, userinfo.getIs_notification());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, "" + userinfo.getItems_count());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_QTY, "" + userinfo.getItems_qty());
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, getString(R.string.rupee_sign));
-                        MyApplication.preferencePutFloat(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_RATE, 1);
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.BASECURRENCY_CODE, "USD");
-
+//                    BaseResponse<Person> baseResponse = new Gson().fromJson(response, BaseResponse.class);
+                    BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
+                    Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    if(baseResponse.getStatus() == 1){
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
                         setUserLoggedIn();
-                        if(getIs_login_compulsory() == 1)
-                            startActivity(new Intent(mContext, NavigationDrawerActivity.class));
-                        if(getIntent().hasExtra("addWishlist"))
-                            setResult(RESULT_OK, getIntent());
-                        this.finish();
+                        startActivity(new Intent(this, NavigationDrawerActivity.class));
 
-                    } else if (loginResponse.getStatus().equalsIgnoreCase("fail")) {
-                        Result result = loginResponse.getResult();
-                        Utility.toastMessage(mContext, result.getMessage());
+                        this.finish();
                     }
+
+
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }

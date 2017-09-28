@@ -1,7 +1,6 @@
 package com.mohit.shopebazardroid.activity.login_registration;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -9,16 +8,20 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.widget.AppCompatButton;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.mohit.shopebazardroid.MyApplication;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.response.LoginResponse;
+import com.mohit.shopebazardroid.models.Person;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
+
+import java.lang.reflect.Type;
 
 /**
  * Created by msp on 21/7/16.
@@ -40,7 +43,7 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
         setContentView(R.layout.activity_forgot_password);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
-        getSupportActionBar().setTitle("Forgot Password");
+        getSupportActionBar().setTitle(R.string.lbl_forgot_password);
         mContext = this;
 
         emailTextInputLayout = (TextInputLayout) findViewById(R.id.email_inputlayout_txt);
@@ -97,28 +100,14 @@ public class ForgotPasswordActivity extends BaseActivity implements View.OnClick
                     return;
                 }
 
-                LoginResponse forgotPasswordResponse = new Gson().fromJson(response,
-                        LoginResponse.class);
+                Type type = new TypeToken<BaseResponse<Person>>(){}.getType();
+                BaseResponse<Person> forgotPasswordResponse = new Gson().fromJson(response,type);
 
-                if(forgotPasswordResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0"))
-                {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
+                Toast.makeText(mContext, forgotPasswordResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(forgotPasswordResponse.getStatus() == 1){
                     this.finish();
-                    return;
                 }
 
-                if (forgotPasswordResponse.getStatus().equalsIgnoreCase("success")) {
-                    emailTextInputLayout.getEditText().setText("");
-                    Utility.toastMessage(mContext, forgotPasswordResponse.getResult().getMessage());
-                } else {
-                    emailTextInputLayout.setErrorEnabled(true);
-//                    emailTextInputLayout.setError(forgotPasswordResponse.getResult().getMessage
-// ());
-                    Utility.toastMessage(mContext, forgotPasswordResponse.getResult().getMessage());
-
-                }
                 break;
         }
     }
