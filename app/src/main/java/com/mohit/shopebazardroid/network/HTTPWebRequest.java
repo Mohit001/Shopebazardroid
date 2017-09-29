@@ -77,8 +77,6 @@ public class HTTPWebRequest {
         postDataParams = new HashMap<String, String>();
         postDataParams.put(AppConstants.RequestDataKey.EMAIL, request.getEmail());
         postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
-
-
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_USER_DETAIL, apiCode, false).execute(apiResponse);
     }
 
@@ -102,6 +100,13 @@ public class HTTPWebRequest {
 
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_REGISTRATION, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
+
+    public static void Registration(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_user_register);
+        new OKHttpAsyncTask(context, url, jsonRequest,  AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    }
+
+
 
     public static void Feedback(Context context, FeedbackRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
@@ -233,11 +238,16 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void GetProfile(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    /*public static void GetProfile(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         postDataParams = new HashMap<>();
         postDataParams.put(AppConstants.RequestDataKey.EMAIL, userid);
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_GET_PROFILE, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    }*/
+
+    public static void GetProfile(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_user_profile, userid);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void UpdateProfile(Context context, RegistrationRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -253,6 +263,13 @@ public class HTTPWebRequest {
 
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_UPDATE_PROFILE, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
+
+    public static void UpdateProfile(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+
+        String url = UrlFormetter.getURL(context, R.string.api_update_profie);
+        new OKHttpAsyncTask(context, url, jsonRequest, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    }
+
 
 
     public static void Search(Context context, SearchRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

@@ -10,6 +10,9 @@
     <string name="api_user_profile">shppebazar/rest/user/userProfile/%1$s</string>
     <!--  Variable will be user email -->
     <string name="api_forgot_password">shppebazar/rest/user/forgotPassowrd/%1$s</string>
+    <string name="api_update_profie">shppebazar/rest/user/updateUser</string>
+
+
     <string name="api_category">/shppebazar/rest/Category</string>
     <!-- Variable will be category id-->
     <string name="api_category_product_list">shppebazar/rest/Category/getProducts/%1$s</string>

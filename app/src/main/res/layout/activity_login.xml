@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10"
-            android:text="@string/lbl_registration"
+            android:text="@string/lbl_sign_up"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp" />
 

@@ -11,23 +11,25 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.RegistrationRequest;
 import com.mohit.shopebazardroid.model.response.LoginResponse;
-import com.mohit.shopebazardroid.model.response.Result;
-import com.mohit.shopebazardroid.model.response.Userinfo;
+import com.mohit.shopebazardroid.models.Person;
+import com.mohit.shopebazardroid.models.Profile;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
+
+import java.lang.reflect.Type;
 
 
 public class RegistrationActivity extends BaseActivity implements View.OnClickListener, ApiResponse {
@@ -40,13 +42,13 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     private String userid;
     private String firstnameString;
 
-    private TextView txt_lbl_add_detail_header;
     private ImageView btn_back;
 
-    private TextInputLayout firstnameEditText, middlenameEditText, lastnameEditText,
+    private TextInputLayout firstnameEditText, lastnameEditText,
             emailEditText, passwordEditText, confPasswordEditText;
     private AppCompatButton submitButton;
 
+    private  Person person;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,9 +59,6 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
         firstnameEditText = (TextInputLayout) findViewById(R.id.firstname_inputlayout_txt);
         firstnameEditText.setTypeface(SplashActivity.opensans_regular);
-
-        middlenameEditText = (TextInputLayout) findViewById(R.id.middlename_inputlayout_txt);
-        middlenameEditText.setTypeface(SplashActivity.opensans_regular);
 
         lastnameEditText = (TextInputLayout) findViewById(R.id.lastname_inputlayout_txt);
         lastnameEditText.setTypeface(SplashActivity.opensans_regular);
@@ -82,13 +81,13 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
         submitButton.setOnClickListener(this);
 
         if (isUpdate) {
-            getSupportActionBar().setTitle("Update Profile");
-            userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.EMAIL, "");
+            getSupportActionBar().setTitle(R.string.lbl_update_profile);
+            userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
             HTTPWebRequest.GetProfile(mContext, userid, AppConstants.APICode.GET_PROFILE, this,
                     getSupportFragmentManager());
             // get profile api call
         } else {
-            getSupportActionBar().setTitle("Registration");
+            getSupportActionBar().setTitle(R.string.lbl_sign_up);
         }
     }
 
@@ -128,34 +127,16 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     return;
                 }
 
-
-                // middlename and lastname optional
-                String middlenameString = middlenameEditText.getEditText().getText().toString()
-                        .trim();
                 String lastnameString = lastnameEditText.getEditText().getText().toString().trim();
-
-
-                // middlename and lastname compulsory
-                /*String middlenameString = middlenameEditText.getEditText().getText().toString()
-                .trim();
-                if(TextUtils.isEmpty(middlenameString))
-                {
-                    middlenameEditText.setErrorEnabled(true);
-                    middlenameEditText.setError(getString(R.string.empty_middlename));
-//                    Utility.toastMessage(mContext, R.string.empty_middlename);
-                    Log.d(TAG, "Please enter middlename");
+                if (TextUtils.isEmpty(lastnameString)) {
+//                    firstnameEditText.setErrorEnabled(true);
+//                    firstnameEditText.setError(getString(R.string.empty_firstname));
+                    Utility.toastMessage(mContext, R.string.empty_lastname);
+                    Log.d(TAG, "Please enter lastname");
                     return;
                 }
 
-                String lastnameString = lastnameEditText.getEditText().getText().toString().trim();
-                if(TextUtils.isEmpty(lastnameString))
-                {
-                    lastnameEditText.setErrorEnabled(true);
-                    lastnameEditText.setError(getString(R.string.empty_lastname));
-//                    Utility.toastMessage(mContext, R.string.empty_lastname);
-                    Log.d(TAG, "Please enter lastname");
-                    return;
-                }*/
+
 
                 String emailString = emailEditText.getEditText().getText().toString().trim();
                 if (!Utility.isValidEmail(emailString)) {
@@ -214,26 +195,27 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 //                emailEditText.setErrorEnabled(false);
 //                passwordEditText.setErrorEnabled(false);
 
-                RegistrationRequest request = new RegistrationRequest();
-                request.setFirstname(firstnameString);
-                request.setLastname(lastnameString);
-                request.setMiddlename(middlenameString);
-                request.setEmail(emailString);
+                Profile profile = new Profile();
+                profile.setFname(firstnameString);
+                profile.setLname(lastnameString);
+
+                if(person == null)
+                    person = new Person();
+
+                person.setEmail(emailString);
+                person.setPassword(passwordString);
+                person.setProfile(profile);
+
+
+
+                String jsonRequest = new Gson().toJson(person);
                 if (!isUpdate) {
-                    request.setAction("1");
-                    request.setPassword(passwordString);
-                    request.setDevice_token(MyApplication.preferenceGetString(AppConstants
-                            .SharedPreferenceKeys.GCM_TOKEN, FirebaseInstanceId.getInstance().getToken()));
-                    request.setDevice_type("1");
-                    HTTPWebRequest.Registration(mContext, request, AppConstants.APICode
+
+                    HTTPWebRequest.Registration(mContext, jsonRequest, AppConstants.APICode
                             .REGISTRATION, this, getSupportFragmentManager());
                 } else {
-                    userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                            .USER_ID, "0");
-                    request.setAction("2");
-                    request.setDevice_type("1");
-                    request.setUserid(userid);
-                    HTTPWebRequest.UpdateProfile(mContext, request, AppConstants.APICode
+
+                    HTTPWebRequest.UpdateProfile(mContext, jsonRequest, AppConstants.APICode
                             .UPDATE_PROFILE, this, getSupportFragmentManager());
                 }
                 // network call
@@ -259,40 +241,32 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     return;
                 }
 
-                LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
-                Result result = loginResponse.getResult();
-                Utility.toastMessage(mContext, result.getMessage());
-                if (loginResponse.getStatus().equalsIgnoreCase("success")) {
+                Type type = new TypeToken<BaseResponse<Person>>(){}.getType();
+                BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
+                Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(baseResponse.getStatus() == 1){
                     this.finish();
                 }
                 break;
             case AppConstants.APICode.GET_PROFILE:
-                LoginResponse getProfileResponse = new Gson().fromJson(response, LoginResponse.class);
 
-                if(getProfileResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0"))
-                {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                Type profileType = new TypeToken<BaseResponse<Person>>(){}.getType();
+                BaseResponse<Person> getProfileResponse = new Gson().fromJson(response, profileType);
+                if(getProfileResponse.getStatus() == 1){
+                    person = getProfileResponse.getInfo();
+                    emailEditText.getEditText().setText(person.getEmail());
+                    passwordEditText.getEditText().setText(person.getPassword());
+                    confPasswordEditText.getEditText().setText(person.getPassword());
 
-                if (getProfileResponse.getStatus().equalsIgnoreCase("success")) {
-                    Userinfo userinfo = getProfileResponse.getResult().getUserinfo();
-                    if (userinfo != null) {
-                        firstnameEditText.getEditText().setText(userinfo.getFirstname());
-                        middlenameEditText.getEditText().setText(userinfo.getMiddlename());
-                        lastnameEditText.getEditText().setText(userinfo.getLastname());
-                        emailEditText.getEditText().setText(userinfo.getEmail());
-                        emailEditText.getEditText().setEnabled(false);
-                        passwordEditText.getEditText().setVisibility(View.GONE);
-                        confPasswordEditText.getEditText().setVisibility(View.GONE);
-                    } else {
-                        Utility.toastMessage(mContext, R.string.host_not_reachable);
-                    }
+                    Profile profile = person.getProfile();
+                    firstnameEditText.getEditText().setText(profile.getFname());
+                    lastnameEditText.getEditText().setText(profile.getLname());
+
+                    //set email non editable
+                    emailEditText.setEnabled(false);
+
                 } else {
-                    Utility.toastMessage(mContext, R.string.host_not_reachable);
+                    Toast.makeText(mContext, getProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case AppConstants.APICode.UPDATE_PROFILE:
@@ -320,6 +294,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 break;
         }
     }
+
 
     @Override
     public void networkError(int apiCode) {

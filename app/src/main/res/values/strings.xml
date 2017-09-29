@@ -44,7 +44,7 @@
     <string name="forgot_lbl_submit">SUBMIT</string>
     <string name="lbl_login">LOGIN</string>
     <string name="lbl_forgot_password">Forgot Password</string>
-    <string name="lbl_registration">Sign Up</string>
+    <string name="lbl_sign_up">Sign Up</string>
 
     <!-- GCM -->
     <string name="gcm_send_message">Token retrieved and sent to server! You can now use gcmsender to
@@ -156,4 +156,5 @@
     <string name="empty_billing_address">Please enter atleast one billing address</string>
     <string name="continue_shopping">Continue Shopping</string>
     <string name="dialog_msg_authenticating">Authenticating...</string>
+    <string name="lbl_update_profile">Update Profile</string>
 </resources>
