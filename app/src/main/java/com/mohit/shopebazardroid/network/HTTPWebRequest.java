@@ -128,19 +128,11 @@ public class HTTPWebRequest {
         new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void products(Context context, ProductRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-        postDataParams = new HashMap<>();
+    public static void products(Context context, String categoryid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.CATID, request.getCatid());
-        postDataParams.put(AppConstants.RequestDataKey.PAGE, request.getPage());
-        postDataParams.put(AppConstants.RequestDataKey.PAGE_SIZE, request.getPagesize());
+        String url = UrlFormetter.getURL(context, R.string.api_category_product_list, categoryid);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
 
-        if (request.getJson_filter() != null && request.getJson_filter().length() > 0)
-            postDataParams.put(AppConstants.RequestDataKey.JSON_FILTER, request.getJson_filter());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_PRODUCTLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
     public static void GetState(Context context, String countrycode, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

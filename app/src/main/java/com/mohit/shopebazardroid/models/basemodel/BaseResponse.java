@@ -1,6 +1,8 @@
 package com.mohit.shopebazardroid.models.basemodel;
 
-public class BaseResponse <T> extends ApiBaseModel{
+import java.io.Serializable;
+
+public class BaseResponse <T> extends ApiBaseModel implements Serializable{
 
 	private T info;
 

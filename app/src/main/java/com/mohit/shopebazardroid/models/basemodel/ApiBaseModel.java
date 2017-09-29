@@ -1,6 +1,8 @@
 package com.mohit.shopebazardroid.models.basemodel;
 
-public class ApiBaseModel {
+import java.io.Serializable;
+
+public class ApiBaseModel implements Serializable{
 	
 	private int status;
 	private String message;

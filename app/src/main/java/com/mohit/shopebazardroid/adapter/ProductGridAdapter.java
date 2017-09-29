@@ -15,19 +15,18 @@ import android.widget.TextView;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
-import com.mohit.shopebazardroid.model.response.ProductEntity;
+import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
-public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter
-        .RecyclerViewHolders> {
+public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<ProductEntity> arrayList;
+    List<Product> arrayList;
 
     TextView latestPriceTextView, oldpriceTextView;
 
@@ -38,7 +37,7 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public ProductGridAdapter(Context mContext, ArrayList<ProductEntity> arrayList) {
+    public ProductGridAdapter(Context mContext, List<Product> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         themeCode = MyApplication.preferenceGetInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, 0);
@@ -94,15 +93,15 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-        ProductEntity entity = arrayList.get(position);
+        Product entity = arrayList.get(position);
 
         try {
 
 
-            holder.nameTextView.setText(entity.getName());
-            if (!TextUtils.isEmpty(entity.getThumbnail())) {
+            holder.nameTextView.setText(entity.getPro_name());
+            if (!TextUtils.isEmpty(entity.getPro_image())) {
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getThumbnail())
+                        .load(imagePrefix+entity.getPro_image())
                         .placeholder(R.drawable.ic_placeholder)
                         .error(R.drawable.ic_placeholder)
                         .into(holder.imageView);
@@ -112,24 +111,20 @@ public class ProductGridAdapter extends RecyclerView.Adapter<ProductGridAdapter
                         R.drawable.ic_placeholder));
             }
 
-            if (TextUtils.isEmpty(entity.getSpecial_price())) {
-                Float tempLatestPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-                latestPriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f",
-                        tempLatestPrice)));
+            if (entity.getDiscount_price() <= 0) {
+                Float tempLatestPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
+                latestPriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f",tempLatestPrice)));
                 oldpriceTextView.setVisibility(View.GONE);
             } else {
 
-                Float tempLatestPrice = Float.parseFloat(entity.getSpecial_price()) *
-                        baseCurrencyRate;
-                latestPriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f",
-                        tempLatestPrice)));
+                Float tempLatestPrice = entity.getDiscount_price() * baseCurrencyRate;
+                latestPriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f", tempLatestPrice)));
 
-                Float tempOldPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-                oldpriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f",
-                        tempOldPrice)));
-                oldpriceTextView.setPaintFlags(oldpriceTextView.getPaintFlags() | Paint
-                        .STRIKE_THRU_TEXT_FLAG);
+                Float tempOldPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
+                oldpriceTextView.setText(baseCurrencyCode + " " + (String.format("%.2f",tempOldPrice)));
+                oldpriceTextView.setPaintFlags(oldpriceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

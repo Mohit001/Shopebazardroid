@@ -32,9 +32,9 @@ import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
 import com.mohit.shopebazardroid.listener.SortListner;
 import com.mohit.shopebazardroid.model.request.ProductRequest;
 import com.mohit.shopebazardroid.model.response.FilterAttributesOption;
-import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.ProductFilterAttributes;
-import com.mohit.shopebazardroid.model.response.ProductResult;
+import com.mohit.shopebazardroid.models.Product;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
@@ -42,6 +42,7 @@ import com.mohit.shopebazardroid.utility.Utility;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import static android.R.attr.type;
 
@@ -55,14 +56,14 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
     public static String KEY_SEARCH_RESULT = "searcg_result";
 
     Context mContext;
-    ArrayList<ProductEntity> arrayList;
+    List<Product> arrayList;
     RecyclerView recyclerView;
     private GridLayoutManager gridLayoutManager;
     RecyclerView.Adapter mAdapter;
 
     View cartBadget;
 
-    ProductResult productResult;
+    BaseResponse<List<Product>> productResult;
     ArrayList<ProductFilterAttributes> filterAttributesArrayList;
     private Menu menu;
 
@@ -84,8 +85,8 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
         getSupportActionBar().setTitle(getIntent().getStringExtra(KEY_SEARCH_TITLE));
-        productResult = (ProductResult) getIntent().getSerializableExtra(KEY_SEARCH_RESULT);
-        arrayList = productResult.getProductlist();
+        productResult = (BaseResponse<List<Product>>) getIntent().getSerializableExtra(KEY_SEARCH_RESULT);
+        arrayList = productResult.getInfo();
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         gridLayoutManager = new GridLayoutManager(this, 2);
@@ -100,8 +101,8 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
             public void onItemClick(View view, int position) {
 //                Utility.toastMessage(mContext, "Position : "+position);
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                        intent.putExtra(ProductEntity.KEY_OBJECT, arrayList.get(position));
-                intent.putExtra("product", arrayList.get(position).getProduct_id());
+//                        intent.putExtra(Product.KEY_OBJECT, arrayList.get(position));
+                intent.putExtra("product", arrayList.get(position).getPro_mst_id());
                 startActivity(intent);
             }
         }));
@@ -169,14 +170,14 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
             case R.id.action_filter:
                 if (filterAttributesArrayList == null || filterAttributesArrayList.size() == 0) {
                     filterAttributesArrayList = new ArrayList<>();
-                    if (productResult.getFilter_attributes() != null &&
+                    /*if (productResult.getFilter_attributes() != null &&
                             productResult.getFilter_attributes().size() > 0) {
 
                         filterAttributesArrayList.addAll(productResult.getFilter_attributes());
                     } else {
                         Utility.toastMessage(mContext,  getResources().getString(R.string.no_filter));
                         return false;
-                    }
+                    }*/
                 }
 
 
@@ -224,23 +225,23 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
     public void onAscendingSortSelect() {
         sortDialog.dismiss();
         Log.d(TAG, "onClick: sort");
-        Collections.sort(arrayList, new Comparator<ProductEntity>() {
+        Collections.sort(arrayList, new Comparator<Product>() {
             @Override
-            public int compare(ProductEntity lhs, ProductEntity rhs) {
-                if (TextUtils.isEmpty(lhs.getSpecial_price())) {
-                    if (TextUtils.isEmpty(rhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(lhs.getPrice()), Double
-                                .parseDouble(rhs.getPrice()));
+            public int compare(Product lhs, Product rhs) {
+                if (TextUtils.isEmpty(""+lhs.getDiscount_price())) {
+                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(rhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(lhs.getPrice()), Double
-                                .parseDouble(rhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
                 } else {
-                    if (TextUtils.isEmpty(rhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(lhs.getSpecial_price()), Double
-                                .parseDouble(rhs.getPrice()));
+                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(rhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(lhs.getSpecial_price()), Double
-                                .parseDouble(rhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
                 }
             }
         });
@@ -260,23 +261,23 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
         sortDialog.dismiss();
 
         Log.d(TAG, "onClick: sort");
-        Collections.sort(arrayList, new Comparator<ProductEntity>() {
+        Collections.sort(arrayList, new Comparator<Product>() {
             @Override
-            public int compare(ProductEntity lhs, ProductEntity rhs) {
-                if (TextUtils.isEmpty(rhs.getSpecial_price())) {
-                    if (TextUtils.isEmpty(lhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(rhs.getPrice()), Double
-                                .parseDouble(lhs.getPrice()));
+            public int compare(Product lhs, Product rhs) {
+                if (TextUtils.isEmpty(""+rhs.getDiscount_price())) {
+                    if (TextUtils.isEmpty(""+lhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(rhs.getPro_price()), Double
+                                .parseDouble(lhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(rhs.getPrice()), Double
-                                .parseDouble(lhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(rhs.getPro_price()), Double
+                                .parseDouble(""+lhs.getDiscount_price()));
                 } else {
-                    if (TextUtils.isEmpty(lhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(rhs.getSpecial_price()), Double
-                                .parseDouble(lhs.getPrice()));
+                    if (TextUtils.isEmpty(""+lhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(""+rhs.getDiscount_price()), Double
+                                .parseDouble(lhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(rhs.getSpecial_price()), Double
-                                .parseDouble(lhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(""+rhs.getDiscount_price()), Double
+                                .parseDouble(""+lhs.getDiscount_price()));
                 }
 
             }

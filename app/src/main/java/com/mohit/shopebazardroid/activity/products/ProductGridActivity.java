@@ -15,10 +15,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
@@ -36,17 +38,19 @@ import com.mohit.shopebazardroid.listener.SortListner;
 import com.mohit.shopebazardroid.model.request.ProductRequest;
 import com.mohit.shopebazardroid.model.response.CategoryChildrens;
 import com.mohit.shopebazardroid.model.response.FilterAttributesOption;
-import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.ProductFilterAttributes;
-import com.mohit.shopebazardroid.model.response.ProductResponse;
 import com.mohit.shopebazardroid.model.response.ProductResult;
+import com.mohit.shopebazardroid.models.Product;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
@@ -57,7 +61,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
 
     public static String TAG = ProductGridActivity.class.getSimpleName();
     Context mContext;
-    ArrayList<ProductEntity> arrayList;
+    List<Product> arrayList;
     RecyclerView recyclerView;
     private GridLayoutManager gridLayoutManager;
     RecyclerView.Adapter mAdapter;
@@ -96,21 +100,12 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-//        filterSortLinearLayout = (LinearLayout) findViewById(R.id.filter_sorting_ll);
-//        filterSortLinearLayout.setVisibility(View.VISIBLE);
-//        sortFAB = (AnimatedFloatingActionButtonTop) findViewById(R.id.sorting_fab);
-//        filterFAB = (AnimatedFloatingActionButtonTop) findViewById(R.id.filter_fab);
-
-//        sortFAB.setVisibility(View.GONE);
-//        filterFAB.setVisibility(View.GONE);
-//        sortFAB.attachToRecyclerView(recyclerView);
-//        filterFAB.attachToRecyclerView(recyclerView);
 
         gridLayoutManager = new GridLayoutManager(this, 2);
 
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
-        subcategotyid = getIntent().getStringExtra(CategoryChildrens.KEY_ID);
+        subcategotyid = String.valueOf(getIntent().getIntExtra(CategoryChildrens.KEY_ID, 0));
         type = getIntent().getIntExtra(CategoryChildrens.KEY_TYPE, 0);
 
        loadMoreItems();
@@ -124,7 +119,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
 //                        intent.putExtra(ProductEntity.KEY_OBJECT, arrayList.get(position));
-                        intent.putExtra("product", arrayList.get(position).getProduct_id());
+                        intent.putExtra("product", arrayList.get(position).getPro_mst_id());
                         startActivity(intent);
                     }
                 }));
@@ -299,47 +294,37 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
             switch (apiCode) {
                 case AppConstants.APICode.BANNER_PRODUCTS:
                 case AppConstants.APICode.PRODUCTSLIST:
-                    ProductResponse productResponse = new Gson().fromJson(response,
-                            ProductResponse.class);
 
-                    if (productResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(this, LoginActivity.class));
-                        this.finish();
-                        return;
-                    }
+                    if(!TextUtils.isEmpty(response)){
 
-                    if (productResult != null)
-                        productResult = null;
-                    productResult = productResponse.getResult();
-                    totalProducts = productResult.getTotal();
-                    if (productResponse.getStatus().equalsIgnoreCase("success")
-                            && productResult.getProductlist() != null
-                            && productResult.getProductlist().size() > 0) {
-                        noProductFound = false;
-                        // clear arraylist to store new result
-                        /*if (arrayList != null && arrayList.size() != 0)
-                            arrayList.clear();*/
+                        Type productListType = new TypeToken<BaseResponse<List<Product>>>(){}.getType();
+                        BaseResponse<List<Product>> baseResponse = new Gson().fromJson(response, productListType);
 
-                        if(arrayList == null)
-                            arrayList = new ArrayList<>();
+                        if(baseResponse.getInfo().size() != 0){
+                            if(arrayList == null)
+                                arrayList = new ArrayList<>();
 
-                        arrayList.addAll(productResult.getProductlist());
-                        if(arrayList.size() == totalProducts)
-                            isLastPage = true;
+                            arrayList.addAll(baseResponse.getInfo());
+                            if(arrayList.size() == totalProducts)
+                                isLastPage = true;
 
-                        setupGrid();
-                    } else {
+                            setupGrid();
+                        } else {
 //                        Utility.toastMessage(mContext, "No product Found");
 
-                        confirmDialog = new ConfirmDialog();
-                        confirmDialog.setListner(this, "Product Listing", "No product found",
-                                "OK", "RETRY");
-                        noProductFound = true;
-                        confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.TAG);
+                            confirmDialog = new ConfirmDialog();
+                            confirmDialog.setListner(this, "Product Listing", "No product found",
+                                    "OK", "RETRY");
+                            noProductFound = true;
+                            confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.TAG);
 
+                        }
+
+                    } else {
+                        Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
+                        this.finish();
                     }
+
                     break;
             }
         }
@@ -417,23 +402,23 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
     public void onAscendingSortSelect() {
         sortDialog.dismiss();
         Log.d(TAG, "onClick: sort");
-        Collections.sort(arrayList, new Comparator<ProductEntity>() {
+        Collections.sort(arrayList, new Comparator<Product>() {
             @Override
-            public int compare(ProductEntity lhs, ProductEntity rhs) {
-                if (TextUtils.isEmpty(lhs.getSpecial_price())) {
-                    if (TextUtils.isEmpty(rhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(lhs.getPrice()), Double
-                                .parseDouble(rhs.getPrice()));
+            public int compare(Product lhs, Product rhs) {
+                if (lhs.getDiscount_price() == 0) {
+                    if (rhs.getDiscount_price() == 0)
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(rhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(lhs.getPrice()), Double
-                                .parseDouble(rhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
                 } else {
-                    if (TextUtils.isEmpty(rhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(lhs.getSpecial_price()), Double
-                                .parseDouble(rhs.getPrice()));
+                    if (rhs.getDiscount_price() == 0)
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(rhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(lhs.getSpecial_price()), Double
-                                .parseDouble(rhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
                 }
             }
         });
@@ -453,23 +438,23 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         sortDialog.dismiss();
 
         Log.d(TAG, "onClick: sort");
-        Collections.sort(arrayList, new Comparator<ProductEntity>() {
+        Collections.sort(arrayList, new Comparator<Product>() {
             @Override
-            public int compare(ProductEntity lhs, ProductEntity rhs) {
-                if (TextUtils.isEmpty(rhs.getSpecial_price())) {
-                    if (TextUtils.isEmpty(lhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(rhs.getPrice()), Double
-                                .parseDouble(lhs.getPrice()));
+            public int compare(Product lhs, Product rhs) {
+                if (TextUtils.isEmpty(""+rhs.getDiscount_price())) {
+                    if (TextUtils.isEmpty(""+lhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(rhs.getPro_price()), Double
+                                .parseDouble(lhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(rhs.getPrice()), Double
-                                .parseDouble(lhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(rhs.getPro_price()), Double
+                                .parseDouble(""+lhs.getDiscount_price()));
                 } else {
-                    if (TextUtils.isEmpty(lhs.getSpecial_price()))
-                        return Double.compare(Double.parseDouble(rhs.getSpecial_price()), Double
-                                .parseDouble(lhs.getPrice()));
+                    if (TextUtils.isEmpty(""+lhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(""+rhs.getDiscount_price()), Double
+                                .parseDouble(lhs.getPro_price()));
                     else
-                        return Double.compare(Double.parseDouble(rhs.getSpecial_price()), Double
-                                .parseDouble(lhs.getSpecial_price()));
+                        return Double.compare(Double.parseDouble(""+rhs.getDiscount_price()), Double
+                                .parseDouble(""+lhs.getDiscount_price()));
                 }
 
             }
@@ -559,25 +544,11 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
             request.setJson_filter(jsonArray.toString());
         }
 
-
-        request.setStore_id(storeid);
-        request.setCustomer_id(getUserid());
-        request.setCatid(subcategotyid);
-        request.setPage(String.valueOf(++filterPageCount));
-        request.setPagesize(String.valueOf(pageSize));
-
-
-        /*if (type == 0)
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this,
-                    getSupportFragmentManager());
-        else
-            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode
-                    .BANNER_PRODUCTS, this, getSupportFragmentManager());*/
-
         if (type == 0)
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this, getSupportFragmentManager());
-        else if (type == 1)
-            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode.BANNER_PRODUCTS, this, getSupportFragmentManager());
+            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this, getSupportFragmentManager());
+        else if (type == 1){
+//            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode.BANNER_PRODUCTS, this, getSupportFragmentManager());
+        }
         else
             Utility.toastMessage(mContext, "Invalid arguments.");
 
@@ -597,20 +568,13 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
 
     @Override
     public void onNegativeButtonClick() {
-        confirmDialog.dismiss();
-        ProductRequest request = new ProductRequest();
-        request.setStore_id(storeid);
-        request.setCustomer_id(getUserid());
-        request.setCatid(subcategotyid);
-        request.setPage(String.valueOf(1));
-        request.setPagesize(String.valueOf(10000));
 
         if (type == 0)
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this,
+            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
                     getSupportFragmentManager());
-        else
-            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode
-                    .BANNER_PRODUCTS, this, getSupportFragmentManager());
+        else{
+//            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode.BANNER_PRODUCTS, this, getSupportFragmentManager());
+        }
 
     }
 
@@ -641,21 +605,14 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
     private void loadMoreItems() {
         isLoading = true;
 
-        ProductRequest request = new ProductRequest();
-        request.setStore_id(storeid);
-        request.setCustomer_id(getUserid());
-        request.setCatid(subcategotyid);
-        request.setPage(String.valueOf(++pageCount));
-        request.setPagesize(String.valueOf(pageSize));
-
         if (type == 0) {
             getSupportActionBar().setTitle(getIntent().getStringExtra(CategoryChildrens.KEY_NAME));
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this,
+            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
                     getSupportFragmentManager());
         } else {
-            getSupportActionBar().setTitle("Products");
+            /*getSupportActionBar().setTitle("Products");
             HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode
-                    .BANNER_PRODUCTS, this, getSupportFragmentManager());
+                    .BANNER_PRODUCTS, this, getSupportFragmentManager());*/
         }
     }
 
