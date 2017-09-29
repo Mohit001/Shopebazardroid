@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatTextView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,24 +14,24 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.AddressListner;
-import com.mohit.shopebazardroid.model.response.Address;
+import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.utility.AppConstants;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class AddressListAdapter extends BaseAdapter {
     Context mContext;
-    ArrayList<Address> arrayList;
+    List<Address> arrayList;
     AddressListner listner;
     boolean showRadioSelection = true;
     int billing_shipping;   // 0=non, 1=billing, 2=shipping
 
     int themeCode;
 
-    public AddressListAdapter(Context mContext, ArrayList<Address> arrayList, AddressListner listner,
+    public AddressListAdapter(Context mContext, List<Address> arrayList, AddressListner listner,
                               boolean showRadioSelection, int billing_shiping) {
 
         this.mContext = mContext;
@@ -75,7 +74,7 @@ public class AddressListAdapter extends BaseAdapter {
 
         holder.selectedRadioButton.setTag(new Integer(position));
         if (showRadioSelection) {
-            if (billing_shipping == 1) {
+            /*if (billing_shipping == 1) {
                 if (entity.is_default_billing()) {
                     holder.selectedRadioButton.setChecked(true);
                 } else {
@@ -87,12 +86,7 @@ public class AddressListAdapter extends BaseAdapter {
                 } else {
                     holder.selectedRadioButton.setChecked(false);
                 }
-            }
-
-           /* if(entity.isSelected())
-                holder.selectedRadioButton.setChecked(true);
-            else
-                holder.selectedRadioButton.setChecked(false);*/
+            }*/
 
 
         } else {
@@ -100,11 +94,11 @@ public class AddressListAdapter extends BaseAdapter {
         }
 
 
-        if (entity.isSelected()) {
+        /*if (entity.isSelected()) {
             holder.selectedRadioButton.setChecked(true);
         } else {
             holder.selectedRadioButton.setChecked(false);
-        }
+        }*/
 
 //        holder.selectedRadioButton.setOnCheckedChangeListener(new CompoundButton
 //                .OnCheckedChangeListener() {
@@ -123,43 +117,21 @@ public class AddressListAdapter extends BaseAdapter {
             }
         });
 
-        String[] localAddress = entity.getStreet().split("\n");
-        String street1 = "", street2 = "";
-        try {
-            street1 = localAddress[0];
-            street2 = localAddress[1];
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
 
 
-        holder.selectedRadioButton.setText(entity.getFirstname());
+
+        holder.selectedRadioButton.setText(entity.getFull_name());
         holder.alias.setVisibility(View.GONE);
-        /*if (!TextUtils.isEmpty(entity.getFirstname()))
-            holder.alias.setText(entity.getFirstname());
-        else
-            holder.alias.setVisibility(View.GONE);*/
-
-        if (!TextUtils.isEmpty(street1))
-            holder.homeOfficeNo.setText(street1);
-        else
-            holder.homeOfficeNo.setVisibility(View.GONE);
 
 
-        holder.street.setText(street2);
-        holder.landmark.setText(entity.getLandmark());
+        holder.street.setText(entity.getAddress1());
+        holder.landmark.setText(entity.getAddress2());
         holder.city.setText(entity.getCity());
-        holder.state.setText(entity.getRegion());
-        holder.country.setText(entity.getCountry_id());
+        holder.state.setText(entity.getState());
         holder.pincode.setText(entity.getPostcode());
         holder.email.setText(entity.getEmail());
-        holder.mobileno.setText(entity.getTelephone());
 
-        if (TextUtils.isEmpty(entity.getRegion())){
-            holder.address_coma_lbl.setVisibility(View.GONE);
-        }
+
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override

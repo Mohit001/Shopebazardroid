@@ -12,8 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
@@ -23,14 +25,17 @@ import com.mohit.shopebazardroid.adapter.AddressListAdapter;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.AddressRequest;
-import com.mohit.shopebazardroid.model.response.Address;
 import com.mohit.shopebazardroid.model.response.AddressResponse;
+import com.mohit.shopebazardroid.models.Address;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AnimatedFloatingActionButtonBottom;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 26/7/16.
@@ -42,7 +47,7 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
     Context mContext;
     RelativeLayout relativeLayout;
     Button continueTextView;
-    ArrayList<Address> arrayList;
+    List<Address> arrayList;
     RecyclerView recyclerView;
     ListView listView;
     private LinearLayoutManager linearLayoutManager;
@@ -100,46 +105,6 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
         return true;
     }
 
-    private void setupAddressDummy() {
-        arrayList = new ArrayList<>();
-
-
-        Address address1 = new Address();
-        address1.setFirstname("Home1 address");
-        address1.setHouseOfficeNo("123");
-        address1.setStreet("ksjdf tkhsdnf");
-        address1.setLandmark("jdjdjd");
-        address1.setCity("kasjdfh");
-        address1.setRegion("kjsdhf");
-        address1.setCountry("klsjdflksdjf");
-        address1.setPostcode("84848");
-        address1.setEmail("test@gmail.com");
-        address1.setTelephone("92837482347");
-        address1.setSelected(true);
-        arrayList.add(address1);
-
-
-        Address address2 = new Address();
-        address2.setFirstname("office address");
-        address2.setHouseOfficeNo("123");
-        address2.setStreet("ksjdf tkhsdnf");
-        address2.setLandmark("jdjdjd");
-        address2.setCity("kasjdfh");
-        address2.setRegion("kjsdhf");
-        address2.setCountry("klsjdflksdjf");
-        address2.setPostcode("84848");
-        address2.setEmail("test@gmail.com");
-        address2.setTelephone("92837482347");
-        address2.setSelected(false);
-        arrayList.add(address2);
-
-        selectedAddress = arrayList.get(0);
-        mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 2);
-        listView.setAdapter(mAddressListAdapter);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-    }
-
     private void setupAddressLive() {
         AddressRequest request = new AddressRequest();
         request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0"));
@@ -183,8 +148,8 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
 
                 for (int i = 0; i < arrayList.size(); i++) {
                     address = arrayList.get(i);
-                    if (address.isSelected())
-                        selecteedAddress = address;
+                    /*if (address.isSelected())
+                        selecteedAddress = address;*/
                 }
 
                 if (selecteedAddress == null) {
@@ -192,11 +157,11 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
                     return;
                 }
 
-                AddressRequest request = new AddressRequest();
-                request.setAddressId(selecteedAddress.getCustomer_address_id());
+                /*AddressRequest request = new AddressRequest();
+                request.setAddressId(selecteedAddress.getAddress_id());
                 request.setMode(0);
-                request.setShoppingCartID(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));
-                HTTPWebRequest.AddressUpdateDefault(mContext, request, AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
+                request.setShoppingCartID(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));*/
+//                HTTPWebRequest.AddressUpdateDefault(mContext, request, AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
 
                 break;
         }
@@ -226,10 +191,8 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
 //        Utility.toastMessage(mContext, "Delete address clicked");
         deleteIndex = index;
         Address address = arrayList.get(index);
-        AddressRequest request = new AddressRequest();
-        request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, ""));
-        request.setAddressId(address.getCustomer_address_id());
-        HTTPWebRequest.AddressDelete(mContext, request, AppConstants.APICode.ADDRESS_DELETE, this, getSupportFragmentManager());
+        String addressID = String.valueOf(address.getAddress_id());
+        HTTPWebRequest.AddressDelete(mContext, String.valueOf(deleteIndex), AppConstants.APICode.ADDRESS_DELETE, this, getSupportFragmentManager());
 
     }
 
@@ -244,12 +207,12 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
         for (int i = 0; i < arrayList.size(); i++) {
             address = arrayList.get(i);
             if (i == index) {
-                address.setIs_default_billing(true);
-                address.setSelected(true);
+                /*address.setIs_default_billing(true);
+                address.setSelected(true);*/
                 selectedAddress = arrayList.get(index);
             } else {
-                address.setIs_default_billing(false);
-                address.setSelected(false);
+                /*address.setIs_default_billing(false);
+                address.setSelected(false);*/
             }
 
             arrayList.set(i, address);
@@ -272,55 +235,31 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
 
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
-                AddressResponse addressResponse = new Gson().fromJson(response, AddressResponse
-                        .class);
+                Type addressListType =  new TypeToken<List<Address>>(){}.getType();
+                BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
-                if (addressResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                if (addressResponse.getInfo().size() != 0) {
 
-                if (addressResponse.getResult().getAddress() != null
-                        && addressResponse.getResult().getAddress().size() > 0) {
-                    arrayList = addressResponse.getResult().getAddress();
-
-                    Address address;
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        address = arrayList.get(i);
-                        if (address.is_default_billing())
-                            address.setSelected(true);
-                        else
-                            address.setSelected(false);
-
-                        arrayList.set(i, address);
+                    if(arrayList == null){
+                        arrayList = new ArrayList<>();
                     }
 
-                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 2);
+                    arrayList.addAll(addressResponse.getInfo());
+
+                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, false, 0);
                     listView.setAdapter(mAddressListAdapter);
                 } else {
                     Utility.toastMessage(mContext, "No Address found");
                 }
                 break;
             case AppConstants.APICode.ADDRESS_DELETE:
-                AddressResponse addressResponse1 = new Gson().fromJson(response, AddressResponse
-                        .class);
+                Type removeAddressType = new TypeToken<List<Address>>(){}.getType();
+                BaseResponse<List<Address>> removeAddresResponse = new Gson().fromJson(response, removeAddressType);
+                Toast.makeText(mContext, removeAddresResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(removeAddresResponse.getStatus() == 1 && deleteIndex != 0){
 
-                if (addressResponse1.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-
-                if (addressResponse1.getStatus().equalsIgnoreCase("success")) {
-
-                    Utility.toastMessage(mContext, "Address remove successfully");
                     arrayList.remove(deleteIndex);
-                    mAddressListAdapter.notifyDataSetChanged();
+                    deleteIndex = 0;
                 }
                 break;
             case AppConstants.APICode.ADDRESS_UPDATE_DEFAULT:

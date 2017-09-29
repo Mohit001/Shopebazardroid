@@ -150,13 +150,10 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddressDelete(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void AddressDelete(Context context, String addressid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.ADDRESS_ID, request.getAddressId());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, String.valueOf(4));
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_delete_address, addressid);
+        new BackgroundAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
 

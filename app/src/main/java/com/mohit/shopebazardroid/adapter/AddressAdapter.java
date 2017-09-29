@@ -15,24 +15,24 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.AddressListner;
-import com.mohit.shopebazardroid.model.response.Address;
+import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.utility.AppConstants;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<Address> arrayList;
+    List<Address> arrayList;
     AddressListner listner;
     boolean showRadioSelection = true;
     int billing_shipping;   // 0=non, 1=billing, 2=shipping
 
     int themeCode;
 
-    public AddressAdapter(Context mContext, ArrayList<Address> arrayList, AddressListner listner,
+    public AddressAdapter(Context mContext, List<Address> arrayList, AddressListner listner,
                           boolean showRadioSelection, int billing_shiping) {
 
         this.mContext = mContext;
@@ -123,41 +123,19 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.Recycler
 
 
 
-        String[] localAddress = entity.getStreet().split("\n");
-        String street1 = "", street2 = "";
-        try {
-            street1 = localAddress[0];
-            street2 = localAddress[1];
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        } catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-        }
-
-
-        if (!TextUtils.isEmpty(entity.getFirstname()))
-            holder.alias.setText(entity.getFirstname());
+        if (!TextUtils.isEmpty(entity.getFull_name()))
+            holder.alias.setText(entity.getFull_name());
         else
             holder.alias.setVisibility(View.GONE);
 
-        if (!TextUtils.isEmpty(street1))
-            holder.homeOfficeNo.setText(street1);
-        else
-            holder.homeOfficeNo.setVisibility(View.GONE);
 
-
-        holder.street.setText(street2);
-        holder.landmark.setText(entity.getLandmark());
+        holder.street.setText(entity.getAddress1());
+        holder.landmark.setText(entity.getAddress2());
         holder.city.setText(entity.getCity());
-        holder.state.setText(entity.getRegion());
-        holder.country.setText(entity.getCountry_id());
+        holder.state.setText(entity.getState());
         holder.pincode.setText(entity.getPostcode());
         holder.email.setText(entity.getEmail());
-        holder.mobileno.setText(entity.getTelephone());
 
-        if (TextUtils.isEmpty(entity.getRegion())){
-            holder.address_coma_lbl.setVisibility(View.GONE);
-        }
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +178,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.Recycler
 
 
         if (showRadioSelection) {
-            if (billing_shipping == 1) {
+           /* if (billing_shipping == 1) {
                 if (entity.is_default_billing()) {
                     holder.selectedRadioButton.setChecked(true);
                 } else {
@@ -212,7 +190,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.Recycler
                 } else {
                     holder.selectedRadioButton.setChecked(false);
                 }
-            }
+            }*/
         } else {
             holder.selectedRadioButton.setVisibility(View.GONE);
         }

@@ -10,24 +10,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.AddressAdapter;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.AddressRequest;
-import com.mohit.shopebazardroid.model.response.Address;
-import com.mohit.shopebazardroid.model.response.AddressResponse;
+import com.mohit.shopebazardroid.models.Address;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -42,8 +45,8 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
     RecyclerView.Adapter mAdapter;
     Button submit_btn;
 
-    ArrayList<Address> arrayList;
-    int deleteIndex;
+    List<Address> arrayList;
+    int deleteIndex = 0;
 
     int themeCode;
 
@@ -110,32 +113,25 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
 
 
         Address address1 = new Address();
-        address1.setFirstname("Home address");
-        address1.setHouseOfficeNo("123");
-        address1.setStreet("ksjdf tkhsdnf");
-        address1.setLandmark("jdjdjd");
+        address1.setFull_name("Home address");
+        address1.setAddress1("ksjdf tkhsdnf");
+        address1.setAddress2("jdjdjd");
+        address1.setState("Asdf");
         address1.setCity("kasjdfh");
-        address1.setRegion("kjsdhf");
-        address1.setCountry("klsjdflksdjf");
         address1.setPostcode("84848");
         address1.setEmail("test@gmail.com");
-        address1.setTelephone("92837482347");
-        address1.setSelected(true);
+        address1.setDefault_value(0);
         arrayList.add(address1);
 
-
         Address address2 = new Address();
-        address2.setFirstname("Office address");
-        address2.setHouseOfficeNo("123");
-        address2.setStreet("ksjdf tkhsdnf");
-        address2.setLandmark("jdjdjd");
+        address2.setFull_name("Home address");
+        address2.setAddress1("ksjdf tkhsdnf");
+        address2.setAddress2("jdjdjd");
+        address2.setState("Asdf");
         address2.setCity("kasjdfh");
-        address2.setRegion("kjsdhf");
-        address2.setCountry("klsjdflksdjf");
         address2.setPostcode("84848");
         address2.setEmail("test@gmail.com");
-        address2.setTelephone("92837482347");
-        address2.setSelected(false);
+        address2.setDefault_value(0);
         arrayList.add(address2);
 
         mAdapter = new AddressAdapter(mContext, arrayList, this, false, 0);
@@ -167,21 +163,10 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
 
         deleteIndex = index;
         Address address = arrayList.get(index);
-        AddressRequest request = new AddressRequest();
-        request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .USER_ID, ""));
-        request.setAddressId(address.getCustomer_address_id());
-        HTTPWebRequest.AddressDelete(mContext, request, AppConstants.APICode.ADDRESS_DELETE,
+        String addressID = String.valueOf(address.getAddress_id());
+        HTTPWebRequest.AddressDelete(mContext, addressID, AppConstants.APICode.ADDRESS_DELETE,
                 this, getFragmentManager());
 
-        /*arrayList.remove(index);
-        if(arrayList.size() > 0)
-        {
-            Address address = arrayList.get(0);
-            address.setSelected(true);
-            arrayList.set(0, address);
-        }
-        mAdapter.notifyDataSetChanged();*/
     }
 
     @Override
@@ -216,30 +201,17 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
 
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
-                AddressResponse addressResponse = new Gson().fromJson(response, AddressResponse
-                        .class);
 
-                if (addressResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(mContext, LoginActivity.class));
-                    getActivity().finish();
-                    return;
-                }
+                Type addressListType =  new TypeToken<List<Address>>(){}.getType();
+                BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
-                if (addressResponse.getResult().getAddress() != null
-                        && addressResponse.getResult().getAddress().size() > 0) {
-                    arrayList = addressResponse.getResult().getAddress();
-                    Address address;
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        address = arrayList.get(i);
-                        if (address.is_default_billing())
-                            address.setSelected(true);
-                        else
-                            address.setSelected(false);
+                if (addressResponse.getInfo().size() != 0) {
 
-                        arrayList.set(i, address);
+                    if(arrayList == null){
+                        arrayList = new ArrayList<>();
                     }
+
+                    arrayList.addAll(addressResponse.getInfo());
 
                     mAdapter = new AddressAdapter(mContext, arrayList, this, false, 0);
                     mRecyclerView.setAdapter(mAdapter);
@@ -248,21 +220,13 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
                 }
                 break;
             case AppConstants.APICode.ADDRESS_DELETE:
-                AddressResponse addressResponse1 = new Gson().fromJson(response, AddressResponse
-                        .class);
-                if (addressResponse1.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(mContext, LoginActivity.class));
-                    getActivity().finish();
-                    return;
-                }
+                Type removeAddressType = new TypeToken<List<Address>>(){}.getType();
+                BaseResponse<List<Address>> removeAddresResponse = new Gson().fromJson(response, removeAddressType);
+                Toast.makeText(mContext, removeAddresResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(removeAddresResponse.getStatus() == 1 && deleteIndex != 0){
 
-                if (addressResponse1.getStatus().equalsIgnoreCase("success")) {
-
-                    Utility.toastMessage(mContext, "Address remove successfully");
                     arrayList.remove(deleteIndex);
-                    mAdapter.notifyDataSetChanged();
+                    deleteIndex = 0;
                 }
                 break;
         }
