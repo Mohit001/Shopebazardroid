@@ -1,6 +1,8 @@
 package com.mohit.shopebazardroid.models;
 
-public class Profile {
+import java.io.Serializable;
+
+public class Profile implements Serializable{
 
 	private int profie_id;
 	private int user_id;

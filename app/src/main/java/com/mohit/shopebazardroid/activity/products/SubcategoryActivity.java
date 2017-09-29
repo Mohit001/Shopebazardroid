@@ -15,8 +15,9 @@ import com.mohit.shopebazardroid.adapter.SubcategoryAdapter;
 import com.mohit.shopebazardroid.dialog.ConfirmDialog;
 import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
 import com.mohit.shopebazardroid.model.response.CategoryChildrens;
+import com.mohit.shopebazardroid.models.Category;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,11 +27,11 @@ public class SubcategoryActivity extends BaseActivity {
 
     public static String TAG = SubcategoryActivity.class.getSimpleName();
     Context mContext;
-    ArrayList<CategoryChildrens> arrayList;
+    List<Category> arrayList;
     RecyclerView recyclerView;
     private GridLayoutManager gridLayoutManager;
     RecyclerView.Adapter mAdapter;
-    CategoryChildrens childrens;
+    Category childrens;
     ConfirmDialog confirmDialog;
 
     @Override
@@ -38,12 +39,12 @@ public class SubcategoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycleview);
         mContext = this;
-        childrens = (CategoryChildrens) getIntent().getSerializableExtra(CategoryChildrens
+        childrens = (Category) getIntent().getSerializableExtra(CategoryChildrens
                 .KEY_OBJECT);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.btn_back);
-        getSupportActionBar().setTitle(childrens.getName());
+        getSupportActionBar().setTitle(childrens.getCat_name());
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
         gridLayoutManager = new GridLayoutManager(this, 2);
 
@@ -55,7 +56,7 @@ public class SubcategoryActivity extends BaseActivity {
 
     private void setupGrid() {
 
-        arrayList = childrens.getChildren();
+        arrayList = childrens.getSubCategory();
         if (arrayList != null && arrayList.size() > 0) {
             mAdapter = new SubcategoryAdapter(this, arrayList);
             recyclerView.setAdapter(mAdapter);
@@ -64,15 +65,15 @@ public class SubcategoryActivity extends BaseActivity {
                 @Override
                 public void onItemClick(View view, int position) {
 //                    Utility.toastMessage(mContext, "position : "+position);
-                    CategoryChildrens child = arrayList.get(position);
-                    if (child.getChildren() != null && child.getChildren().size() > 0) {
+                    Category child = arrayList.get(position);
+                    if (child.getSubCategory() != null && child.getSubCategory().size() > 0) {
                         Intent intent = new Intent(mContext, SubcategoryActivity.class);
                         intent.putExtra(CategoryChildrens.KEY_OBJECT, child);
                         startActivity(intent);
                     } else {
                         Intent intent = new Intent(mContext, ProductGridActivity.class);
-                        intent.putExtra(CategoryChildrens.KEY_ID, child.getId());
-                        intent.putExtra(CategoryChildrens.KEY_NAME, child.getName());
+                        intent.putExtra(CategoryChildrens.KEY_ID, child.getCat_id());
+                        intent.putExtra(CategoryChildrens.KEY_NAME, child.getCat_name());
                         intent.putExtra(CategoryChildrens.KEY_TYPE, 0);
                         startActivity(intent);
                     }

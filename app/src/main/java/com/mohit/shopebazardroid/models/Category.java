@@ -1,9 +1,16 @@
 package com.mohit.shopebazardroid.models;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-public class Category {
+public class Category implements Serializable{
+
+	public static String KEY_OBJECT = "categorychildren";
+	public static String KEY_ID = "child_id";
+	public static String KEY_NAME = "child_name";
+	public static String KEY_TYPE = "type"; // 0=category/subcategory product
+	// 1 = banner product
 
 	private int cat_id;
 	private String cat_name;

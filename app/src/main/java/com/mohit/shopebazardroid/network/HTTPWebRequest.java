@@ -15,7 +15,6 @@ import com.mohit.shopebazardroid.model.request.ApplyRewardsRequest;
 import com.mohit.shopebazardroid.model.request.AreaListRequest;
 import com.mohit.shopebazardroid.model.request.BestSellingRequest;
 import com.mohit.shopebazardroid.model.request.CartItemRequest;
-import com.mohit.shopebazardroid.model.request.CategoryRequest;
 import com.mohit.shopebazardroid.model.request.CityListRequest;
 import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
@@ -124,12 +123,9 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, AppConstants.APIURL.URL_COUNTRY, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void CategoryList(Context context, CategoryRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.CATID, request.getCatid());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_CATEGORYLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void CategoryList(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_category);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void products(Context context, ProductRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -576,13 +572,7 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_NOTIFICATION, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void Basic(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        if (fragmentManager != null)
-            new BackgroundAsyncTask(context, AppConstants.APIURL.URL_BASIC, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
-        else
-            new BackgroundAsyncTask(context, AppConstants.APIURL.URL_BASIC, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true).execute(apiResponse);
-    }
 
     public static void VerifyCoupon(Context context, VerifyCouponRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 

@@ -44,6 +44,7 @@ import android.widget.Toast;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.miguelcatalan.materialsearchview.MaterialSearchView;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
@@ -67,26 +68,24 @@ import com.mohit.shopebazardroid.fragment.OrderHistoryFragment;
 import com.mohit.shopebazardroid.fragment.SettingFragment;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.LogoutListner;
-import com.mohit.shopebazardroid.model.request.CategoryRequest;
 import com.mohit.shopebazardroid.model.request.UserDetailsRequest;
 import com.mohit.shopebazardroid.model.response.BasicCMS;
-import com.mohit.shopebazardroid.model.response.BasicResponse;
-import com.mohit.shopebazardroid.model.response.BasicSettings;
-import com.mohit.shopebazardroid.model.response.CategoryChildrens;
-import com.mohit.shopebazardroid.model.response.CategoryResponse;
 import com.mohit.shopebazardroid.model.response.CurrencyEntity;
 import com.mohit.shopebazardroid.model.response.LoginResponse;
-import com.mohit.shopebazardroid.model.response.PaymentInfo;
 import com.mohit.shopebazardroid.model.response.ProductResponse;
 import com.mohit.shopebazardroid.model.response.ProductResult;
 import com.mohit.shopebazardroid.model.response.Result;
 import com.mohit.shopebazardroid.model.response.Userinfo;
+import com.mohit.shopebazardroid.models.Category;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 import com.mohit.shopebazardroid.utility.WebView_Detail;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Sample usage
@@ -112,22 +111,22 @@ public class NavigationDrawerActivity extends BaseActivity implements
     ImageView updateProfileImageView, closeImageView;
     public static TextView userName;
     NavigationDrawerAdapter adapter;
-    ArrayList<CategoryChildrens> arrayList;
-    ArrayList<CategoryChildrens> liveCategoryArraylist;
+    List<Category> arrayList;
+    List<Category> liveCategoryArraylist;
     String[] strings;
-    ArrayList<BasicCMS> cmsArrayList;
-    ArrayList<CurrencyEntity> currencyArrayList;
+    List<BasicCMS> cmsArrayList;
+    List<CurrencyEntity> currencyArrayList;
     String searchTag = "";
     public static int height, width;
     private FrameLayout profileFrameLayout;
     Menu menu;
     View cartBadget;
     private ImageView toolbarlogo;
-    public ArrayList<CategoryChildrens> getCategoryArraylist() {
+    public List<Category> getCategoryArraylist() {
         return liveCategoryArraylist;
     }
 
-    public ArrayList<CurrencyEntity> getCurrencyArrayList() {
+    public List<CurrencyEntity> getCurrencyArrayList() {
         return currencyArrayList;
     }
 
@@ -188,8 +187,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
         navDrawerListview = (ListView) findViewById(R.id.nav_listview);
 
         arrayList = new ArrayList<>();
-        CategoryChildrens childrens = new CategoryChildrens();
-        childrens.setName("Home");
+        Category childrens = new Category();
+        childrens.setCat_name("Home");
         arrayList.add(childrens);
         /*adapter = new NavigationDrawerAdapter(mContext, arrayList);
         navDrawerListview.setAdapter(adapter);*/
@@ -205,60 +204,13 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
-//        navDrawerListview.setBackgroundResource(R.drawable.slider_bottom);
-//        profileFrameLayout.setBackgroundResource(R.drawable.slider_top);
-
-        HTTPWebRequest.Basic(mContext, AppConstants.APICode.BASIC, this,
-                getSupportFragmentManager());
 
         toolbarlogo.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+
     }
-
-
-    /*private void setSearchListners() {
-        searchView.setEllipsize(true);
-        searchView.setVoiceSearch(true); //or false
-        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                //Do some magic
-//                Toast.makeText(mContext, "Query : "+query, Toast.LENGTH_SHORT).show();
-
-                searchTag = query.toString().trim();
-
-                SearchRequest request = new SearchRequest();
-                request.setStore_id(storeid);
-                request.setCustomer_id(customerid);
-                request.setSearch(searchTag);
-
-                if (!TextUtils.isEmpty(searchTag))
-                    HTTPWebRequest.Search(mContext, request, AppConstants.APICode.SEARCH,
-                            NavigationDrawerActivity.this, getSupportFragmentManager());
-                else
-                    Utility.toastMessage(mContext, "Please enter tag cannot be empty");
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                //Do some magic
-                return false;
-            }
-        });
-
-        searchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener() {
-            @Override
-            public void onSearchViewShown() {
-                //Do some magic
-            }
-
-            @Override
-            public void onSearchViewClosed() {
-                //Do some magic
-            }
-        });
-    }*/
 
 
     @Override
@@ -283,13 +235,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
         cartBadget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*if (MyApplication.preferenceGetBoolean(AppConstants.SharedPreferenceKeys
-                        .IS_LOGGED_IN, false) && !firstTime) {
-                    startActivity(new Intent(mContext, CartActivity.class));
-                } else {
-                    finish();
-                    startActivity(new Intent(mContext, LoginActivity.class));
-                }*/
 
                 startActivity(new Intent(mContext, CartActivity.class));
             }
@@ -347,9 +292,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         if(adapter != null && arrayList != null){
 
-            HTTPWebRequest.Basic(mContext, AppConstants.APICode.BASIC, this,
-                    getSupportFragmentManager());
-
             HomeFragment fragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
 
             if(fragment == null && !isUserLogin()){
@@ -368,13 +310,13 @@ public class NavigationDrawerActivity extends BaseActivity implements
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             if(isUserLogin()){
-                CategoryChildrens childrens = new CategoryChildrens();
-                childrens.setName("Logout");
+                Category childrens = new Category();
+                childrens.setCat_name("Logout");
                 arrayList.set(arrayList.size()-1, childrens);
                 adapter.notifyDataSetChanged();
             } else {
-                CategoryChildrens childrens = new CategoryChildrens();
-                childrens.setName("Login");
+                Category childrens = new Category();
+                childrens.setCat_name("Login");
                 arrayList.set(arrayList.size()-1, childrens);
                 adapter.notifyDataSetChanged();
             }
@@ -554,8 +496,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
         setUserLoggedOut();
 //        toolbar.setTitle(R.string.app_name);
 
-        CategoryChildrens childrens = new CategoryChildrens();
-        childrens.setName("Login");
+        Category childrens = new Category();
+        childrens.setCat_name("Login");
         arrayList.set(arrayList.size()-1, childrens);
         adapter.notifyDataSetChanged();
 
@@ -622,30 +564,30 @@ public class NavigationDrawerActivity extends BaseActivity implements
         MenuItem item = menu.findItem(R.id.action_search);
 
 
-        CategoryChildrens childrens = arrayList.get(i);
-        if (childrens.getChildren() != null) {
-            if (childrens.getChildren().size() > 0) {
+        Category childrens = arrayList.get(i);
+        if (childrens.getSubCategory()!= null) {
+            if (childrens.getSubCategory().size() > 0) {
                 Intent intent = new Intent(mContext, SubcategoryActivity.class);
-                intent.putExtra(CategoryChildrens.KEY_OBJECT, childrens);
+                intent.putExtra(Category.KEY_OBJECT, childrens);
                 startActivity(intent);
             } else {
                 Intent intent = new Intent(mContext, ProductGridActivity.class);
-                intent.putExtra(CategoryChildrens.KEY_ID, childrens.getId());
-                intent.putExtra(CategoryChildrens.KEY_NAME, childrens.getName());
-                intent.putExtra(CategoryChildrens.KEY_TYPE, 0);
+                intent.putExtra(Category.KEY_ID, childrens.getCat_id());
+                intent.putExtra(Category.KEY_NAME, childrens.getCat_name());
+                intent.putExtra(Category.KEY_TYPE, 0);
                 startActivity(intent);
             }
         } else {
             item.setVisible(false);
             cartBadget.setVisibility(View.VISIBLE);
 
-            if (childrens.getName().equalsIgnoreCase("home")) {
+            if (childrens.getCat_name().equalsIgnoreCase("home")) {
 //                toolbar.setTitle(R.string.app_name);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
                         .commit();
-            } else if (childrens.getName().equalsIgnoreCase("order history")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("order history")) {
                 getSupportActionBar().setTitle("Order History");
                 item.setVisible(false);
                 getSupportFragmentManager()
@@ -658,7 +600,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
-            } else if (childrens.getName().equalsIgnoreCase("Manage Address")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("Manage Address")) {
                 getSupportActionBar().setTitle("Manage Address");
                 item.setVisible(false);
                 getSupportFragmentManager()
@@ -669,8 +611,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
-            } else if (childrens.getName().equalsIgnoreCase("My WishList")) {
-                getSupportActionBar().setTitle(childrens.getName());
+            } else if (childrens.getCat_name().equalsIgnoreCase("My WishList")) {
+                getSupportActionBar().setTitle(childrens.getCat_name());
                 item.setVisible(false);
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -680,21 +622,21 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
-            } else if (childrens.getName().equalsIgnoreCase("notification")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("notification")) {
                 getSupportActionBar().setTitle("Notification");
                 item.setVisible(false);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new NotificationFragment(), NotificationFragment.TAG)
                         .commit();
-            } else if (childrens.getName().equalsIgnoreCase("setting")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("setting")) {
                 getSupportActionBar().setTitle("Setting");
                 item.setVisible(false);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new SettingFragment(), SettingFragment.TAG)
                         .commit();
-            } else if (childrens.getName().equalsIgnoreCase("feedback")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("feedback")) {
                 getSupportActionBar().setTitle("Feedback");
                 item.setVisible(false);
 //                cartBadget.setVisibility(View.GONE);
@@ -702,7 +644,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                         .beginTransaction()
                         .replace(R.id.main_frame, new FeedbackFragment(), FeedbackFragment.TAG)
                         .commit();
-            }else if (childrens.getName().equalsIgnoreCase("My Reward Points")) {
+            }else if (childrens.getCat_name().equalsIgnoreCase("My Reward Points")) {
                 toolbar.setTitle("My Reward Points");
                 item.setVisible(false);
                 getSupportFragmentManager()
@@ -713,9 +655,9 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     Intent intent = new Intent(this, LoginActivity.class);
                     startActivity(intent);
                 }
-            } else if (childrens.getName().equalsIgnoreCase("rate and review")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("rate and review")) {
                 // redirect to google playstore
-            } else if (childrens.getName().equalsIgnoreCase("logout")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("logout")) {
 //                toolbar.setTitle(R.string.app_name);
                 logoutDialog = new LogoutDialog();
                 logoutDialog.setListner(this);
@@ -730,7 +672,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     toolbarlogo.setVisibility(View.VISIBLE);
                 }
 
-            } else if (childrens.getName().equalsIgnoreCase("Login")) {
+            } else if (childrens.getCat_name().equalsIgnoreCase("Login")) {
 //                toolbar.setTitle(R.string.app_name);
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
@@ -739,7 +681,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 item.setVisible(false);
 //                cartBadget.setVisibility(View.GONE);
 
-                String clickedMenu = childrens.getName();
+                String clickedMenu = childrens.getCat_name();
                 BasicCMS cms;
                 for (int j = 0; j < cmsArrayList.size(); j++) {
                     cms = cmsArrayList.get(j);
@@ -787,7 +729,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     && !childrens.getName().equalsIgnoreCase("Logout"))
                 toolbar.setTitle(childrens.getName());*/
 
-            if(childrens.getName().equalsIgnoreCase("home")){
+            if(childrens.getCat_name().equalsIgnoreCase("home")){
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
                 toolbarlogo.setVisibility(View.VISIBLE);
             } else{
@@ -806,6 +748,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
             Utility.toastMessage(mContext, R.string.host_not_reachable);
             return;
         }
+
         Gson gson = new GsonBuilder().serializeNulls().create();
         switch (apiCode) {
             case AppConstants.APICode.USER_DETAILS:
@@ -850,108 +793,67 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 }
 
                 break;
-            case AppConstants.APICode.BASIC:
-                BasicResponse basicResponse = new Gson().fromJson(response, BasicResponse.class);
 
-                if (basicResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-
-                if (cmsArrayList != null && cmsArrayList.size() > 0)
-                    cmsArrayList.clear();
-                cmsArrayList = basicResponse.getResult().getCms();
-
-                if (currencyArrayList != null && currencyArrayList.size() > 0)
-                    currencyArrayList.clear();
-                currencyArrayList = basicResponse.getResult().getSetting().getCurrencies();
-
-                MyApplication myApplication = (MyApplication) getApplicationContext();
-                //myApplication.setCurrencyArrayList(basicResponse.getResult().getCurrencies());
-                BasicSettings basicSettings = basicResponse.getResult().getSetting();
-
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.STORE_ID, basicResponse.getResult().getSetting().getStorelist().get(0).getStoreid());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.ROOT_CAT_ID, basicResponse.getResult().getSetting().getStorelist().get(0).getRoot_category_id());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, basicSettings.getProduct_media_URL());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, basicSettings.getBasecurrencycode());
-
-                String root_cat_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.ROOT_CAT_ID, "1");
-                CategoryRequest request = new CategoryRequest();
-                request.setCatid(root_cat_id);
-
-                PaymentInfo paymentInfo = basicSettings.getPayment();
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_KEY, paymentInfo.getKey());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_SALT, paymentInfo.getSalt());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_IS_LIVE_MODE, String.valueOf(paymentInfo.getIs_live_mode()));
-
-                if (loadAgain == 0)
-                    HTTPWebRequest.CategoryList(mContext, request, AppConstants.APICode.CATEGORYLIST,
-                            this, getSupportFragmentManager());
-
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.ADD_TO_CART,
-                        basicSettings.getAdd_to_cart());
-                if (!basicSettings.getAdd_to_cart().equalsIgnoreCase("1")) {
-                    hideMenuItem(R.id.action_cart);
-                }
-                break;
             case AppConstants.APICode.CATEGORYLIST:
                 loadAgain = 1;
-                CategoryResponse categoryResponse = new Gson().fromJson(response,
-                        CategoryResponse.class);
 
-                if (categoryResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                if(!TextUtils.isEmpty(response)){
 
-                if (arrayList != null && arrayList.size() > 0)
-                    arrayList.clear();
-                if (categoryResponse.getStatus().equalsIgnoreCase("success")) {
-                    CategoryChildrens childrensHome = new CategoryChildrens();
-                    childrensHome.setName("Home");
-                    arrayList.add(childrensHome);
+                    Type type = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
+                    BaseResponse<List<Category>> categoryBaseResponse = new Gson().fromJson(response, type);
+                    if(categoryBaseResponse.getStatus() == 1){
+                        List<Category> categoryList = categoryBaseResponse.getInfo();
 
-                    arrayList.addAll(categoryResponse.getResult().getCats());
-                    liveCategoryArraylist = categoryResponse.getResult().getCats();
-                    String[] navItems = mContext.getResources().getStringArray(R.array
-                            .nav_menu_item);
+                        if (arrayList != null && arrayList.size() > 0)
+                            arrayList.clear();
 
-                    CategoryChildrens childrens;
-                    for (int i = 0; i < navItems.length; i++) {
-                        childrens = new CategoryChildrens();
-                        childrens.setName(navItems[i]);
-                        arrayList.add(childrens);
+                            Category childrensHome = new Category();
+                            childrensHome.setCat_name("Home");
+                            arrayList.add(childrensHome);
+
+                            arrayList.addAll(categoryList);
+                            liveCategoryArraylist = categoryList;
+                            String[] navItems = mContext.getResources().getStringArray(R.array
+                                    .nav_menu_item);
+
+                            Category childrens;
+                            for (int i = 0; i < navItems.length; i++) {
+                                childrens = new Category();
+                                childrens.setCat_name(navItems[i]);
+                                arrayList.add(childrens);
+                            }
+
+                            BasicCMS cms;
+                        if(cmsArrayList!= null){
+                            for (int i = 0; i < cmsArrayList.size(); i++) {
+                                cms = cmsArrayList.get(i);
+                                childrens = new Category();
+                                childrens.setCat_name(cms.getPage_title());
+                                arrayList.add(childrens);
+                            }
+                        }
+
+
+                            childrens = new Category();
+                            if(isUserLogin())
+                                childrens.setCat_name("Logout");
+                            else
+                                childrens.setCat_name("Login");
+                            arrayList.add(childrens);
+
+                            adapter = new NavigationDrawerAdapter(mContext, arrayList);
+                            navDrawerListview.setAdapter(adapter);
+
+                    } else {
+                        Toast.makeText(mContext, categoryBaseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     }
-
-                    BasicCMS cms;
-                    for (int i = 0; i < cmsArrayList.size(); i++) {
-                        cms = cmsArrayList.get(i);
-                        childrens = new CategoryChildrens();
-                        childrens.setName(cms.getPage_title());
-                        arrayList.add(childrens);
-                    }
-
-                    childrens = new CategoryChildrens();
-                    if(isUserLogin())
-                        childrens.setName("Logout");
-                    else
-                        childrens.setName("Login");
-                    arrayList.add(childrens);
-
-                    adapter = new NavigationDrawerAdapter(mContext, arrayList);
-                    navDrawerListview.setAdapter(adapter);
-                } else {
+                }else {
                     Utility.toastMessage(mContext, R.string.host_not_reachable);
                     this.finish();
                     return;
                 }
+
+
 
                 // loading home fragment
                 firstTime = false;

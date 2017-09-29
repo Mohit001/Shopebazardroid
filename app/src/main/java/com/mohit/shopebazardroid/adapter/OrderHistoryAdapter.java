@@ -18,7 +18,7 @@ import com.mohit.shopebazardroid.model.response.HistoryEntity;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,14 +27,14 @@ import java.util.ArrayList;
 public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter
         .RecyclerViewHolders> {
     Context mContext;
-    ArrayList<HistoryEntity> arrayList;
+    List<HistoryEntity> arrayList;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
 
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     private ReorderListner reorderListner;
 
-    public OrderHistoryAdapter(Context mContext, ArrayList<HistoryEntity> arrayList, ReorderListner reorderListner) {
+    public OrderHistoryAdapter(Context mContext, List<HistoryEntity> arrayList, ReorderListner reorderListner) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         baseCurrencyCode = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys

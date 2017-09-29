@@ -9,9 +9,9 @@ import android.widget.BaseAdapter;
 
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
-import com.mohit.shopebazardroid.model.response.CategoryChildrens;
+import com.mohit.shopebazardroid.models.Category;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 1/8/16.
@@ -21,9 +21,9 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     public static String TAG = NavigationDrawerAdapter.class.getSimpleName();
 
     Context mContext;
-    ArrayList<CategoryChildrens> arrayList;
+    List<Category> arrayList;
 
-    public NavigationDrawerAdapter(Context mContext, ArrayList<CategoryChildrens> arrayList) {
+    public NavigationDrawerAdapter(Context mContext, List<Category> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
     }
@@ -34,7 +34,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     }
 
     @Override
-    public CategoryChildrens getItem(int i) {
+    public Category getItem(int i) {
         return arrayList.get(i);
     }
 
@@ -46,11 +46,11 @@ public class NavigationDrawerAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        CategoryChildrens navDrawer = getItem(i);
+        Category navDrawer = getItem(i);
         view = LayoutInflater.from(mContext).inflate(R.layout.adapter_navdrawer, viewGroup, false);
         AppCompatTextView navItemName = (AppCompatTextView) view.findViewById(R.id.adapter_navdrawer_item_lbl);
         navItemName.setTypeface(SplashActivity.montserrat_Regular);
-        navItemName.setText(navDrawer.getName());
+        navItemName.setText(navDrawer.getCat_name());
         return view;
     }
 }

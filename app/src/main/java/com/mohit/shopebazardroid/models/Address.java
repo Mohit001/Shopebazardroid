@@ -1,8 +1,9 @@
 package com.mohit.shopebazardroid.models;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Address {
+public class Address implements Serializable{
 	
 	private int address_id;
 	private String address1;

@@ -14,21 +14,21 @@ import android.widget.TextView;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
-import com.mohit.shopebazardroid.model.response.CategoryChildrens;
+import com.mohit.shopebazardroid.models.Category;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class SubcategoryAdapter extends RecyclerView.Adapter<SubcategoryAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<CategoryChildrens> arrayList;
+    List<Category> arrayList;
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public SubcategoryAdapter(Context mContext, ArrayList<CategoryChildrens> arrayList) {
+    public SubcategoryAdapter(Context mContext, List<Category> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
     }
@@ -62,12 +62,12 @@ public class SubcategoryAdapter extends RecyclerView.Adapter<SubcategoryAdapter.
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-        CategoryChildrens entity = arrayList.get(position);
-        holder.nameTextView.setText(entity.getName());
-        if(!TextUtils.isEmpty(entity.getThumb()))
+        Category entity = arrayList.get(position);
+        holder.nameTextView.setText(entity.getCat_name());
+        if(!TextUtils.isEmpty(entity.getCat_image()))
         {
             Picasso.with(mContext)
-                    .load(imagePrefix+entity.getImage())
+                    .load(imagePrefix+entity.getCat_image())
 //                    .resize(300,300)
                     .placeholder(R.drawable.ic_placeholder)
                     .error(R.drawable.ic_placeholder)

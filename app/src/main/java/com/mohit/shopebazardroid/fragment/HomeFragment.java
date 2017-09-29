@@ -54,12 +54,14 @@ import com.mohit.shopebazardroid.model.response.ProductResult;
 import com.mohit.shopebazardroid.model.response.Result;
 import com.mohit.shopebazardroid.model.response.SearchRequest;
 import com.mohit.shopebazardroid.model.response.Userinfo;
+import com.mohit.shopebazardroid.models.Category;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by msp on 21/7/16.
@@ -90,7 +92,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
     ArrayList<ProductEntity> trendingNowArrayList;
     ArrayList<ProductEntity> bestSellingArrayList;
     ArrayList<ProductEntity> featureProductArrayList;
-    ArrayList<CategoryChildrens> categoriesArrayList;
+    List<Category> categoriesArrayList;
 
     NavigationDrawerActivity activity;
     ArrayList<BannerEntity> bannerEntityArrayList;
@@ -220,14 +222,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 //        setupBannerSlider();
 
 
-        HTTPWebRequest.BannerHome(mContext, storeid, AppConstants.APICode.BANNERHOME, this);
+//        HTTPWebRequest.BannerHome(mContext, storeid, AppConstants.APICode.BANNERHOME, this);
 
-//        HTTPWebRequest.OfferOfTheDay(mContext, AppConstants.APICode.OFFER_OFTHE_DAY,this);
-//        HTTPWebRequest.Trendingnow(mContext, AppConstants.APICode.TRENDING_NOW,this);
-
-
-//        setupOfferOfTheDayHListview();
-//        setupTrendingNowHListview();
         setupCategoriesHListview();
 
         oftd_hlistView.addOnItemTouchListener(new RecyclerItemclicklistner(mContext, new
@@ -265,30 +261,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                         startActivity(intent);
                     }
                 }));
-/*
-        trendingNowHListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                startActivity(new Intent(mContext, ProductDetailActivity.class));
-                Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, trendingNowArrayList.get(i));
-                intent.putExtra("product", trendingNowArrayList.get(i).getProduct_id());
-                startActivity(intent);
 
-            }
-        });*/
-
-/*        best_selling_hlistview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                startActivity(new Intent(mContext, ProductDetailActivity.class));
-                Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, bestSellingArrayList.get(i));
-                intent.putExtra("product", bestSellingArrayList.get(i).getProduct_id());
-                startActivity(intent);
-
-            }
-        });*/
 
         best_selling_hlistview.addOnItemTouchListener(new RecyclerItemclicklistner(mContext, new
                 RecyclerItemclicklistner.OnItemClickListener() {
@@ -315,57 +288,22 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                     }
                 }));
 
-       /* categoriesHListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                *//*getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new CategoryFragment(), CategoryFragment.TAG)
-                        .commit();*//*
-
-
-                *//*Intent intent = new Intent(mContext, SubcategoryActivity.class);
-                intent.putExtra(CategoryChildrens.KEY_OBJECT, categoriesArrayList.get(i));
-                startActivity(intent);*//*
-
-                CategoryChildrens childrens = categoriesArrayList.get(i);
-                if (childrens.getChildren().size() > 0) {
-                    Intent intent = new Intent(mContext, SubcategoryActivity.class);
-                    intent.putExtra(CategoryChildrens.KEY_OBJECT, childrens);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(mContext, ProductGridActivity.class);
-                    intent.putExtra(CategoryChildrens.KEY_ID, childrens.getId());
-                    intent.putExtra(CategoryChildrens.KEY_NAME, childrens.getName());
-                    intent.putExtra(CategoryChildrens.KEY_TYPE, 0);
-                    startActivity(intent);
-                }
-            }
-        });*/
 
         categoriesHListview.addOnItemTouchListener(new RecyclerItemclicklistner(mContext, new
                 RecyclerItemclicklistner.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                /*getFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new CategoryFragment(), CategoryFragment.TAG)
-                        .commit();*/
 
 
-                /*Intent intent = new Intent(mContext, SubcategoryActivity.class);
-                intent.putExtra(CategoryChildrens.KEY_OBJECT, categoriesArrayList.get(i));
-                startActivity(intent);*/
-
-                        CategoryChildrens childrens = categoriesArrayList.get(position);
-                        if (childrens.getChildren().size() > 0) {
+                        Category childrens = categoriesArrayList.get(position);
+                        if (childrens.getSubCategory().size() > 0) {
                             Intent intent = new Intent(mContext, SubcategoryActivity.class);
                             intent.putExtra(CategoryChildrens.KEY_OBJECT, childrens);
                             startActivity(intent);
                         } else {
                             Intent intent = new Intent(mContext, ProductGridActivity.class);
-                            intent.putExtra(CategoryChildrens.KEY_ID, childrens.getId());
-                            intent.putExtra(CategoryChildrens.KEY_NAME, childrens.getName());
+                            intent.putExtra(CategoryChildrens.KEY_ID, childrens.getCat_id());
+                            intent.putExtra(CategoryChildrens.KEY_NAME, childrens.getCat_name());
                             intent.putExtra(CategoryChildrens.KEY_TYPE, 0);
                             startActivity(intent);
                         }

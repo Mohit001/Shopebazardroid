@@ -31,7 +31,7 @@ import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 27/7/16.
@@ -45,8 +45,8 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
     LinearLayoutManager layoutManager;
     OrderHistoryAdapter mAdapter;
 
-    ArrayList<HistoryEntity> arrayList;
-    ArrayList<CurrencyEntity> currencyArrayList;
+    List<HistoryEntity> arrayList;
+    List<CurrencyEntity> currencyArrayList;
     NavigationDrawerActivity activity;
 
 
