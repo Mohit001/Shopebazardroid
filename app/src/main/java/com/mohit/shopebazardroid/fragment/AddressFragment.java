@@ -89,6 +89,9 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
         super.onResume();
 
 //        setupAddress();
+        if(arrayList != null && arrayList.size() > 0)
+            arrayList.clear();
+
         getAddressList();
         if(isUserLogin() && submit_btn != null)
             submit_btn.setVisibility(View.VISIBLE);
