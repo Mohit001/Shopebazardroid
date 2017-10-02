@@ -21,7 +21,6 @@ import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.AddressAdapter;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.AddressRequest;
 import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
@@ -46,7 +45,7 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
     Button submit_btn;
 
     List<Address> arrayList;
-    int deleteIndex = 0;
+    int deleteIndex = -1;
 
     int themeCode;
 
@@ -90,6 +89,9 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
         super.onResume();
 
 //        setupAddress();
+        if(arrayList != null && arrayList.size() > 0)
+            arrayList.clear();
+
         getAddressList();
         if(isUserLogin() && submit_btn != null)
             submit_btn.setVisibility(View.VISIBLE);
@@ -100,10 +102,9 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
 
     private void getAddressList() {
         if(isUserLogin()){
-            AddressRequest request = new AddressRequest();
-            request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                    .USER_ID, "0"));
-            HTTPWebRequest.AddressList(mContext, request, AppConstants.APICode.ADDRESS_LIST, this,
+            String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+                    .USER_ID, "0");
+            HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
                     getFragmentManager());
         }
     }
@@ -202,7 +203,7 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
 
-                Type addressListType =  new TypeToken<List<Address>>(){}.getType();
+                Type addressListType =  new TypeToken<BaseResponse<List<Address>>>(){}.getType();
                 BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
                 if (addressResponse.getInfo().size() != 0) {
@@ -212,7 +213,6 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
                     }
 
                     arrayList.addAll(addressResponse.getInfo());
-
                     mAdapter = new AddressAdapter(mContext, arrayList, this, false, 0);
                     mRecyclerView.setAdapter(mAdapter);
                 } else {
@@ -220,13 +220,15 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
                 }
                 break;
             case AppConstants.APICode.ADDRESS_DELETE:
-                Type removeAddressType = new TypeToken<List<Address>>(){}.getType();
+                Type removeAddressType = new TypeToken<BaseResponse<List<Address>>>(){}.getType();
                 BaseResponse<List<Address>> removeAddresResponse = new Gson().fromJson(response, removeAddressType);
                 Toast.makeText(mContext, removeAddresResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                if(removeAddresResponse.getStatus() == 1 && deleteIndex != 0){
+                if(removeAddresResponse.getStatus() == 1 && deleteIndex != -1){
 
                     arrayList.remove(deleteIndex);
-                    deleteIndex = 0;
+                    deleteIndex = -1;
+                    mAdapter.notifyDataSetChanged();
+                    mRecyclerView.setAdapter(mAdapter);
                 }
                 break;
         }

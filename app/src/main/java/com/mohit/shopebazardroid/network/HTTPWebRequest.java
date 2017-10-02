@@ -118,11 +118,6 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_FEEDBACK, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-
-    public static void GetCountryList(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-        new BackgroundAsyncTask(context, AppConstants.APIURL.URL_COUNTRY, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
-    }
-
     public static void CategoryList(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
         String url = UrlFormetter.getURL(context, R.string.api_category);
         new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
@@ -150,10 +145,16 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
+    public static void AddressList(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+
+        String url = UrlFormetter.getURL(context, R.string.api_get_address_list, userid);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
+    }
+
     public static void AddressDelete(Context context, String addressid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         String url = UrlFormetter.getURL(context, R.string.api_delete_address, addressid);
-        new BackgroundAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
 
@@ -167,60 +168,15 @@ public class HTTPWebRequest {
     }
 
 
-    public static void AddressAdd(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void AddressAdd(Context context, String request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, request.getAction());
-        postDataParams.put(AppConstants.RequestDataKey.FIRSTNAME, request.getFirstname());
-        postDataParams.put(AppConstants.RequestDataKey.LASTNAME, request.getLastname());
-        postDataParams.put(AppConstants.RequestDataKey.STREET, request.getStreet());
-        postDataParams.put(AppConstants.RequestDataKey.STREET2, request.getStreet2());
-//        postDataParams.put(AppConstants.RequestDataKey.AREA, request.getArea());
-        postDataParams.put(AppConstants.RequestDataKey.CITY, request.getCity());
-        postDataParams.put(AppConstants.RequestDataKey.COUNTRY_ID, request.getCountry_id());
-        if(!TextUtils.isEmpty(request.getRegion()))
-        {
-            postDataParams.put(AppConstants.RequestDataKey.REGION, request.getRegion());
-            postDataParams.put(AppConstants.RequestDataKey.REGION_ID, request.getRegion_id());
-        }
-        else
-        {
-            postDataParams.put(AppConstants.RequestDataKey.REGION, "");
-            postDataParams.put(AppConstants.RequestDataKey.REGION_ID, "0");
-        }
-        postDataParams.put(AppConstants.RequestDataKey.POST_CODE, request.getPostcode());
-        postDataParams.put(AppConstants.RequestDataKey.TELEPHONE, request.getTelephone());
-        postDataParams.put(AppConstants.RequestDataKey.IS_DEFAULT_BILLING, String.valueOf(request.getDefaultBillingAddress()));
-        postDataParams.put(AppConstants.RequestDataKey.IS_DEFAULT_SHIPPING, String.valueOf(request.getDefaultShippingAddress()));
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url =  UrlFormetter.getURL(context, R.string.api_add_new_address);
+        new OKHttpAsyncTask(context, url, request, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddressEdit(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, request.getAction());
-        postDataParams.put(AppConstants.RequestDataKey.FIRSTNAME, request.getFirstname());
-        postDataParams.put(AppConstants.RequestDataKey.LASTNAME, request.getLastname());
-        postDataParams.put(AppConstants.RequestDataKey.STREET, request.getStreet());
-        postDataParams.put(AppConstants.RequestDataKey.STREET2, request.getStreet2());
-//        postDataParams.put(AppConstants.RequestDataKey.AREA, request.getArea());
-        postDataParams.put(AppConstants.RequestDataKey.CITY, request.getCity());
-        postDataParams.put(AppConstants.RequestDataKey.COUNTRY_ID, request.getCountry_id());
-        if(!TextUtils.isEmpty(request.getRegion()))
-            postDataParams.put(AppConstants.RequestDataKey.REGION, request.getRegion());
-        else
-            postDataParams.put(AppConstants.RequestDataKey.REGION, "");
-        postDataParams.put(AppConstants.RequestDataKey.POST_CODE, request.getPostcode());
-        postDataParams.put(AppConstants.RequestDataKey.TELEPHONE, request.getTelephone());
-        postDataParams.put(AppConstants.RequestDataKey.REGION_ID, request.getRegion_id());
-        postDataParams.put(AppConstants.RequestDataKey.ADDRESS_ID, String.valueOf(request.getAddressId()));
-        postDataParams.put(AppConstants.RequestDataKey.IS_DEFAULT_BILLING, String.valueOf(request.getDefaultBillingAddress()));
-        postDataParams.put(AppConstants.RequestDataKey.IS_DEFAULT_SHIPPING, String.valueOf(request.getDefaultShippingAddress()));
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void AddressEdit(Context context, String request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_update_address);
+        new OKHttpAsyncTask(context, url, request, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
     /*public static void GetProfile(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

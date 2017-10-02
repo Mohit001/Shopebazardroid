@@ -16,13 +16,12 @@
         android:paddingTop="@dimen/margin_10">
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_alias_inputlayout"
+            android:id="@+id/fullname_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name">
+            android:hint="Full Name">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_alias_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
@@ -31,14 +30,13 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_homeoffice_no_inputlayout"
+            android:id="@+id/email_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
-            android:hint="Home / Office No">
+            android:hint="Email">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_homeoffice_no_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margin_5"
@@ -46,14 +44,13 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_street_inputlayout"
+            android:id="@+id/address_line1_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
-            android:hint="Street">
+            android:hint="Address line 1">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_street_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margin_5"
@@ -61,70 +58,34 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_landmark_inputlayout"
+            android:id="@+id/address_line2_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
-            android:hint="landmark"
-            android:visibility="gone">
+            android:hint="Address line 2">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_landmark_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lines="1"
+                android:padding="@dimen/margin_5"
                 android:singleLine="true" />
         </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_country_inputlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5"
-            android:hint="Country">
-
-            <!--<android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_country_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:singleLine="true" />-->
-
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/address_country_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint=""
-                android:lines="1"
-                android:padding="@dimen/margin_5"
-                android:singleLine="true"
-                android:text="" />
-
-        </android.support.design.widget.TextInputLayout>
-
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/address_state_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
-            android:hint="Region">
+            android:hint="State">
 
-            <!-- <android.support.v7.widget.AppCompatEditText
-                 android:id="@+id/address_state_txt"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:lines="1"
-                 android:singleLine="true" />-->
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
-                android:id="@+id/address_state_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint=""
                 android:lines="1"
                 android:padding="@dimen/margin_5"
-                android:singleLine="true"
+                android:inputType="text"
                 android:text="" />
 
         </android.support.design.widget.TextInputLayout>
@@ -138,12 +99,11 @@
             android:hint="City">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_city_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lines="1"
                 android:padding="@dimen/margin_5"
-                android:singleLine="true" />
+                android:inputType="text"/>
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
@@ -154,50 +114,26 @@
             android:hint="PostCode">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_pincode_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:lines="1"
-                android:padding="@dimen/margin_5"
-                android:singleLine="true" />
+                android:padding="@dimen/margin_5" />
 
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_email_inputlayout"
+            android:id="@+id/additional_details_inputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_5"
-            android:hint="email"
-            android:visibility="gone">
+            android:hint="Additional Details">
 
             <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_email_txt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
-                android:inputType="textEmailAddress"
-                android:lines="1"
-                android:padding="@dimen/margin_5"
-                android:singleLine="true" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/address_mobile_inputlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_5"
-            android:hint="Mobile">
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/address_mobile_txt"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:lines="1"
-                android:padding="@dimen/margin_5"
-                android:singleLine="true" />
+                android:inputType="text"
+                android:padding="@dimen/margin_5" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatCheckBox
@@ -207,6 +143,7 @@
             android:layout_marginTop="@dimen/margin_5"
             android:checked="false"
             android:padding="@dimen/margin_5"
+            android:visibility="gone"
             android:text=" Set as default billing address"
             android:textColor="@color/bg_grey"
             android:textSize="12sp" />
@@ -217,6 +154,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:padding="@dimen/margin_5"
+            android:visibility="gone"
             android:text=" Set as default Shipping address"
             android:textColor="@color/bg_grey"
             android:textSize="12sp" />
