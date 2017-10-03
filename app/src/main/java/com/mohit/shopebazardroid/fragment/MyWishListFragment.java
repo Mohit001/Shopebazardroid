@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -164,9 +163,7 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
         int qty = Integer.parseInt(arrayList.get(pos).getQty().split("\\.", 2)[0]);
 
         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-        intent.putExtra("product", product_id);
-        intent.putExtra("qty", qty);
-        Log.e(TAG, "Qty: " + qty);
+        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, arrayList.get(position));
         startActivity(intent);
     }
 

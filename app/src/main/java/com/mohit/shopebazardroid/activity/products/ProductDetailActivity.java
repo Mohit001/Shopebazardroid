@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -48,21 +49,19 @@ import com.mohit.shopebazardroid.adapter.ReviewListAdapter;
 import com.mohit.shopebazardroid.adapter.SpinnerProductDetailAdapter;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
-import com.mohit.shopebazardroid.model.request.AddRemoveWishListRequest;
 import com.mohit.shopebazardroid.model.request.CartItemRequest;
 import com.mohit.shopebazardroid.model.request.CustomOptionRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
-import com.mohit.shopebazardroid.model.request.ProductDetailRequest;
 import com.mohit.shopebazardroid.model.request.RelatedProductsRequest;
 import com.mohit.shopebazardroid.model.response.AddCartResponse;
 import com.mohit.shopebazardroid.model.response.CustomerReviewList;
-import com.mohit.shopebazardroid.model.response.ProductBanner;
-import com.mohit.shopebazardroid.model.response.ProductDetailResponse;
 import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.RelatedProductList;
 import com.mohit.shopebazardroid.model.response.RelatedProductResponse;
 import com.mohit.shopebazardroid.model.response.ReviewList;
 import com.mohit.shopebazardroid.model.response.WishListResponse;
+import com.mohit.shopebazardroid.models.Product;
+import com.mohit.shopebazardroid.models.ProductImage;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.ImageSlider_DescriptionAnimation;
@@ -89,7 +88,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     //    private ProductEntity productEntity;
     private TextView nameTextView;
     private TextView latestPriceTextView, oldpriceTextView;
-    private TextView descriptionShortTextView, specificationTextView;
+    private WebView descriptionShortTextView;
     //------- custom and configurable option -----
     private LinearLayout option_layout;
     private ArrayList<ArrayList<String>> optionDropDownValueArray = new ArrayList<>();
@@ -102,7 +101,6 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     String addTocart = "1";
     private Context c;
     private TextView pd_description_lbl;
-    private TextView pd_specification_lbl;
     private TextView pd_quentity_lbl;
 
     int themeCode;
@@ -112,12 +110,9 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 //    String product_list_attribute = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.PRODUCT_LIST_ATTRIBUTE, "product_list_attribute");
 
-    RelativeLayout rel_related_product, rel_write_reviews, rel_customer_reviews, rel_show_all;
+    RelativeLayout rel_related_product;
     RelativeLayout alsoPurchasedRelativeLayout, recentlyViewedRelativeLayout;
 
-    private TextView pd_review_lbl;
-    private RelativeLayout pd_review_content_layout;
-    String product_id;
 //    HListView related_product_hlistview;
 
     private RecyclerView related_product_hlistview;
@@ -134,9 +129,8 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     ArrayList<RelatedProductList> recently_viewed_arrayList;
     //    RelatedProductList related_product_arrayList;
     ImageView img_rel_product;
-    TextView txt_product_lbl, txt_cust_review_lbl;
+    TextView txt_product_lbl;
     ProductEntity entity;
-    RecyclerView recyclerview;
     ArrayList<ReviewList> arr_review_list;
     ReviewListAdapter reviewListAdapter;
     String Getpro_attribute;
@@ -147,16 +141,12 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     private Menu menu;
 //    private ExpandableRelativeLayout specificationLayout, descriptionLayout;
 
-    TextView shippingReturnTitle, shippingContent, returnTitleContent;
-    RelativeLayout shippingReturnExpandableChildLayout;
-
     ArrayList<AppCompatSpinner> appCompatSpinnerArrayList;
 
-    RelativeLayout rel_add_wishlist;
-    TextView txt_wishlist;
+    private TextView txt_wishlist;
     private String cartid = "";
+    private Product product = null;
 
-    private int quantity;
     public boolean isAddToWishlistCallback;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -171,19 +161,13 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
 //        productEntity = (ProductEntity) getIntent().getSerializableExtra(ProductEntity.KEY_OBJECT);
 
-        product_id = getIntent().getStringExtra("product");
-        quantity = getIntent().getIntExtra("qty", 1);
-
         baseCurrencyRate = MyApplication.preferenceGetFloat(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_RATE, 1);
         baseCurrencyCode = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, getString(R.string.rupee_sign));
         addToCartBtn = (AppCompatButton) findViewById(R.id.pd_addtocart_btn);
         addToCartBtn.setTypeface(SplashActivity.opensans_regular);
+
         pd_description_lbl = (TextView) findViewById(R.id.pd_description_lbl);
         pd_description_lbl.setTypeface(SplashActivity.opensans_semi_bold);
-        pd_specification_lbl = (TextView) findViewById(R.id.pd_specification_lbl);
-        pd_specification_lbl.setTypeface(SplashActivity.opensans_semi_bold);
-
-        pd_specification_lbl.setOnClickListener(this);
         pd_description_lbl.setOnClickListener(this);
 
         SharedPreferences appSharedPrefs = PreferenceManager
@@ -211,29 +195,10 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
         txt_product_lbl = (TextView) findViewById(R.id.txt_product_lbl);
         txt_product_lbl.setTypeface(SplashActivity.opensans_regular);
 
-        txt_cust_review_lbl = (TextView) findViewById(R.id.txt_cust_review_lbl);
-        txt_cust_review_lbl.setTypeface(SplashActivity.opensans_regular);
-
         rel_related_product = (RelativeLayout) findViewById(R.id.rel_related_product);
-
-        rel_customer_reviews = (RelativeLayout) findViewById(R.id.rel_customer_reviews);
-
-        rel_show_all = (RelativeLayout) findViewById(R.id.rel_show_all);
-        rel_show_all.setOnClickListener(this);
-
-        rel_write_reviews = (RelativeLayout) findViewById(R.id.rel_write_reviews);
-        rel_write_reviews.setOnClickListener(this);
-
-        pd_review_lbl = (TextView) findViewById(R.id.pd_review_lbl);
-        pd_review_lbl.setTypeface(SplashActivity.opensans_semi_bold);
-        pd_review_content_layout = (RelativeLayout) findViewById(R.id.review_content_relativelayout);
-        pd_review_lbl.setOnClickListener(this);
 
         txt_wishlist = (TextView) findViewById(R.id.txt_wishlist);
         txt_wishlist.setTypeface(SplashActivity.opensans_regular);
-
-        rel_add_wishlist = (RelativeLayout) findViewById(R.id.rel_add_wishlist);
-        rel_add_wishlist.setOnClickListener(this);
 
         option_layout = (LinearLayout) findViewById(R.id.option_layout);
         nameTextView = (TextView) findViewById(R.id.pd_productname_lbl);
@@ -249,49 +214,30 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
         }
 
-        shippingReturnTitle  = (TextView) findViewById(R.id.pd_shipping_and_return_lbl) ;
-        shippingReturnTitle.setTypeface(SplashActivity.opensans_semi_bold);
-        shippingContent = (TextView) findViewById(R.id.shipping_content);
-        returnTitleContent = (TextView) findViewById(R.id.return_content);
-        shippingReturnExpandableChildLayout = (RelativeLayout) findViewById(R.id.shipping_and_return_content_relativelayout);
-        shippingReturnTitle.setOnClickListener(this);
-        returnTitleContent.setOnClickListener(this);
-
         pd_quentity_lbl = (TextView) findViewById(R.id.pd_quentity_lbl);
         pd_quentity_lbl.setTypeface(SplashActivity.opensans_regular);
 
-        descriptionShortTextView = (TextView) findViewById(R.id.pd_description_content);
-        descriptionShortTextView.setTypeface(SplashActivity.opensans_regular);
+        descriptionShortTextView = (WebView) findViewById(R.id.pd_description_content);
+//        descriptionShortTextView.setTypeface(SplashActivity.opensans_regular);
 //        descriptionLayout = (ExpandableRelativeLayout) findViewById(R.id.pd_description_content_layout);
 
-
-        specificationTextView = (TextView) findViewById(R.id.pd_specification_content);
-        specificationTextView.setTypeface(SplashActivity.opensans_regular);
-//        specificationLayout = (ExpandableRelativeLayout) findViewById(R.id.pd_specification_content_layout);
 
 
         sliderLayout = (SliderLayout) findViewById(R.id.product_detail_slider);
         sizeSpinner = (AppCompatSpinner) findViewById(R.id.pd_size_spinner);
         quentityTextView = (TextView) findViewById(R.id.pd_quentity_content_lbl);
-        if(quantity > 1){
-            quentityTextView.setText(String.valueOf(quantity));
-        }
+
 
         minusImageView = (ImageView) findViewById(R.id.pd_quentity_minus_image);
         additionImageView = (ImageView) findViewById(R.id.pd_quentity_addition_image);
 
-        recyclerview = (RecyclerView) findViewById(R.id.recyclerview);
-        recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
-//        RecyclerView.ItemDecoration itemDecoration =
-//                new DividerItemDecoration(mContext, LinearLayoutManager.VERTICAL);
-//        recyclerview.addItemDecoration(itemDecoration);
-
-        ProductDetailRequest request = new ProductDetailRequest();
-        request.setProduct_id(product_id);
-        request.setCustomer_Id(customerid);
-
         // network call
-        HTTPWebRequest.ProductDetail(mContext, request, AppConstants.APICode.PRODUCT_DETAIL, this, getSupportFragmentManager());
+//        HTTPWebRequest.ProductDetail(mContext, request, AppConstants.APICode.PRODUCT_DETAIL, this, getSupportFragmentManager());
+
+        product = (Product) getIntent().getSerializableExtra(AppConstants.RequestDataKey.PRODUCT);
+        if(product != null){
+            setupUI();
+        }
 
         // set banner height-width
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenHeight / 1);
@@ -347,6 +293,24 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
 
 
+    }
+
+    private void setupUI(){
+
+        descriptionShortTextView.loadData(Html.fromHtml(product.getPro_description()).toString(), "text/html", "UTF-8");
+        nameTextView.setText(product.getPro_name());
+
+        String rupeePrefix = getString(R.string.rupee_sign);
+        if(product.getDiscount_price() > 0){
+            latestPriceTextView.setText(rupeePrefix+String.valueOf(product.getDiscount_price()));
+            oldpriceTextView.setText(rupeePrefix+product.getPro_price());
+            oldpriceTextView.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        } else{
+            latestPriceTextView.setText(rupeePrefix+product.getPro_price());
+            oldpriceTextView.setVisibility(View.GONE);
+        }
+
+        setupBannerSlider();
     }
 
     @Override
@@ -425,115 +389,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
             dropdown.setAdapter(adapter);
             dropdown.setPadding(10, 0, 10, 0);
 
-//            dropdown.setBackgroundColor(getResources().getColor(R.color.bg_red));
-            //dropdown.setGravity(Gravity.CENTER_HORIZONTAL);
-//            dropdown.setTextColor(getResources().getColor(R.color.white));
-
             dropdown.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-
-//            dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                @Override
-//                public void onItemSelected(AdapterView<?> adapterView, View view, int position,
-//                                           long l) {
-//
-//
-//                    AppCompatSpinner dropdown = (AppCompatSpinner) adapterView;
-//                    if (dropdown.getTag() == adapterView.getTag()) {
-//                        Log.d("tag", "tag==" + dropdown.getTag() + "position==" + position);
-//                        CustomOptionRequest customOptionRequest = customOptionRequestsArray.get
-//                                (Integer.parseInt("" + dropdown.getTag()));
-//                        if (isCustomOption) // custom option
-//                        {
-//                               /* customOptionRequest.setCustom_title_value(entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag())).getValue_option().get(position).getTitle());
-//                                customOptionRequest.setCustom_title_value_id(entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValue_option().get(position).getValue_id());*/
-//                            Log.d("tag", "getCustom_title_value==" + optionDropDownValueArray.get(Integer.parseInt("" + dropdown.getTag())).get(position));
-//                            if (position == 0) {
-//                                customOptionRequest.setCustom_title_value(optionDropDownValueArray.get(Integer.parseInt("" + dropdown.getTag())).get(position));
-//                                customOptionRequest.setCustom_title_value_id(0);
-//                                customOptionRequest.setPrice(0);
-//                            } else {
-//                                customOptionRequest.setCustom_title_value(entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag())).getValue_option().get(position - 1).getTitle());
-//                                customOptionRequest.setCustom_title_value_id(entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValue_option().get(position - 1).getValue_id());
-//                                customOptionRequest.setPrice(entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValue_option().get(position - 1).getPrice());
-//
-//                                Float price = entity.getCustom_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValue_option().get(position - 1).getPrice();
-//
-//                                Log.e(TAG, "Price of item: " + price);
-//
-//                            }
-//
-//                        } else /*configurable*/ {
-//
-//                            Log.d("tag", "getCustom_title_value==" + optionDropDownValueArray.get(Integer.parseInt("" + dropdown.getTag())).get(position));
-//                            if (position == 0) {
-//                                customOptionRequest.setCustom_title_value(optionDropDownValueArray.get(Integer.parseInt("" + dropdown.getTag())).get(position));
-//                                customOptionRequest.setCustom_title_value_id(0);
-//                                customOptionRequest.setPrice(0);
-//
-//                                setupBannerSlider();
-//
-//                            } else {
-//                                customOptionRequest.setCustom_title_value(entity.getConfigurable_option().get(Integer.parseInt("" + dropdown.getTag())).getValues().get(position - 1).getLabel());
-//                                customOptionRequest.setCustom_title_value_id(entity.getConfigurable_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValues().get(position - 1).getValue_index());
-//                                customOptionRequest.setPrice(entity.getConfigurable_option().get(Integer.parseInt("" + dropdown.getTag
-//                                        ())).getValues().get(position - 1).getPricing_value());
-//
-//                                if (json.contains(Getpro_attribute)) {
-//                                    url_img = entity.getConfigurable_option().get(Integer.parseInt("" + dropdown.getTag())).getValues().get(position - 1).getImage();
-//
-//                                    Log.e(TAG, "Value Image " + url_img);
-//
-//                                    if (!TextUtils.isEmpty(url_img)) {
-//                                        setupImageSlider();
-//                                    } else {
-////                                        Toast.makeText(mContext, "Image not available", Toast.LENGTH_SHORT).show();
-//                                        Log.e(TAG, "Image not available -> " + url_img);
-//                                    }
-//
-//                                }
-//                            }
-//
-//                        }
-//                        customOptionRequestsArray.set(Integer.parseInt("" + dropdown.getTag()), customOptionRequest);
-//
-//                        float optionPrice = 0;
-//                        for (int i = 0; i < customOptionRequestsArray.size(); i++) {
-//                            CustomOptionRequest customOptionRequest1 = customOptionRequestsArray.get(i);
-//                            Log.d("Price", "Price==" + customOptionRequest1.getPrice() * baseCurrencyRate);
-//                            optionPrice = optionPrice + (customOptionRequest1.getPrice() * baseCurrencyRate);
-//
-//                        }
-//
-//                        Log.e(TAG, "Option Price: " + optionPrice);
-//
-//                        if (TextUtils.isEmpty(entity.getSpecial_price())) {
-//                            Float tempLatestPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-//                            latestPriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempLatestPrice + optionPrice)));
-//
-//                            oldpriceTextView.setVisibility(View.GONE);
-//                        } else {
-//
-//                            Float tempLatestPrice = Float.parseFloat(entity.getSpecial_price()) * baseCurrencyRate;
-//                            latestPriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempLatestPrice + optionPrice)));
-//
-//                            Float tempOldPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-//                            oldpriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempOldPrice + optionPrice)));
-//                            oldpriceTextView.setPaintFlags(oldpriceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//                }
-//            });
 
             dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -790,28 +646,25 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
     private void setupBannerSlider() {
 
-
-        if(entity == null || entity.getMedia() == null)
-            return;
-
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup
                 .LayoutParams.MATCH_PARENT, ((int) NavigationDrawerActivity.height / 2));
         sliderLayout.setLayoutParams(layoutParams);
 //        HashMap<String,String> url_maps = new HashMap<String, String>();
 
-        if (entity.getMedia().size() > 0) {
+        if (product.getProductImage().size() > 0) {
             sliderLayout.setVisibility(View.VISIBLE);
-            for (ProductBanner banner : entity.getMedia()) {
+            for (ProductImage banner : product.getProductImage()) {
 
                 TextSliderView textSliderView = new TextSliderView(mContext);
 
                 textSliderView
-                        .description(banner.getPosition())
-                        .image(imagePrefix+banner.getFile())
+                        .description(banner.getImage_name())
+//                        .image(imagePrefix+banner.getImage_path())
+                        .image("http://demo.ajax-cart.com/photos/product/4/176/4.jpg")
                         .setScaleType(BaseSliderView.ScaleType.CenterInside)
                         .setOnSliderClickListener(this);
                 textSliderView.bundle(new Bundle());
-                textSliderView.getBundle().putString("extra", banner.getPosition());
+                textSliderView.getBundle().putString("extra", banner.getImage_name());
                 sliderLayout.addSlider(textSliderView);
 
                 sliderLayout.setPresetTransformer(SliderLayout.Transformer.Accordion);
@@ -873,145 +726,15 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     }
 
     private void callAddToWishlistApi(){
-        AddRemoveWishListRequest request = new AddRemoveWishListRequest();
-        request.setCustomer_id(getUserid());
-        request.setProduct_id(product_id);
 
-        HTTPWebRequest.AddToWishList(mContext, request, AppConstants.APICode
-                .ADD_TO_WISHLIST, this, getSupportFragmentManager());
+        /*HTTPWebRequest.AddToWishList(mContext, request, AppConstants.APICode
+                .ADD_TO_WISHLIST, this, getSupportFragmentManager());*/
     }
+
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.rel_add_wishlist:
-
-                if (isUserLogin()) {
-                    callAddToWishlistApi();
-                } else {
-                    isAddToWishlistCallback = true;
-                    Intent intent = new Intent(mContext, LoginActivity.class);
-                    intent.putExtra("addWishlist", 1);
-                    intent.putExtra("shoppingCartId", cartid);
-                    startActivityForResult(intent, 1);
-                }
-
-                break;
-            case R.id.return_content:
-                showLocationDialog();
-                break;
-            case R.id.pd_shipping_and_return_lbl:
-                toggle_contents(shippingReturnExpandableChildLayout);
-
-                if(shippingReturnExpandableChildLayout.isShown()){
-                    shippingReturnTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_remove_black_24dp, 0);
-                } else {
-                    shippingReturnTitle.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-
-                if(specificationTextView.isShown()){
-                    toggle_contents(specificationTextView);
-                    pd_specification_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(descriptionShortTextView.isShown()){
-                    toggle_contents(descriptionShortTextView);
-                    pd_description_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(pd_review_content_layout.isShown()){
-                    toggle_contents(pd_review_content_layout);
-                    pd_review_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                break;
-            case R.id.pd_specification_lbl:
-//                specificationLayout.toggle();
-                toggle_contents(specificationTextView);
-                if(specificationTextView.isShown()){
-                    pd_specification_lbl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_remove_black_24dp, 0);
-                } else {
-                    pd_specification_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-
-                if(shippingReturnExpandableChildLayout.isShown()){
-                    toggle_contents(shippingReturnExpandableChildLayout);
-                    shippingReturnTitle.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(descriptionShortTextView.isShown()){
-                    toggle_contents(descriptionShortTextView);
-                    pd_description_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(pd_review_content_layout.isShown()){
-                    toggle_contents(pd_review_content_layout);
-                    pd_review_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-
-                break;
-            case R.id.pd_description_lbl:
-//                descriptionLayout.toggle();
-                toggle_contents(descriptionShortTextView);
-                if(descriptionShortTextView.isShown()){
-                    pd_description_lbl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_remove_black_24dp, 0);
-                } else {
-                    pd_description_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-
-                if(shippingReturnExpandableChildLayout.isShown()){
-                    toggle_contents(shippingReturnExpandableChildLayout);
-                    shippingReturnTitle.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(specificationTextView.isShown()){
-                    toggle_contents(specificationTextView);
-                    pd_specification_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(pd_review_content_layout.isShown()){
-                    toggle_contents(pd_review_content_layout);
-                    pd_review_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                break;
-            case R.id.pd_review_lbl:
-                toggle_contents(pd_review_content_layout);
-
-                if(pd_review_content_layout.isShown()){
-                    pd_review_lbl.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_remove_black_24dp, 0);
-                } else {
-                    pd_review_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-
-                if(shippingReturnExpandableChildLayout.isShown()){
-                    toggle_contents(shippingReturnExpandableChildLayout);
-                    shippingReturnTitle.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(specificationTextView.isShown()){
-                    toggle_contents(specificationTextView);
-                    pd_specification_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                if(descriptionShortTextView.isShown()){
-                    toggle_contents(descriptionShortTextView);
-                    pd_description_lbl.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_add_black_24dp, 0);
-                }
-
-                break;
-            case R.id.rel_write_reviews:
-                Intent intent = new Intent(mContext, AddreviewActivity.class);
-                intent.putExtra("product", product_id);
-                intent.putExtra("name", entity.getName());
-                startActivity(intent);
-                break;
-
             case R.id.pd_quentity_minus_image:
                 int qtyMinus = Integer.parseInt(quentityTextView.getText().toString().trim());
                 if (qtyMinus != 1) {
@@ -1037,7 +760,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
                 if (allowtoadd) {
                     CartItemRequest cartItemRequest = new CartItemRequest();
-                    cartItemRequest.setProductId(product_id);
+//                    cartItemRequest.setProductId(product_id);
                     cartItemRequest.setProductQty(Integer.parseInt(quentityTextView.getText()
                             .toString().trim()));
                     if (isCustomOption) {
@@ -1058,11 +781,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
 
                 break;
-            case R.id.rel_show_all:
-                Intent intent_show_all = new Intent(mContext, CustomerReviewListingActivity.class);
-                intent_show_all.putExtra("product", product_id);
-                startActivity(intent_show_all);
-                break;
+
         }
     }
 
@@ -1101,125 +820,10 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 }
 
                 break;
-
             case AppConstants.APICode.PRODUCT_DETAIL:
-                ProductDetailResponse productResponse = new Gson().fromJson(response, ProductDetailResponse.class);
-
-                if (productResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-
-                entity = productResponse .getResult().getProduct();
-
-                if (entity != null && productResponse.getStatus().equalsIgnoreCase("success")) {
-//                    Utility.toastMessage(mContext, productResponse.getResult().getMessage());
-
-                    setupBannerSlider();
-                    nameTextView.setText(entity.getName());
-                    if (TextUtils.isEmpty(entity.getSpecial_price())) {
-                        Float tempLatestPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-                        latestPriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempLatestPrice)));
-                        oldpriceTextView.setVisibility(View.GONE);
-                    } else {
-
-                        Float tempLatestPrice = Float.parseFloat(entity.getSpecial_price()) * baseCurrencyRate;
-                        latestPriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempLatestPrice)));
-
-                        Float tempOldPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
-                        oldpriceTextView.setText(baseCurrencyCode + (String.format("%.2f", tempOldPrice)));
-                        oldpriceTextView.setPaintFlags(oldpriceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    }
-
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        descriptionShortTextView.setText(Html.fromHtml(entity.getDescription(), Html.FROM_HTML_MODE_LEGACY));
-                    } else{
-                        descriptionShortTextView.setText(Html.fromHtml(entity.getDescription()));
-                    }
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        specificationTextView.setText(Html.fromHtml(entity.getShort_description(), Html.FROM_HTML_MODE_LEGACY));
-                    } else {
-                        specificationTextView.setText(Html.fromHtml(entity.getShort_description()));
-                    }
-
-                    specificationTextView.measure(0, 0);
-
-                    returnTitleContent.setText(entity.getReturn_title());
-
-                    //------------- Set DropDown Custom OR Configurable --------------
-                    ArrayList<String> optionDropDownValue = new ArrayList<>();
-                    CustomOptionRequest customOptionRequest;
-                    if (entity.getType_id().equalsIgnoreCase("simple")) // custom option
-                    {
-                        isCustomOption = true;
-                        if (entity.getCustom_option() != null) {
-                            for (int i = 0; i < entity.getCustom_option().size(); i++) {
-
-                                customOptionRequest = new CustomOptionRequest();
-                                customOptionRequest.setCustom_title(entity.getCustom_option().get(i).getTitle());
-                                Log.d("title", "title" + entity.getCustom_option().get(i).getTitle());
-                                customOptionRequest.setCustom_title_id(entity.getCustom_option().get(i).getOption_id());
-                                optionDropDownValue = new ArrayList<>();
-                                // optionDropDownValue.add("Select");
-                                for (int j = 0; j < entity.getCustom_option().get(i).getValue_option().size(); j++) {
-                                    if (j == 0) {
-                                        customOptionRequest.setCustom_title_value("Select");
-                                        customOptionRequest.setCustom_title_value_id(0);
-                                        customOptionRequest.setPrice(0);
-                                        optionDropDownValue.add("Select");
-                                        /*customOptionRequest.setCustom_title_value(entity.getCustom_option().get(i).getValue_option().get(j).getTitle());
-                                        Log.d("titlevalue11111",j+" = titlevalue"+entity.getCustom_option().get(i).getValue_option().get(j).getTitle());
-                                        customOptionRequest.setCustom_title_value_id(entity.getCustom_option().get(i).getValue_option().get(j).getValue_id());*/
-
-                                    }
-                                    Log.d("titlevalue22222", j + " = titlevalue" + entity.getCustom_option().get(i).getValue_option().get(j).getTitle());
-                                    optionDropDownValue.add(entity.getCustom_option().get(i).getValue_option().get(j).getTitle());
-                                }
-                                customOptionRequestsArray.add(customOptionRequest);
-                                optionDropDownValueArray.add(optionDropDownValue);
-                            }
-                        }
-                    } else // configurable option
-                    {
-                        isCustomOption = false;
-                        for (int i = 0; i < entity.getConfigurable_option().size(); i++) {
-                            customOptionRequest = new CustomOptionRequest();
-                            customOptionRequest.setCustom_title(entity.getConfigurable_option().get(i).getLabel());
-                            customOptionRequest.setCustom_title_id(entity.getConfigurable_option().get(i).getAttribute_id());
-                            optionDropDownValue = new ArrayList<>();
-                            for (int j = 0; j < entity.getConfigurable_option().get(i).getValues().size(); j++) {
-                                if (j == 0) {
-                                    customOptionRequest.setCustom_title_value("Select");
-                                    customOptionRequest.setCustom_title_value_id(0);
-                                    customOptionRequest.setPrice(0);
-                                    optionDropDownValue.add("Select");
-//                                    customOptionRequest.setCustom_title_value(entity.getConfigurable_option().get(i).getValues().get(j).getLabel());
-//                                    customOptionRequest.setCustom_title_value_id(entity.getConfigurable_option().get(i).getValues().get(j).getValue_index());
-                                }
-                                optionDropDownValue.add(entity.getConfigurable_option().get(i).getValues().get(j).getLabel());
-                                Getpro_attribute = String.valueOf(entity.getConfigurable_option().get(i).getAttribute_id());
-
-                            }
-                            customOptionRequestsArray.add(customOptionRequest);
-                            optionDropDownValueArray.add(optionDropDownValue);
-                        }
-                    }
-
-
-                } else {
-                    Utility.toastMessage(mContext, productResponse.getResult().getMessage());
-                }
-
-                //------- Set Label & Drop Down --------
-                setLabelAndDropDown(optionDropDownValueArray);
 
                 RelatedProductsRequest request = new RelatedProductsRequest();
-                request.setProductid(product_id);
+//                request.setProductid(product_id);
                 request.setCustomer_id(customerid);
                 request.setStore_id(storeid);
 
@@ -1254,7 +858,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 }
 
                 RelatedProductsRequest alsoPurchasedRequest = new RelatedProductsRequest();
-                alsoPurchasedRequest.setProductid(product_id);
+//                alsoPurchasedRequest.setProductid(product_id);
                 alsoPurchasedRequest.setCustomer_id(customerid);
                 alsoPurchasedRequest.setStore_id(storeid);
 
@@ -1288,7 +892,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 }
 
                 RelatedProductsRequest recentlyViewedRequest = new RelatedProductsRequest();
-                recentlyViewedRequest.setProductid(product_id);
+//                recentlyViewedRequest.setProductid(product_id);
                 recentlyViewedRequest.setCustomer_id(customerid);
                 recentlyViewedRequest.setStore_id(storeid);
 
@@ -1324,7 +928,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
                 CustomerReviewListRequest cust_review_list = new CustomerReviewListRequest();
                 cust_review_list.setStore_id(storeid);
-                cust_review_list.setProduct_id(product_id);
+//                cust_review_list.setProduct_id(product_id);
                 cust_review_list.setPage(String.valueOf(1));
                 cust_review_list.setPagesize(String.valueOf(2));
 
@@ -1341,27 +945,6 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                     startActivity(new Intent(mContext, LoginActivity.class));
                     finish();
                     return;
-                }
-
-                if (review_response.getStatus().equalsIgnoreCase("success")) {
-                    rel_customer_reviews.setVisibility(View.VISIBLE);
-                    recyclerview.setVisibility(View.VISIBLE);
-                    rel_show_all.setVisibility(View.VISIBLE);
-//                    related_product_arrayList = review_response.getResult().getProductlist();
-                    arr_review_list = review_response.getResult().getReviewlist();
-
-                    if (arr_review_list.isEmpty()) {
-                        rel_customer_reviews.setVisibility(View.GONE);
-                        recyclerview.setVisibility(View.GONE);
-                        rel_show_all.setVisibility(View.GONE);
-                    }
-
-                    reviewListAdapter = new ReviewListAdapter(mContext, arr_review_list);
-                    recyclerview.setAdapter(reviewListAdapter);
-
-                } else {
-//                    Utility.toastMessage(mContext, "No product Found");
-
                 }
 
                 break;

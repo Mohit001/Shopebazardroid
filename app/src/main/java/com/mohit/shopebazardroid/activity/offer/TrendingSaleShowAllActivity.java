@@ -120,10 +120,8 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
         recyclerView.addOnItemTouchListener(new RecyclerItemclicklistner(mContext, new RecyclerItemclicklistner.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Product entity = arrayList.get(position);
                 Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(Product.KEY_OBJECT, entity);
-                intent.putExtra("product", arrayList.get(position).getPro_mst_id());
+                intent.putExtra(AppConstants.RequestDataKey.PRODUCT, arrayList.get(position));
                 startActivity(intent);
             }
         }));

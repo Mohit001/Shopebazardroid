@@ -118,8 +118,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                        intent.putExtra(ProductEntity.KEY_OBJECT, arrayList.get(position));
-                        intent.putExtra("product", arrayList.get(position).getPro_mst_id());
+                        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, arrayList.get(position));
                         startActivity(intent);
                     }
                 }));

@@ -77,8 +77,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
         fullNameInputLayout = (TextInputLayout) findViewById(R.id.fullname_inputlayout);
         fullNameInputLayout.setTypeface(SplashActivity.opensans_regular);
 
-        addressLine1InputLayout = (TextInputLayout) findViewById(R.id
-                .address_line1_inputlayout);
+        addressLine1InputLayout = (TextInputLayout) findViewById(R.id.address_line1_inputlayout);
         addressLine1InputLayout.setTypeface(SplashActivity.opensans_regular);
 
         addressLine2InputLayout = (TextInputLayout) findViewById(R.id.address_line2_inputlayout);
@@ -115,7 +114,6 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
         submitButton.setOnClickListener(this);
 
         try {
-
 
             intent = getIntent();
             if (intent.getExtras().getString("key").equals("edit")) {

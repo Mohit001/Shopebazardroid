@@ -231,8 +231,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, oftdArrayList.get(i));
-                        intent.putExtra("product", oftdArrayList.get(position).getProduct_id());
+                        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, oftdArrayList.get(position));
                         startActivity(intent);
                     }
                 }));
@@ -253,11 +252,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                 RecyclerItemclicklistner.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-
-//                startActivity(new Intent(mContext, ProductDetailActivity.class));
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, trendingNowArrayList.get(i));
-                        intent.putExtra("product", trendingNowArrayList.get(position).getProduct_id());
+                        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, trendingNowArrayList.get(position));
                         startActivity(intent);
                     }
                 }));
@@ -267,10 +263,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                 RecyclerItemclicklistner.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-//                startActivity(new Intent(mContext, ProductDetailActivity.class));
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, bestSellingArrayList.get(i));
-                        intent.putExtra("product", bestSellingArrayList.get(position).getProduct_id());
+                        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, bestSellingArrayList.get(position));
                         startActivity(intent);
                     }
                 }));
@@ -280,10 +274,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                 RecyclerItemclicklistner.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-//                startActivity(new Intent(mContext, ProductDetailActivity.class));
                         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-//                intent.putExtra(ProductEntity.KEY_OBJECT, bestSellingArrayList.get(i));
-                        intent.putExtra("product", featureProductArrayList.get(position).getProduct_id());
+                        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, featureProductArrayList.get(position));
                         startActivity(intent);
                     }
                 }));

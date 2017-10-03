@@ -54,50 +54,19 @@
             android:tint="@color/colorPrimary"
             android:layout_gravity="center"/>
 
-        <RelativeLayout
-            android:id="@+id/rel_add_wishlist"
+        <TextView
+            android:id="@+id/txt_wishlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="8dp"
-            android:gravity="right">
-
-            <TextView
-                android:id="@+id/txt_wishlist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/img_add_wishlist"
-                android:textSize="@dimen/textsize_16"
-                android:text="Add to Wishlist" />
-
-            <ImageView
-                android:id="@+id/img_add_wishlist"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:paddingLeft="@dimen/margin_5"
-                android:paddingRight="@dimen/margin_5"
-                android:src="@drawable/unlike_wishlist" />
-
-
-        </RelativeLayout>
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/textsize_16"
+            android:gravity="center"
+            android:text="@string/rating_review" />
     </LinearLayout>
 
-    <!--<TextView-->
-    <!--android:id="@+id/powerby_textview"-->
-    <!--android:gravity="right"-->
-    <!--android:paddingLeft="@dimen/margin_15"-->
-    <!--android:paddingRight="@dimen/margin_5"-->
-    <!--android:textColor="@color/white"-->
-    <!--android:textSize="@dimen/textsize_16"-->
-    <!--android:background="@color/theme3_color"-->
-    <!--android:text="@string/powerby"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content" />-->
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/pd_addtocart_btn"
+        android:id="@id/pd_addtocart_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -123,6 +92,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <ImageView
+                android:id="@+id/img_add_wishlist"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:paddingLeft="@dimen/margin_5"
+                android:paddingRight="@dimen/margin_5"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/margin_5"
+                android:layout_marginRight="@dimen/margin_5"
+                android:src="@drawable/unlike_wishlist" />
+
             <RelativeLayout
                 android:id="@+id/product_detail_rl"
                 android:layout_width="match_parent"
@@ -140,6 +120,7 @@
                     android:textColor="#333333"
                     android:textSize="@dimen/textsize_14" />
 
+                <!-- product price and discounted price -->
                 <RelativeLayout
                     android:id="@+id/rel1"
                     android:layout_width="match_parent"
@@ -167,19 +148,6 @@
                         android:textColor="@color/subtotle" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/pd_discount_lbl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/rel1"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/Color_Coral"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="20%"
-                    android:textColor="@color/finestWhite"
-                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/pd_divider1"
@@ -220,328 +188,55 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/pd_size_spinner"
                     android:orientation="vertical" />
-                <!--<TextView-->
-                <!--android:id="@+id/pd_quentity_lbl"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@id/pd_size_lbl"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:text="Quantity"-->
-                <!--android:textColor="@android:color/black"/>-->
-
-                <!--<ImageView-->
-                <!--android:id="@+id/pd_quentity_minus_image"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@id/pd_size_lbl"-->
-                <!--android:layout_marginLeft="16dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_toRightOf="@id/pd_quentity_lbl"-->
-                <!--android:src="@drawable/ic_remove_black_24dp"/>-->
-
-                <!--<TextView-->
-                <!--android:id="@+id/pd_quentity_content_lbl"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@id/pd_size_lbl"-->
-                <!--android:layout_marginLeft="8dp"-->
-                <!--android:layout_marginTop="10dp"-->
-                <!--android:layout_toRightOf="@id/pd_quentity_minus_image"-->
-                <!--android:text="1"-->
-                <!--android:textColor="@android:color/black"/>-->
-
-                <!--<ImageView-->
-                <!--android:id="@+id/pd_quentity_addition_image"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_below="@id/pd_size_lbl"-->
-                <!--android:layout_marginLeft="8dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_toRightOf="@id/pd_quentity_content_lbl"-->
-                <!--android:src="@drawable/ic_add_black_24dp"/>-->
 
 
-                <TextView
-                    android:id="@+id/pd_specification_lbl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/option_layout"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/expandable"
-                    android:drawableRight="@drawable/ic_add_black_24dp"
-                    android:gravity="center_vertical"
-                    android:padding="3dp"
-                    android:text="@string/specification"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:id="@+id/pd_specification_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/pd_specification_lbl"
-                    android:textColor="#6b6b6b"
-                    android:visibility="gone" />
-
-                <!-- <com.github.aakira.expandablelayout.ExpandableRelativeLayout
-                     android:id="@+id/pd_specification_content_layout"
-                     android:layout_below="@id/pd_specification_lbl"
-                     android:layout_marginTop="8dp"
-                     android:layout_width="match_parent"
-                     android:layout_height="match_parent">
-
-                     &lt;!&ndash;<TextView
-                         android:id="@+id/pd_specification_content"
-                         android:layout_width="wrap_content"
-                         android:layout_height="wrap_content"
-                         android:text="lkasjfd al;kajsdf ;lkajsdf asdl;kjasf "
-                         android:textColor="#6b6b6b" />&ndash;&gt;
-
-                 </com.github.aakira.expandablelayout.ExpandableRelativeLayout>-->
 
 
                 <TextView
                     android:id="@+id/pd_description_lbl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/pd_specification_content"
+                    android:layout_below="@id/option_layout"
                     android:layout_marginTop="8dp"
-                    android:background="@color/expandable"
-                    android:drawableRight="@drawable/ic_add_black_24dp"
                     android:gravity="center_vertical"
                     android:padding="3dp"
                     android:text="@string/description"
-                    android:textColor="@color/black" />
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsize_12"
+                    android:textColor="@color/gray" />
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/pd_description_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/pd_description_lbl"
                     android:layout_marginTop="8dp"
+                    android:padding="3dp"
+                    android:textSize="@dimen/textsize_10"
                     android:textColor="#6b6b6b"
-                    android:visibility="gone" />
+                    android:text="lkjsdf lkjsdf ;lksdjf "
+                    android:visibility="visible" />-->
 
-                <RelativeLayout
-                    android:id="@+id/review_relativelayout"
+                <WebView
+                    android:id="@+id/pd_description_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/pd_description_content"
+                    android:layout_below="@id/pd_description_lbl"
                     android:layout_marginTop="8dp"
-                    android:visibility="visible">
+                    android:padding="3dp"
+                    android:background="@color/Color_White"
 
-                    <TextView
-                        android:id="@+id/pd_review_lbl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/expandable"
-                        android:drawableRight="@drawable/ic_add_black_24dp"
-                        android:gravity="center_vertical"
-                        android:padding="3dp"
-                        android:text="@string/reviews"
-                        android:textColor="@color/black"/>
+                    android:textSize="@dimen/textsize_10"
+                    android:textColor="#6b6b6b"
+                    android:visibility="visible" />
 
-                    <RelativeLayout
-                        android:id="@+id/review_content_relativelayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/pd_review_lbl"
-                        android:layout_marginTop="@dimen/margin_5"
-                        android:visibility="gone">
-
-                        <RelativeLayout
-                            android:id="@+id/rel_customer_reviews"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone">
-
-                            <RelativeLayout
-                                android:id="@+id/rel_cust_review"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/margin_5"
-                                android:layout_marginRight="@dimen/margin_5"
-                                android:padding="@dimen/margin_5">
-
-                                <TextView
-                                    android:id="@+id/txt_cust_review_lbl"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:layout_marginLeft="@dimen/margin_8"
-                                    android:layout_marginRight="@dimen/margin_8"
-                                    android:text="Customer Review"
-                                    android:textColor="@android:color/black"
-                                    android:textSize="15sp"
-                                    android:textStyle="bold" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:layout_centerVertical="true"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_toLeftOf="@id/txt_cust_review_lbl"
-                                    android:background="@color/colorPrimary" />
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="1dp"
-                                    android:layout_centerVertical="true"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_toRightOf="@id/txt_cust_review_lbl"
-                                    android:background="@color/colorPrimary" />
-                            </RelativeLayout>
-
-
-                        </RelativeLayout>
-
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/recyclerview"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/rel_customer_reviews"
-                            android:layout_marginTop="@dimen/margin_5"
-                            android:visibility="gone" />
-
-
-                        <RelativeLayout
-                            android:id="@+id/rel_show_all"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/recyclerview"
-                            android:layout_marginLeft="@dimen/margin_5"
-                            android:layout_marginRight="@dimen/margin_5"
-                            android:background="@color/colorPrimary"
-                            android:padding="@dimen/margin_5"
-                            android:visibility="gone">
-
-                            <TextView
-                                android:id="@+id/txt_show_all"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginLeft="@dimen/margin_8"
-                                android:layout_marginRight="@dimen/margin_8"
-                                android:text="@string/show_all_reviews"
-                                android:textColor="@android:color/white"
-                                android:textSize="15sp" />
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:id="@+id/rel_write_reviews"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/rel_show_all"
-                            android:layout_marginTop="@dimen/margin_5">
-
-                            <RelativeLayout
-                                android:id="@+id/rel_write_review"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/margin_5"
-                                android:layout_marginRight="@dimen/margin_5"
-                                android:background="@color/colorPrimary"
-                                android:padding="@dimen/margin_5">
-
-                                <TextView
-                                    android:id="@+id/txt_write_review_lbl"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_centerInParent="true"
-                                    android:layout_marginLeft="@dimen/margin_8"
-                                    android:layout_marginRight="@dimen/margin_8"
-                                    android:text="Write Review"
-                                    android:textColor="@android:color/white"
-                                    android:textSize="15sp" />
-
-                                <!-- <TextView
-                                     android:background="@color/colorPrimary"
-                                     android:layout_gravity="center_vertical"
-                                     android:layout_width="match_parent"
-                                     android:layout_centerVertical="true"
-                                     android:layout_toLeftOf="@id/txt_write_review_lbl"
-                                     android:layout_height="1dp" />
-
-                                 <TextView
-                                     android:background="@color/colorPrimary"
-                                     android:layout_gravity="center_vertical"
-                                     android:layout_width="match_parent"
-                                     android:layout_centerVertical="true"
-                                     android:layout_toRightOf="@id/txt_write_review_lbl"
-                                     android:layout_height="1dp" />-->
-
-                            </RelativeLayout>
-
-
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/shipping_and_return_relativelayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/review_relativelayout"
-                    android:layout_marginTop="8dp"
-                    android:visibility="visible">
-
-                    <TextView
-                        android:id="@+id/pd_shipping_and_return_lbl"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/expandable"
-                        android:drawableRight="@drawable/ic_add_black_24dp"
-                        android:gravity="center_vertical"
-                        android:padding="3dp"
-                        android:text="@string/shipping_returns"
-                        android:textColor="@color/black"/>
-
-                    <RelativeLayout
-                        android:id="@+id/shipping_and_return_content_relativelayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/pd_shipping_and_return_lbl"
-                        android:layout_marginTop="@dimen/margin_5"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/shipping_content"
-                            android:text="@string/shipping_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/return_title"
-                            android:text="@string/returns"
-                            android:textColor="@android:color/black"
-                            android:textStyle="bold"
-                            android:layout_below="@id/shipping_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
-                        <TextView
-                            android:id="@+id/return_content"
-                            android:paddingTop="4dp"
-                            android:paddingBottom="12dp"
-                            android:layout_below="@id/return_title"
-                            android:text="@string/shipping_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-
-                    </RelativeLayout>
-
-
-                </RelativeLayout>
 
 
                 <LinearLayout
                     android:id="@+id/other_like_products"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/shipping_and_return_relativelayout"
+                    android:layout_below="@id/pd_description_content"
                     android:orientation="vertical">
 
                     <RelativeLayout
