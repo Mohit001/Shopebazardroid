@@ -52,6 +52,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
     TextInputLayout countryInputLayout;
     TextInputLayout pincodeInputLayout;
     TextInputLayout additionalDetailsInputLayout;
+    TextInputLayout contactNumberInputLayout;
 
     AppCompatButton cancelButton, submitButton;
 
@@ -95,8 +96,12 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
         emailInputLayout = (TextInputLayout) findViewById(R.id.email_inputlayout);
         emailInputLayout.setTypeface(SplashActivity.opensans_regular);
 
+        contactNumberInputLayout = (TextInputLayout) findViewById(R.id.contact_number_inputlayout);
+        contactNumberInputLayout.setTypeface(SplashActivity.opensans_regular);
+
         additionalDetailsInputLayout = (TextInputLayout) findViewById(R.id.additional_details_inputlayout);
         additionalDetailsInputLayout.setTypeface(SplashActivity.opensans_regular);
+
 
         billingCheckBox = (AppCompatCheckBox) findViewById(R.id.address_billing_checkbox);
         billingCheckBox.setTypeface(SplashActivity.opensans_regular);
@@ -137,6 +142,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
             submitButton.setText("UPDATE");
             fullNameInputLayout.getEditText().setText(address.getFull_name());
             emailInputLayout.getEditText().setText(address.getEmail());
+            contactNumberInputLayout.getEditText().setText(address.getContact_number());
             addressLine1InputLayout.getEditText().setText(address.getAddress1());
             addressLine2InputLayout.getEditText().setText(address.getAddress2());
             cityInputLayout.getEditText().setText(address.getCity());
@@ -245,10 +251,22 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
                     String  emailString = emailInputLayout.getEditText().getText().toString().trim();
                     if(TextUtils.isEmpty(emailString))
                     {
-                        emailInputLayout.setErrorEnabled(true);
-                        emailInputLayout.setError("Please enter email");
+//                        emailInputLayout.setErrorEnabled(true);
+//                        emailInputLayout.setError("Please enter email");
+                        Utility.toastMessage(mContext, "Please enter full name");
                         return;
                     }
+
+                    String  contactNumberString = contactNumberInputLayout.getEditText().getText().toString().trim();
+                    if(TextUtils.isEmpty(contactNumberString))
+                    {
+//                        emailInputLayout.setErrorEnabled(true);
+//                        emailInputLayout.setError("Please enter contact number");
+                        Utility.toastMessage(mContext, "Please enter full name");
+                        return;
+                    }
+
+
 
                     String addressLine1String = addressLine1InputLayout.getEditText().getText()
                             .toString().trim();
@@ -317,6 +335,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
 
                     address.setFull_name(fullNameString);
                     address.setEmail(emailString);
+                    address.setContact_number(contactNumberString);
                     address.setAddress1(addressLine1String);
                     address.setAddress2(addressLine2String);
                     address.setState(stateString);

@@ -21,7 +21,7 @@
             android:layout_height="110dp"
             android:layout_centerVertical="true"
             android:scaleType="fitXY"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/ic_placeholder" />
 
         <RelativeLayout
             android:id="@+id/cart_product_detail_rl"
@@ -35,7 +35,10 @@
                 android:id="@+id/cart_product_name_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Product Name"
+                android:lines="1"
+                android:layout_marginRight="30dp"
+                android:ellipsize="end"
+                android:text="Product Name klkasjdf lksjdf lkjsdf l;ksjadf lsjakdf as;lkjasd flkajsdf "
                 android:textColor="@color/order_review_gray"
                 android:textSize="15sp" />
 

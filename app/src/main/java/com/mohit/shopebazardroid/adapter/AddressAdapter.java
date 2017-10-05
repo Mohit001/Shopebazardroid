@@ -135,7 +135,7 @@ public class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.Recycler
         holder.state.setText(entity.getState());
         holder.pincode.setText(entity.getPostcode());
         holder.email.setText(entity.getEmail());
-
+        holder.mobileno.setText(entity.getContact_number());
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override

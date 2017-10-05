@@ -18,6 +18,7 @@ public class Address implements Serializable{
 	private Date create_date;
 	private String full_name;
 	private String email;
+	private String contact_number;
 	
 	
 	public int getAddress_id() {
@@ -98,8 +99,10 @@ public class Address implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
-	
-	
-
+    public String getContact_number() {
+        return contact_number;
+    }
+    public void setContact_number(String contact_number) {
+        this.contact_number = contact_number;
+    }
 }
