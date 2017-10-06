@@ -99,10 +99,14 @@ public class Address implements Serializable{
 	public void setEmail(String email) {
 		this.email = email;
 	}
-    public String getContact_number() {
-        return contact_number;
-    }
-    public void setContact_number(String contact_number) {
-        this.contact_number = contact_number;
-    }
+	public String getContact_number() {
+		return contact_number;
+	}
+	public void setContact_number(String contact_number) {
+		this.contact_number = contact_number;
+	}
+	
+	
+	
+
 }

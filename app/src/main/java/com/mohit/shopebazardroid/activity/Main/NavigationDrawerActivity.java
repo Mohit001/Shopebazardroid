@@ -69,14 +69,16 @@ import com.mohit.shopebazardroid.fragment.SettingFragment;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.LogoutListner;
 import com.mohit.shopebazardroid.model.request.UserDetailsRequest;
-import com.mohit.shopebazardroid.model.response.BasicCMS;
 import com.mohit.shopebazardroid.model.response.CurrencyEntity;
 import com.mohit.shopebazardroid.model.response.LoginResponse;
 import com.mohit.shopebazardroid.model.response.ProductResponse;
 import com.mohit.shopebazardroid.model.response.ProductResult;
 import com.mohit.shopebazardroid.model.response.Result;
 import com.mohit.shopebazardroid.model.response.Userinfo;
+import com.mohit.shopebazardroid.models.BasicCMS;
 import com.mohit.shopebazardroid.models.Category;
+import com.mohit.shopebazardroid.models.Environment;
+import com.mohit.shopebazardroid.models.PaymentInfo;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
@@ -208,8 +210,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
         toolbarlogo.setVisibility(View.VISIBLE);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
-
+        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+        HTTPWebRequest.Basic(mContext, userid,AppConstants.APICode.BASIC, this);
     }
 
 
@@ -751,6 +753,31 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         Gson gson = new GsonBuilder().serializeNulls().create();
         switch (apiCode) {
+            case AppConstants.APICode.BASIC:
+
+                Type type = new TypeToken<BaseResponse<Environment>>(){}.getType();
+                BaseResponse<Environment> baseResponse = new Gson().fromJson(response, type);
+                Environment environment = baseResponse.getInfo();
+                if(cmsArrayList == null){
+                    cmsArrayList = new ArrayList<>();
+                }
+
+                cmsArrayList.addAll(environment.getBasicCMSPage());
+
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
+
+
+                PaymentInfo paymentInfo = environment.getPaymentInfo();
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_KEY, paymentInfo.getKey());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_SALT, paymentInfo.getSalt());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_IS_LIVE_MODE, String.valueOf(paymentInfo.getIs_live_mode()));
+
+                HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+
+                break;
             case AppConstants.APICode.USER_DETAILS:
                 LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
 
@@ -799,8 +826,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
                 if(!TextUtils.isEmpty(response)){
 
-                    Type type = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
-                    BaseResponse<List<Category>> categoryBaseResponse = new Gson().fromJson(response, type);
+                    Type basicType = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
+                    BaseResponse<List<Category>> categoryBaseResponse = new Gson().fromJson(response, basicType);
                     if(categoryBaseResponse.getStatus() == 1){
                         List<Category> categoryList = categoryBaseResponse.getInfo();
 
@@ -817,11 +844,11 @@ public class NavigationDrawerActivity extends BaseActivity implements
                                     .nav_menu_item);
 
                             Category childrens;
-                            for (int i = 0; i < navItems.length; i++) {
-                                childrens = new Category();
-                                childrens.setCat_name(navItems[i]);
-                                arrayList.add(childrens);
-                            }
+                        for (String navItem : navItems) {
+                            childrens = new Category();
+                            childrens.setCat_name(navItem);
+                            arrayList.add(childrens);
+                        }
 
                             BasicCMS cms;
                         if(cmsArrayList!= null){

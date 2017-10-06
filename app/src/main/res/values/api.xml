@@ -4,6 +4,9 @@
     <!--<string name="base_url">http://localhost:8080/</string>-->
     <string name="api_base_url">http://10.0.2.2:8080/</string>
 
+    <!-- app environment user_id=0 for guest user-->
+    <string name="api_environment">shppebazar/rest/user/environment/%1$s</string>
+
     <string name="api_login">shppebazar/rest/user/login</string>
     <string name="api_user_register">shppebazar/rest/user/registerUser</string>
     <!--variable will be user id-->

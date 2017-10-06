@@ -20,7 +20,6 @@ import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
 import com.mohit.shopebazardroid.model.request.FeatureProductRequest;
 import com.mohit.shopebazardroid.model.request.FeedbackRequest;
-import com.mohit.shopebazardroid.model.request.LoginRequest;
 import com.mohit.shopebazardroid.model.request.Mobile_return;
 import com.mohit.shopebazardroid.model.request.NotificationListRequest;
 import com.mohit.shopebazardroid.model.request.NotificationRequest;
@@ -52,16 +51,10 @@ public class HTTPWebRequest {
 
     public static HashMap<String, String> postDataParams;
 
-    public static void Login(Context context, LoginRequest req, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void Basic(Context context, String user_id, int apiCode, ApiResponse apiResponse) {
 
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.EMAIL, req.getEmail());
-        postDataParams.put(AppConstants.RequestDataKey.PASSWORD, req.getPassword());
-        postDataParams.put(AppConstants.RequestDataKey.DEVICE_TYPE, req.getDevice_type());
-        postDataParams.put(AppConstants.RequestDataKey.DEVICE_TOKEN, req.getDevice_id());
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, req.getShoppingCartID());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_LOGIN, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_environment, user_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true).execute(apiResponse);
     }
 
 

@@ -1,6 +1,8 @@
 package com.mohit.shopebazardroid.models;
 
-public class UserCartProduct {
+import java.io.Serializable;
+
+public class UserCartProduct implements Serializable {
 
 	private int user_cart_product_id;
 	private int cart_id;

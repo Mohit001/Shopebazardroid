@@ -1,15 +1,14 @@
 package com.mohit.shopebazardroid.models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class UserCart {
+public class UserCart implements Serializable {
 	
 	private int cart_id;
 	private String create_date;
 	private String ip_address;
 	private int user_id;
-	private String gst_type;
-	private double gst;
 	private String cart_status;
 	private String token;
 	private int shipping_address_id;
@@ -42,18 +41,7 @@ public class UserCart {
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
 	}
-	public String getGst_type() {
-		return gst_type;
-	}
-	public void setGst_type(String gst_type) {
-		this.gst_type = gst_type;
-	}
-	public double getGst() {
-		return gst;
-	}
-	public void setGst(double gst) {
-		this.gst = gst;
-	}
+	
 	public String getCart_status() {
 		return cart_status;
 	}

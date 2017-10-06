@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.List;
 
-public class Category implements Serializable{
+public class Category implements Serializable {
 
 	public static String KEY_OBJECT = "categorychildren";
 	public static String KEY_ID = "child_id";

@@ -3,7 +3,7 @@ package com.mohit.shopebazardroid.models;
 import java.io.Serializable;
 import java.util.List;
 
-public class Product implements Serializable{
+public class Product implements Serializable {
 
 	private int pro_mst_id;
 	private String pro_name;

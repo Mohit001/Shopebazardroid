@@ -240,6 +240,7 @@ public class AppConstants {
         public static final String NAME = "name";
         public static final String SESSIONID = "SessionId";
         public static final String CART_ID = "shoppingcartid";
+        public static final String CART_TOKEN= "cart_token";
         public static final String IS_LOGGED_IN = "is_logged_in";
 
         public static final String IS_REMEMBER_ME = "is_remember_me";
