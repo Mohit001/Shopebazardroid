@@ -1,8 +1,6 @@
 package com.mohit.shopebazardroid.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,19 +15,18 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.CartListner;
-import com.mohit.shopebazardroid.model.response.CartItems;
-import com.mohit.shopebazardroid.model.response.CartMediaItem;
+import com.mohit.shopebazardroid.models.UserCartProduct;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<CartItems> arrayList;
+    List<UserCartProduct> arrayList;
     CartListner listner;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
@@ -39,7 +36,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public CartAdapter(Context mContext, ArrayList<CartItems> arrayList, CartListner listner) {
+    public CartAdapter(Context mContext, List<UserCartProduct> arrayList, CartListner listner) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         this.listner = listner;
@@ -57,6 +54,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
         AppCompatTextView oldPrice;
         AppCompatTextView size;
         AppCompatTextView quentity;
+        AppCompatTextView shipping;
         AppCompatTextView subtotal;
         AppCompatTextView subtotal_lbl;
         AppCompatTextView cart_product_quentity_lbl;
@@ -66,6 +64,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
         ImageView imageView;
         LinearLayout cart_custom_option_ll;
         RelativeLayout cart_product_subtotal_ll;
+
 
         public RecyclerViewHolders(View itemView) {
             super(itemView);
@@ -85,6 +84,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
 
             quentity = (AppCompatTextView) itemView.findViewById(R.id.cart_product_quentity_content);
             quentity.setTypeface(SplashActivity.opensans_regular);
+
+            shipping = (AppCompatTextView) itemView.findViewById(R.id.cart_product_shipping_charges_content);
+            shipping.setTypeface(SplashActivity.opensans_regular);
 
             subtotal_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_subtotal_lbl);
             subtotal_lbl.setTypeface(SplashActivity.opensans_semi_bold);
@@ -127,9 +129,9 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, final int position) {
-        CartItems entity = arrayList.get(position);
-        holder.productName.setText(entity.getName());
-        if(entity.getDiscount_amount() > 0)
+        UserCartProduct entity = arrayList.get(position);
+        holder.productName.setText(entity.getProduct_name());
+        /*if(entity.getpriceDiscount_amount() > 0)
         {
             float tempPrice = (float) entity.getDiscount_amount()*baseCurrencyValue;
             holder.latestPrice.setText(baseCurrencyCode+String.format("%.2f", tempPrice));
@@ -143,23 +145,24 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
             holder.latestPrice.setText(baseCurrencyCode+(String.format("%.2f", tempPrice)));
             holder.oldPrice.setVisibility(View.GONE);
 
-        }
+        }*/
 
+        holder.latestPrice.setText(baseCurrencyCode+entity.getProduct_price());
         holder.latestPrice.setVisibility(View.VISIBLE);
-        /*float tempPrice = (float) (entity.getPrice_incl_tax() *//** baseCurrencyValue*//*);
-        holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", tempPrice)));
-        holder.oldPrice.setVisibility(View.GONE);*/
+        holder.oldPrice.setVisibility(View.GONE);
 
+        double shippingCharge = entity.getShipping_charge() * entity.getProduct_qty();
+        holder.shipping.setText(String.valueOf(shippingCharge));
 
         //holder.size.setText(entity.getSize());
-        holder.quentity.setText(String.valueOf(entity.getQty()));
+        holder.quentity.setText(String.valueOf(entity.getProduct_qty()));
 //        float tempSubtotal = (float) (entity.getRow_total_incl_tax()*baseCurrencyValue);
-        float tempSubtotal = (float) (entity.getRow_total_incl_tax() /** baseCurrencyValue*/);
+        float tempSubtotal = (float) (Float.parseFloat(entity.getSubtotal()) /** baseCurrencyValue*/);
         holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
         if (holder.cart_custom_option_ll.getChildCount() > 0)
             holder.cart_custom_option_ll.removeAllViews();
 
-        for (int i = 0; i < entity.getCustom_option().size(); i++) {
+        /*for (int i = 0; i < entity.getCustom_option().size(); i++) {
             LinearLayout horlinearLayout = new LinearLayout(mContext);
             horlinearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
@@ -191,31 +194,19 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
             valueTv.setTypeface(SplashActivity.opensans_regular);
             horlinearLayout.addView(valueTv);
             holder.cart_custom_option_ll.addView(horlinearLayout);
-        }
-
-
-        ArrayList<CartMediaItem> cartMediaItems = entity.getMedia();
-
-        /*for (int j = 0; j < cartMediaItems.size(); j++) {
-            for (int k = 0; k < cartMediaItems.get(j).getTypes().size(); k++) {
-
-                if (cartMediaItems.get(j).getTypes().get(k).equals("thumbnail")) {
-                    Picasso.with(mContext)
-                            .load(imagePrefix+cartMediaItems.get(j).getUrl())
-                            .into(holder.imageView);
-                }
-            }
         }*/
 
-        if(cartMediaItems != null
-                && cartMediaItems.size() > 0
-                && !TextUtils.isEmpty(cartMediaItems.get(0).getFile())){
+
+        String imagePath = TextUtils.isEmpty(entity.getImagePath())?"":entity.getImagePath();
+        if(!TextUtils.isEmpty(imagePath)){
+
             Picasso.with(mContext)
-                    .load(imagePrefix+cartMediaItems.get(0).getFile())
+                    .load(imagePrefix+imagePath)
                     .error(R.drawable.ic_placeholder)
                     .placeholder(R.drawable.ic_placeholder)
                     .into(holder.imageView);
         }
+
 
         holder.qty_minus.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,17 +1,14 @@
 package com.mohit.shopebazardroid.activity.Checkout;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -20,27 +17,26 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.CartAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.CartListner;
 import com.mohit.shopebazardroid.listener.ConfirmDialogListner;
-import com.mohit.shopebazardroid.model.request.CartItemsRequest;
-import com.mohit.shopebazardroid.model.request.CartJsonRequest;
-import com.mohit.shopebazardroid.model.request.CartProductOptionRequest;
-import com.mohit.shopebazardroid.model.request.CartProductRequest;
-import com.mohit.shopebazardroid.model.response.CartItems;
-import com.mohit.shopebazardroid.model.response.CartResponse;
-import com.mohit.shopebazardroid.model.response.RemoveCartResponse;
+import com.mohit.shopebazardroid.models.UserCart;
+import com.mohit.shopebazardroid.models.UserCartProduct;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -50,23 +46,21 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
         ApiResponse, ConfirmDialogListner {
 
     Context mContext;
-    ArrayList<CartItems> arrayList;
-    RecyclerView recyclerView;
+    private UserCart userCart;
+    private List<UserCartProduct> arrayList;
+    private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
-    CartAdapter mAdapter;
+    private CartAdapter mAdapter;
 
-    RelativeLayout cart_gross_total_rl;
-    AppCompatTextView grossTotalTextView;
-    AppCompatButton checkoutTextView;
-    int position;
-    String baseCurrencyCode = "";
-    float baseCurrencyValue;
+    private RelativeLayout cart_gross_total_rl;
+    private AppCompatTextView grossTotalTextView;
+    private AppCompatButton checkoutTextView;
+    private int position;
+    private String baseCurrencyCode = "";
+    private float baseCurrencyValue;
 
-    TextView gross_total_lbl;
-
-
-    String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
-    private int isFirstTime = 0; //0=firstTime, 1=checkoutlogin, 2=backfromBilling address
+    private TextView gross_total_lbl;
+    private String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 
     private boolean isCallFromBackPress = false;
     @Override
@@ -113,22 +107,21 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
 
         gross_total_lbl.setOnClickListener(this);
 
-        HTTPWebRequest.GetCartItems(mContext, AppConstants.APICode.GETCARTITEMS, this,
-                getSupportFragmentManager());
+        /*HTTPWebRequest.GetCartItems(mContext, getUserid(),AppConstants.APICode.GETCARTITEMS,
+                this,getSupportFragmentManager());*/
 
     }
 
     private void calculateGrosstotal() {
         // count gross total
-        CartItems cartEntity;
+        UserCartProduct userCartProduct;
         double grosstotal = 0;
         for (int i = 0; i < arrayList.size(); i++) {
-            cartEntity = arrayList.get(i);
-            grosstotal = grosstotal + cartEntity.getRow_total_incl_tax();
+            userCartProduct = arrayList.get(i);
+            grosstotal = grosstotal + Double.parseDouble(userCartProduct.getSubtotal());
         }
 
-        float tempGrossTotal = (float) (grosstotal /** baseCurrencyValue*/);
-        grossTotalTextView.setText(baseCurrencyCode + String.format("%.2f", tempGrossTotal));
+        grossTotalTextView.setText(baseCurrencyCode + String.format("%.2f", grosstotal));
 
     }
 
@@ -158,60 +151,20 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
     protected void onResume() {
         super.onResume();
 
-        if(isFirstTime == 0 || isFirstTime == 2){
-            HTTPWebRequest.GetCartItems(mContext, AppConstants.APICode.GETCARTITEMS, this,
-                    getSupportFragmentManager());
-            isFirstTime = 1;
-        } else if (isFirstTime == 1){
-            if(isUserLogin()){
-                startActivity(new Intent(mContext, ActivityBillingAddress.class));
-                isFirstTime =2;
-            }
-        }
-
+        String cart_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
+        HTTPWebRequest.GetCartItems(mContext, cart_id, AppConstants.APICode.GETCARTITEMS, this,
+                getSupportFragmentManager());
     }
 
 
     private void callUpdateCart(){
-        Gson gson = new Gson();
-        CartJsonRequest cartJsonRequest = new CartJsonRequest();
-        CartItemsRequest cartItemsRequest = new CartItemsRequest();
-        cartItemsRequest.setTotalitems("" + arrayList.size());
-        ArrayList<CartProductRequest> cartitems = new ArrayList<>();
-        for (int i = 0; i < arrayList.size(); i++) {
-            CartProductRequest cartProductRequest = new CartProductRequest();
-            cartProductRequest.setProduct_id(arrayList.get(i).getProduct_id());
-            cartProductRequest.setType(arrayList.get(i).getProduct_type());
-            cartProductRequest.setQty("" + arrayList.get(i).getQty());
-            ArrayList<CartProductOptionRequest> custom_option_id = new ArrayList<>();
-            for (int j = 0; j < arrayList.get(i).getCustom_option_id().size(); j++) {
-                CartProductOptionRequest cartProductOptionRequest = new
-                        CartProductOptionRequest();
-                cartProductOptionRequest.setOption_id(arrayList.get(i)
-                        .getCustom_option_id().get(j).getOption_id());
-                cartProductOptionRequest.setValue_id(arrayList.get(i).getCustom_option_id
-                        ().get(j).getValue_id());
-                custom_option_id.add(cartProductOptionRequest);
-            }
-            for (int j = 0; j < arrayList.get(i).getSupper_attribute_id().size(); j++) {
-                CartProductOptionRequest cartProductOptionRequest = new
-                        CartProductOptionRequest();
-                cartProductOptionRequest.setOption_id(arrayList.get(i)
-                        .getSupper_attribute_id().get(j).getOption_id());
-                cartProductOptionRequest.setValue_id(arrayList.get(i)
-                        .getSupper_attribute_id().get(j).getValue_id());
-                custom_option_id.add(cartProductOptionRequest);
-            }
-            cartProductRequest.setCustom_option_id(custom_option_id);
-            cartitems.add(cartProductRequest);
-        }
-        cartItemsRequest.setCartitems(cartitems);
-        cartJsonRequest.setJsonrequest(cartItemsRequest);
-        String jsonrequest = gson.toJson(cartJsonRequest);
-        Log.d("jsonrequest", "jsonrequest==" + jsonrequest);
-        HTTPWebRequest.UpdateProductFromCart(mContext, jsonrequest, AppConstants.APICode
-                .UPDATE_CART, this, getSupportFragmentManager());
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        userCart.setUserCartProduct(arrayList);
+        String jsonRequest = gson.toJson(userCart);
+        HTTPWebRequest.UpdateCart(mContext, jsonRequest, AppConstants.APICode.UPDATE_CART, this, getSupportFragmentManager());
     }
+
+
     @Override
     public void onClick(View view) {
 
@@ -231,14 +184,15 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void onQuentityDecreaseClick(int index) {
-        CartItems entity = arrayList.get(index);
-        if (entity.getQty() > 1) {
-            int qty = entity.getQty();
+        UserCartProduct entity = arrayList.get(index);
+        if (entity.getProduct_qty() > 1) {
+            int qty = entity.getProduct_qty();
             qty -= 1;
-            entity.setQty(qty);
-            entity.setRow_total_incl_tax(entity.getQty() * entity.getPrice_incl_tax());
-//            arrayList.remove(index);
-//            arrayList.add(index, entity);
+            entity.setProduct_qty(qty);
+            Double subtotal = (entity.getProduct_qty() * Double.parseDouble(entity.getProduct_price()))
+                    +(entity.getProduct_qty() * entity.getShipping_charge());
+
+            entity.setSubtotal(String.valueOf(subtotal));
             arrayList.set(index, entity);
             calculateGrosstotal();
             mAdapter.notifyDataSetChanged();
@@ -248,13 +202,14 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onQuentityIncreaseClick(int index) {
 
-        CartItems entity = arrayList.get(index);
-        int qty = entity.getQty();
+        UserCartProduct entity = arrayList.get(index);
+        int qty = entity.getProduct_qty();
         qty += 1;
-        entity.setQty(qty);
-        entity.setRow_total_incl_tax(entity.getQty() * entity.getPrice_incl_tax());
-//        arrayList.remove(index);
-//        arrayList.add(index, entity);
+        entity.setProduct_qty(qty);
+        Double subtotal = (entity.getProduct_qty() * Double.parseDouble(entity.getProduct_price()))
+                +(entity.getProduct_qty() * entity.getShipping_charge());
+
+        entity.setSubtotal(String.valueOf(subtotal));
         arrayList.set(index, entity);
         calculateGrosstotal();
         mAdapter.notifyDataSetChanged();
@@ -272,132 +227,114 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     public void apiResponsePostProcessing(String response, int apiCode) {
-        if (response != null) {
-            Gson gson = new GsonBuilder().serializeNulls().create();
-            switch (apiCode) {
-                case AppConstants.APICode.GETCARTITEMS:
-
-                    CartResponse cartResponse = gson.fromJson(response, CartResponse.class);
-
-                    if (cartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(this, LoginActivity.class));
-                        this.finish();
-                        return;
-                    }
-
-                    if (cartResponse.getStatus().equalsIgnoreCase("fail")) {
-                        if (arrayList != null && arrayList.size() > 0) {
-                            arrayList.clear();
-                            calculateGrosstotal();
-                            mAdapter.notifyDataSetChanged();
-                            return;
-                        }
-                    }
-                    if (cartResponse.getResult().getCart() != null) {
-                        arrayList = cartResponse.getResult().getCart().getItems();
-
-                        if (arrayList.size() == 0) {
-                            cart_gross_total_rl.setVisibility(View.GONE);
-                            Toast.makeText(mContext, "Cart is empty", Toast.LENGTH_SHORT).show();
-                        }
-
-                        calculateGrosstotal();
-
-                        // remove item with parentid
-                        CartItems cartItems;
-                        for (int i = 0; i < arrayList.size(); i++) {
-                            cartItems = arrayList.get(i);
-                            if (!TextUtils.isEmpty(cartItems.getParent_item_id()))
-                                arrayList.remove(i);
-                        }
-                        mAdapter = new CartAdapter(this, arrayList, this);
-                        recyclerView.setAdapter(mAdapter);
-                    }
-                    break;
-                case AppConstants.APICode.REMOVE_CART:
-                    RemoveCartResponse removeCartResponse = gson.fromJson(response, RemoveCartResponse.class);
-
-                    if (removeCartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(this, LoginActivity.class));
-                        this.finish();
-                        return;
-                    }
+        if(TextUtils.isEmpty(response)){
+            Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
+            return;
+        }
 
 
-                    if (removeCartResponse.getStatus().equalsIgnoreCase("success")) {
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        switch (apiCode) {
+            case AppConstants.APICode.REMOVE_CART:
+            case AppConstants.APICode.GETCARTITEMS:
 
-                        MyApplication.preferencePutString(AppConstants
-                                .SharedPreferenceKeys.CART_TOTAL_ITEMS, "" + removeCartResponse.getResult().getData().getCart().getItems_count());
-                        Utility.toastMessage(mContext, removeCartResponse.getResult().getMessage());
+                Type getCartItemsType = new TypeToken<BaseResponse<UserCart>>(){}.getType();
+                BaseResponse<UserCart> baseResponse = gson.fromJson(response, getCartItemsType);
+                userCart = baseResponse.getInfo();
+                if(arrayList == null) {
+                    arrayList = new ArrayList<>();
+                } else {
+                    arrayList.clear();
+                }
+                arrayList.addAll(userCart.getUserCartProduct());
 
-                        if (removeCartResponse.getResult().getData().getCart().getItems().size() == 0) {
-                            cart_gross_total_rl.setVisibility(View.GONE);
+                if (arrayList.size() > 0) {
+                    calculateGrosstotal();
+                    mAdapter = new CartAdapter(this, arrayList, this);
+                    recyclerView.setAdapter(mAdapter);
+                } else {
+                    if(mAdapter != null)
+                        mAdapter.notifyDataSetChanged();
+
+                    cart_gross_total_rl.setVisibility(View.GONE);
+                    Toast.makeText(mContext, "Cart is empty", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            /*case AppConstants.APICode.REMOVE_CART:
+                RemoveCartResponse removeCartResponse = gson.fromJson(response, RemoveCartResponse.class);
+
+                if (removeCartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
+                    Utility.toastMessage(mContext, R.string.subscription_over);
+                    MyApplication.clearPreference();
+                    startActivity(new Intent(this, LoginActivity.class));
+                    this.finish();
+                    return;
+                }
+
+
+                if (removeCartResponse.getStatus().equalsIgnoreCase("success")) {
+
+                    MyApplication.preferencePutString(AppConstants
+                            .SharedPreferenceKeys.CART_TOTAL_ITEMS, "" + removeCartResponse.getResult().getData().getCart().getItems_count());
+                    Utility.toastMessage(mContext, removeCartResponse.getResult().getMessage());
+
+                    if (removeCartResponse.getResult().getData().getCart().getItems().size() == 0) {
+                        cart_gross_total_rl.setVisibility(View.GONE);
 //                            Toast.makeText(mContext, "Cart is empty", Toast.LENGTH_SHORT).show();
-                        }
+                    }
 
-                        String cartItemCount = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, "0");
-                        /*int count= Integer.parseInt(cartItemCount);
-                        count = count -1;*/
+                    String cartItemCount = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, "0");
+                    *//*int count= Integer.parseInt(cartItemCount);
+                    count = count -1;*//*
 
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(cartItemCount));
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(cartItemCount));
 //                        cartItemBadge.setText(String.valueOf(Integer.parseInt(cartItemBadge.getText().toString())-1));
 
-                        arrayList.remove(position);
-                        calculateGrosstotal();
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    break;
-                case AppConstants.APICode.UPDATE_CART:
-                    cartResponse = gson.fromJson(response, CartResponse.class);
+                    arrayList.remove(position);
+                    calculateGrosstotal();
+                    mAdapter.notifyDataSetChanged();
+                }
+                break;*/
+            case AppConstants.APICode.UPDATE_CART:
 
-                    if (cartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(this, LoginActivity.class));
-                        this.finish();
-                        return;
-                    }
-                    if (cartResponse.getStatus().equalsIgnoreCase("success")) {
-                        if(isCallFromBackPress){
-                            this.finish();
-                        } else{
-                            if(isUserLogin()){
-                                isFirstTime = 2;
-                                startActivity(new Intent(mContext, ActivityBillingAddress.class));
-                            } else {
-                                Intent intent = new Intent(this, LoginActivity.class);
-                                startActivity(intent);
+                Gson updateCartGson = new GsonBuilder().serializeNulls().create();
+                Type updateCartType = new TypeToken<BaseResponse<UserCart>>(){}.getType();
+                BaseResponse<UserCart> updateCartResponse = updateCartGson.fromJson(response, updateCartType);
+
+
+            if (updateCartResponse.getStatus() == ApiResponseStatus.CART_QUENTITY_EXCEED.getStatus_code()) {
+                Utility.showConfirmDialog(this, new ConfirmDialogListner() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                                //call get cart item
+                                HTTPWebRequest.GetCartItems(mContext, getUserid(),
+                                        AppConstants.APICode.GETCARTITEMS,
+                                        CartActivity.this,getSupportFragmentManager());
                             }
-                        }
+
+                            @Override
+                            public void onNegativeButtonClick() {
+
+                            }
+                        }, "Cart Update Fail",
+                        updateCartResponse.getMessage(),
+                        getString(R.string.ok),
+                        null,
+                        getSupportFragmentManager());
 
 
-
-                    } else{
-//                        Toast.makeText(mContext, cartResponse.getResult().getMessage(), Toast.LENGTH_SHORT).show();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle("Quantity Exceeds");
-                        builder.setMessage(cartResponse.getResult().getMessage());
-
-                        String positiveText = getString(android.R.string.ok);
-                        builder.setPositiveButton(positiveText,
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // positive button logic
-                                    }
-                                });
-
-                        AlertDialog dialog = builder.create();
-                        // display dialog
-                        dialog.show();
-                    }
-                    break;
+            } else if(updateCartResponse.getStatus() == ApiResponseStatus.CART_PRODUCT_UPDATE_FAIL.getStatus_code()){
+                Toast.makeText(mContext, updateCartResponse.getMessage(), Toast.LENGTH_SHORT).show();
+            }else{
+                if(isCallFromBackPress){
+                    this.finish();
+                } else{
+                    startActivity(new Intent(this, ActivityShippingAddress.class));
+                }
             }
+            break;
         }
+
     }
 
     @Override
@@ -414,8 +351,10 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
     public void onPositiveButtonClick() {
 
         Utility.dismissConfirmDialog();
-        HTTPWebRequest.RemoveProductFromCart(mContext, arrayList.get(position), AppConstants
-                .APICode.REMOVE_CART, this, getSupportFragmentManager());
+        UserCartProduct userCartProduct = arrayList.get(position);
+        HTTPWebRequest.RemoveProductFromCart(mContext, userCart.getCart_id(),
+                userCartProduct.getProduct_id(), AppConstants.APICode.REMOVE_CART,
+                this, getSupportFragmentManager());
     }
 
     @Override

@@ -9,8 +9,8 @@ public class AppConstants {
         public static final String LOGIN = "Logging in...";
         public static final String PLEASE_WAIT = "Please wait...";
         public static final String SYNC_DATA = "Syncing data...";
-        public static final String CREATING_EMPTY_CART = "Creating empty cart...";
-        public static final String TOTAL_AMOUNT = "Receiving total amount...";
+        public static final String UPDATING_CART = "Updating cart...";
+        public static final String ADDING_PRODUCT_TO_CART = "Adding item to cart...";
         public static final String SENDING_COUPON_CODE = "Sending coupon code...";
         public static final String CREATING_ORDER = "Creating order...";
         public static final String ADD_ADDRESS_TO_CART = "Add addresses to cart...";

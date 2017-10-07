@@ -784,7 +784,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 userCart.setUserCartProduct(list);
 
                 String jsonRequest = new Gson().toJson(userCart);
-                HTTPWebRequest.AddToCart(mContext, jsonRequest, AppConstants.APICode.ADDTOCART, this, getSupportFragmentManager());
+                HTTPWebRequest.AddUpdateCart(mContext, jsonRequest, AppConstants.APICode.ADDTOCART, this, getSupportFragmentManager());
 
 
                 break;
