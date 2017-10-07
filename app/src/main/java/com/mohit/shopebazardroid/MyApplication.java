@@ -140,7 +140,6 @@ public class MyApplication extends Application {
     }
 
     public static void clearPreference() {
-        int themeCode = sharedPreferences.getInt(AppConstants.SharedPreferenceKeys.THEME_CODE, 1);
         String baseImageURL = sharedPreferences.getString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
         String merchantkey = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.MERCHANT_KEY, "");
         String merchantsalt = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.MERCHANT_SALT, "");
@@ -152,7 +151,6 @@ public class MyApplication extends Application {
 
         sharedPreferencesEditor.clear();
         sharedPreferencesEditor.commit();
-        preferencePutInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, themeCode);
         preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
         preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, "0");
         preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_QTY, "0");

@@ -524,6 +524,10 @@ public class NavigationDrawerActivity extends BaseActivity implements
 //        startActivity(new Intent(this, LoginActivity.class));
 //        this.finish();
 
+        if(getIs_login_compulsory()){
+            startActivity(new Intent(this, LoginActivity.class));
+            this.finish();
+        }
     }
 
 
@@ -768,7 +772,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
-
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(environment.getCartCount()));
+                textView.setText(String.valueOf(environment.getCartCount()));
 
                 PaymentInfo paymentInfo = environment.getPaymentInfo();
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_KEY, paymentInfo.getKey());
