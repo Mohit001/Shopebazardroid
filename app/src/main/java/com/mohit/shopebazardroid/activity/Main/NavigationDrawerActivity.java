@@ -335,148 +335,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
     }
 
-
-    /*@Override
-    public boolean onNavigationMenuEvent(Event event, SublimeBaseMenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case R.id.nav_menu_home:
-                isdrawerclose = true;
-                toolbar.setTitle(getResources().getString(R.string.app_name));
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
-                        .commit();
-                Log.i(TAG, "home");
-                break;
-
-            case R.id.nav_cat1:
-                Log.d(TAG, "category1");
-                startActivity(new Intent(mContext, SubcategoryActivity.class));
-                break;
-            case R.id.nav_cat2:
-                Log.d(TAG, "category1");
-                startActivity(new Intent(mContext, SubcategoryActivity.class));
-                break;
-            case R.id.nav_menu_order_history:
-                isdrawerclose = true;
-                toolbar.setTitle("Order History");
-//                startActivity(new Intent(mContext, OrderHistoryActivity.class));
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new OrderHistoryFragment(),
-                        OrderHistoryFragment.TAG)
-                        .commit();
-                Log.i(TAG, "Order History");
-                break;
-            case R.id.nav_menu_manage_Address:
-                isdrawerclose = true;
-                toolbar.setTitle("Manage Address");
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new AddressFragment(), AddressFragment.TAG)
-                        .commit();
-                Log.i(TAG, "Manage Address");
-                break;
-            case R.id.nav_menu_setting:
-                isdrawerclose = true;
-                toolbar.setTitle("Setting");
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new SettingFragment(), SettingFragment.TAG)
-                        .commit();
-                Log.i(TAG, "Setting");
-                break;
-            case R.id.nav_menu_feedback:
-                isdrawerclose = true;
-                toolbar.setTitle("Feedback");
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new FeedbackFragment(), FeedbackFragment.TAG)
-                        .commit();
-                Log.i(TAG, "Feedback");
-                break;
-            case R.id.nav_menu_rate_review:
-                isdrawerclose = true;
-                toolbar.setTitle("Rate and Review");
-                Log.i(TAG, "Rate and Review");
-                break;
-            case R.id.nav_menu_faq:
-                isdrawerclose = true;
-                new FinestWebView.Builder(this)
-                .titleDefault("FAQ")
-                        .show("http://www.mspinstitute.com/technologies/android/");
-
-                *//*Bundle bundle = new Bundle();
-                bundle.putString(AppConstants.WEB_URL, "http://www.mspinstitute
-                .com/technologies/android/");
-                WebviewFragment webviewFragment = new WebviewFragment();
-                webviewFragment.setArguments(bundle);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, webviewFragment, WebviewFragment.TAG)
-                        .commit();*//*
-//                toolbar.setTitle("FAQ");
-                Log.i(TAG, "FAQ");
-                break;
-            case R.id.nav_menu_about_us:
-                isdrawerclose = true;
-
-//                toolbar.setTitle("About us");
-
-                new FinestWebView.Builder(this)
-                        .titleDefault("About us")
-                        .show("http://www.google.co.in");
-
-
-                *//*Bundle bundle1 = new Bundle();
-                bundle1.putString(AppConstants.WEB_URL, "www.google.co.in");
-                WebviewFragment webviewFragment1 = new WebviewFragment();
-                webviewFragment1.setArguments(bundle1);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, webviewFragment1, WebviewFragment.TAG)
-                        .commit();*//*
-                Log.i(TAG, "About us");
-                break;
-            case R.id.nav_menu_tc:
-                isdrawerclose = true;
-//                toolbar.setTitle("Terms and Condition");
-
-                new FinestWebView.Builder(this)
-                        .titleDefault("Terms and Condition")
-                        .show("http://www.mspinstitute.com/terms-conditions/");
-                *//*Bundle bundle2 = new Bundle();
-                bundle2.putString(AppConstants.WEB_URL, "www.mspinstitute.com/terms-conditions/");
-                WebviewFragment webviewFragment2 = new WebviewFragment();
-                webviewFragment2.setArguments(bundle2);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, webviewFragment2, WebviewFragment.TAG)
-                        .commit();*//*
-
-                Log.i(TAG, "Terms and Condition");
-                break;
-            case R.id.nav_menu_logout:
-                isdrawerclose = true;
-                Log.i(TAG, "Logout");
-                logoutDialog = new LogoutDialog();
-                logoutDialog.setListner(this);
-                logoutDialog.show(getSupportFragmentManager(), LogoutDialog.TAG);
-                break;
-            default:
-                isdrawerclose = false;
-        }
-
-
-        if(isdrawerclose)
-        drawer.closeDrawer(GravityCompat.START);
-
-        return true;
-    }*/
-
     @Override
     public void onLogoutCancel() {
         logoutDialog.dismiss();
@@ -693,15 +551,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                     cms = cmsArrayList.get(j);
                     if (clickedMenu.equalsIgnoreCase(cms.getPage_title())) {
                         Log.e("Urlll ", "--->>>> " + cms.getContenturl());
-//                        new FinestWebView.Builder(this)
-//                                .titleDefault(cms.getPage_title())
-//                                .backPressToClose(true)
-//                                .statusBarColor(getResources().getColor(R.color.colorPrimaryDark))
-//                                .toolbarColor(getResources().getColor(R.color.colorPrimary))
-//                                .iconDefaultColor(Color.WHITE)
-//                                .titleColor(Color.WHITE)
-//                                .menuColor(Color.WHITE)
-//                                .show(cms.getContenturl());
+
 
                         Bundle bundle = new Bundle();
 
@@ -720,20 +570,11 @@ public class NavigationDrawerActivity extends BaseActivity implements
                                 .replace(R.id.main_frame, webView_detail, WebView_Detail.TAG)
                                 .commit();
 
-//                        Intent intent = new Intent(this, WebView_Detail.class);
-//                        intent.putExtra(TITLE, cms.getPage_title());
-//                        intent.putExtra(URL, cms.getContenturl());
-//                        startActivity(intent);
 
                     }
                 }
             }
 
-           /* if (!childrens.getName().equalsIgnoreCase("rate and review")
-                    && !childrens.getName().equalsIgnoreCase("Home")
-                    && !childrens.getName().equalsIgnoreCase("Login")
-                    && !childrens.getName().equalsIgnoreCase("Logout"))
-                toolbar.setTitle(childrens.getName());*/
 
             if(childrens.getCat_name().equalsIgnoreCase("home")){
                 getSupportActionBar().setDisplayShowTitleEnabled(false);

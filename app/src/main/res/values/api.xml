@@ -30,4 +30,8 @@
     <!--variable will be address id-->
     <string name="api_delete_address">shppebazar/rest/address/remove/%1$s</string>
     <string name="api_update_address">shppebazar/rest/address/update</string>
+
+
+    <string name="api_add_update_product">shppebazar/rest/cart/addUpdateProduct</string>
+
 </resources>

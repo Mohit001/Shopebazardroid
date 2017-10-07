@@ -9,7 +9,7 @@ public class UserCartProduct implements Serializable {
 	private int product_id;
 	private String product_name;
 	private int product_qty;
-	private double product_price;
+	private String product_price;
 	private String product_code;
 	private int shipping_charge;
 	private String status;
@@ -59,10 +59,10 @@ public class UserCartProduct implements Serializable {
 	public void setProduct_qty(int product_qty) {
 		this.product_qty = product_qty;
 	}
-	public double getProduct_price() {
+	public String getProduct_price() {
 		return product_price;
 	}
-	public void setProduct_price(double product_price) {
+	public void setProduct_price(String product_price) {
 		this.product_price = product_price;
 	}
 	public String getProduct_code() {
