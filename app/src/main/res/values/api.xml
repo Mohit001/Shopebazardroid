@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--<string name="base_url">http://localhost:8080/</string>-->
-    <!--<string name="api_base_url">http://10.0.2.2:8080/</string>-->
-    <!--<string name="api_base_url">http://192.168.0.4:8080/</string>-->
-    <string name="api_base_url">http://52.91.52.204/teshppebazar/rest/</string>
+    <!--<string name="base_url">http://localhost:8080/shppebazar/rest/</string>-->
+     <string name="api_base_url">http://10.0.2.2:8080/shppebazar/rest/</string>
+    <!--<string name="api_base_url">http://192.168.0.4:8080/shppebazar/rest/</string>-->
+    <!--<string name="api_base_url">http://52.91.52.204/teshppebazar/rest/</string>-->
 
     <!-- app environment user_id=0 for guest user-->
     <string name="api_environment">user/environment/%1$s</string>
@@ -18,7 +18,7 @@
     <string name="api_update_profie">user/updateUser</string>
 
 
-    <string name="api_category">/Category</string>
+    <string name="api_category">Category</string>
     <!-- Variable will be category id-->
     <string name="api_category_product_list">Category/getProducts/%1$s</string>
 
@@ -39,4 +39,7 @@
     <string name="api_remove_cart_item">cart/removeCartProduct/%1$s/%2$s</string>
     <string name="api_cart_set_shipping_address">cart/setShippingAddress/%1$s/%2$s</string>
     <string name="api_cart_set_billing_address">cart/setBillingAddress/%1$s/%2$s</string>
+    <string name="api_cart_get_payment_method">cart/getPaymentMethod</string>
+    <string name="api_cart_set_payment_method">cart/setPaymentType/%1$s/%2$s</string>
+
 </resources>

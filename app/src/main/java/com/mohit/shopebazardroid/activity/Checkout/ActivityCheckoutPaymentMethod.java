@@ -13,23 +13,25 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.adapter.PaymentMethodAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.PaymentRequest;
 import com.mohit.shopebazardroid.model.response.PaymentCCTypes;
-import com.mohit.shopebazardroid.model.response.PaymentMethod;
-import com.mohit.shopebazardroid.model.response.PaymentResponse;
-import com.mohit.shopebazardroid.model.response.ShippingResponse;
+import com.mohit.shopebazardroid.models.PaymentMethod;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 26/7/16.
@@ -42,7 +44,7 @@ public class ActivityCheckoutPaymentMethod extends BaseActivity implements ApiRe
 
     RecyclerView mRecyclerView;
     LinearLayoutManager layoutManager;
-    ArrayList<PaymentMethod> arrayList = new ArrayList<>();
+    List<PaymentMethod> arrayList = new ArrayList<>();
     PaymentMethodAdapter adapter;
     PaymentMethod selectedPaymentMethod = null;
     RelativeLayout relativeLayout;
@@ -77,10 +79,7 @@ public class ActivityCheckoutPaymentMethod extends BaseActivity implements ApiRe
     protected void onResume() {
         super.onResume();
 
-        PaymentRequest request = new PaymentRequest();
-        request.setCartid(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));
-        request.setAction(String.valueOf(1));
-        HTTPWebRequest.GetPaymentMethodList(mContext, request, AppConstants.APICode.PAYMENT_METHOD_LIST, this, getSupportFragmentManager());
+        HTTPWebRequest.GetPaymentMethodList(mContext, AppConstants.APICode.PAYMENT_METHOD_LIST, this, getSupportFragmentManager());
 
     }
 
@@ -136,38 +135,36 @@ public class ActivityCheckoutPaymentMethod extends BaseActivity implements ApiRe
 
         switch (apiCode) {
             case AppConstants.APICode.PAYMENT_METHOD_LIST:
-                PaymentResponse shippingResponse = new Gson().fromJson(response, PaymentResponse
-                        .class);
 
-                if (shippingResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                Type getPaymentMethodType = new TypeToken<BaseResponse<List<PaymentMethod>>>(){}.getType();
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                BaseResponse<List<PaymentMethod>> baseResponse = gson.fromJson(response, getPaymentMethodType);
 
-                if (shippingResponse.getStatus().equalsIgnoreCase("success")) {
-                    arrayList = shippingResponse.getResult().getPaymentlist();
+                if (baseResponse.getStatus() == ApiResponseStatus.CART_PAYMENT_TYPE_LIST_SUCCESS.getStatus_code()
+                        && baseResponse.getInfo().size() > 0) {
+
+                    if(arrayList == null)
+                        arrayList = new ArrayList<>();
+                    else{
+                        arrayList.clear();
+                    }
+
+                    arrayList.addAll(baseResponse.getInfo());
                     adapter = new PaymentMethodAdapter(mContext, arrayList, this);
                     mRecyclerView.setAdapter(adapter);
+                    selectedPaymentMethod = arrayList.get(0);
                 }
                 break;
 
             case AppConstants.APICode.PAYMENT_METHOD_SELECTION:
-                ShippingResponse shippingResponse1 = new Gson().fromJson(response,
-                        ShippingResponse.class);
 
-                if (shippingResponse1.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    Intent intent = new Intent(this, LoginActivity.class);
-                    startActivity(intent);
-                    this.finish();
-                    return;
-                }
+                Type setPaymentMethodToCartType = new TypeToken<BaseResponse<List<PaymentMethod>>>(){}.getType();
+                Gson gson1 = new GsonBuilder().serializeNulls().create();
+                BaseResponse<List<PaymentMethod>> baseResponse1 = gson1.fromJson(response, setPaymentMethodToCartType);
 
-                if (shippingResponse1.getStatus().equalsIgnoreCase("success")) {
+
+
+                if (baseResponse1.getStatus() == ApiResponseStatus.CART_PAYMENT_TYPE_UPDATE_SUCCESS.getStatus_code()) {
                     Intent cartIntent  = new Intent(mContext, ActivityCheckoutOrderReview.class);
                     cartIntent.putExtra(AppConstants.INTENTDATA.PAYMENT_METHOD, selectedPaymentMethod);
                     startActivity(cartIntent);
@@ -197,15 +194,10 @@ public class ActivityCheckoutPaymentMethod extends BaseActivity implements ApiRe
                     return;
                 }
 
+                String cart_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
+                String payment_type_id = String.valueOf(selectedPaymentMethod.getId());
 
-
-                PaymentRequest request = new PaymentRequest();
-                request.setCartid(MyApplication.preferenceGetString(AppConstants
-                        .SharedPreferenceKeys.CART_ID, "0"));
-                request.setAction(String.valueOf(2));
-                request.setCode(selectedPaymentMethod.getCode());
-                HTTPWebRequest.SetPaymentMethodToCart(mContext, request, AppConstants.APICode
-                        .PAYMENT_METHOD_SELECTION, this, getSupportFragmentManager());
+                HTTPWebRequest.SetPaymentMethodToCart(mContext, cart_id, payment_type_id, AppConstants.APICode.PAYMENT_METHOD_SELECTION, this, getSupportFragmentManager());
                 break;
         }
 

@@ -23,7 +23,6 @@ import com.mohit.shopebazardroid.model.request.NotificationListRequest;
 import com.mohit.shopebazardroid.model.request.NotificationRequest;
 import com.mohit.shopebazardroid.model.request.OfferOfTheDayRequest;
 import com.mohit.shopebazardroid.model.request.OrderHistoryRequest;
-import com.mohit.shopebazardroid.model.request.PaymentRequest;
 import com.mohit.shopebazardroid.model.request.PayuRequest;
 import com.mohit.shopebazardroid.model.request.ProductDetailRequest;
 import com.mohit.shopebazardroid.model.request.ProductRequest;
@@ -142,12 +141,12 @@ public class HTTPWebRequest {
 
     public static void setCartShippingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
         String url = UrlFormetter.getURL(context, R.string.api_cart_set_shipping_address, cart_id, address_id);
-        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void setCartBillingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
         String url = UrlFormetter.getURL(context, R.string.api_cart_set_billing_address, cart_id, address_id);
-        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
 
@@ -235,23 +234,15 @@ public class HTTPWebRequest {
     }
 
 
-    public static void GetPaymentMethodList(Context context, PaymentRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, request.getCartid());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, request.getAction());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_PAYMENT_METHOD, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void GetPaymentMethodList(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_get_payment_method);
+       new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void SetPaymentMethodToCart(Context context, PaymentRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void SetPaymentMethodToCart(Context context, String cart_id, String payment_method_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, request.getCartid());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, request.getAction());
-        postDataParams.put(AppConstants.RequestDataKey.CODE, request.getCode());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_PAYMENT_METHOD, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_cart_set_payment_method, cart_id, payment_method_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
 

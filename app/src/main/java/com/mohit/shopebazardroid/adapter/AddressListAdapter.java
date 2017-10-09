@@ -95,14 +95,11 @@ public class AddressListAdapter extends BaseAdapter {
         }
 
 
-        /*if (entity.isSelected()) {
+        if (entity.getSelected()) {
             holder.selectedRadioButton.setChecked(true);
         } else {
             holder.selectedRadioButton.setChecked(false);
-        }*/
-
-
-
+        }
 
         holder.selectedRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override

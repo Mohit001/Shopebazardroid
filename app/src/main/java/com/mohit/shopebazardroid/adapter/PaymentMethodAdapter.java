@@ -13,21 +13,21 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.AddressListner;
-import com.mohit.shopebazardroid.model.response.PaymentMethod;
+import com.mohit.shopebazardroid.models.PaymentMethod;
 import com.mohit.shopebazardroid.utility.AppConstants;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<PaymentMethod> arrayList;
+    List<PaymentMethod> arrayList;
     AddressListner listner;
     int themeCode;
 
-    public PaymentMethodAdapter(Context mContext, ArrayList<PaymentMethod> arrayList, AddressListner listner) {
+    public PaymentMethodAdapter(Context mContext, List<PaymentMethod> arrayList, AddressListner listner) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         this.listner = listner;

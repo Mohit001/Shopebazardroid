@@ -15,12 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.adapter.AddressListAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.models.Address;
@@ -137,7 +139,6 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 //                startActivity(new Intent(mContext, AddUpdateAddressActivity.class));
 //                break;
             case R.id.proceed_checkout_btn:
-                Address selecteedAddress = null;
 
                 if(arrayList == null){
                     Toast.makeText(mContext, R.string.empty_billing_address, Toast.LENGTH_SHORT).show();
@@ -155,13 +156,13 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
                         selecteedAddress = address;*/
                 }
 
-                if (selecteedAddress == null) {
+                if (selectedAddress == null) {
                     Utility.toastMessage(mContext, R.string.address_empty_selection);
                     return;
                 }
 
                 String cart_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
-                HTTPWebRequest.setCartBillingAddress(mContext, cart_id, String.valueOf(selecteedAddress.getAddress_id()), AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
+                HTTPWebRequest.setCartBillingAddress(mContext, cart_id, String.valueOf(selectedAddress.getAddress_id()), AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
 
 
                 break;
@@ -196,32 +197,20 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 
     @Override
     public void onSelectionChange(int index) {
-//        ArrayList<Address> list = new ArrayList<>();
-//        list.addAll(arrayList);
-
-//        arrayList.clear();
-
         Address address;
         for (int i = 0; i < arrayList.size(); i++) {
             address = arrayList.get(i);
             if (i == index) {
-               /* address.setIs_default_billing(true);
-                address.setSelected(true);*/
-                selectedAddress = arrayList.get(index);
+                address.setSelected(true);
+                selectedAddress = address;
             } else {
-                /*address.setIs_default_billing(false);
-                address.setSelected(false);*/
+                address.setSelected(false);
+
             }
 
-//            list.remove(index);
-//            list.add(index, address);
             arrayList.set(i, address);
         }
 
-//        mAddressAdapter.notifyDataSetChanged();
-//        arrayList.addAll(list);
-//        mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 1);
-//        listView.setAdapter(mAddressListAdapter);
         mAddressListAdapter.notifyDataSetChanged();
 
     }
@@ -247,9 +236,19 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
                         arrayList = new ArrayList<>();
                     }
 
-                    arrayList.addAll(addressResponse.getInfo());
-                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, false, 0);
-                    listView.setAdapter(mAddressListAdapter);
+                    if(addressResponse.getInfo().size() > 0){
+                        arrayList.addAll(addressResponse.getInfo());
+
+                        mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 0);
+                        listView.setAdapter(mAddressListAdapter);
+
+                        selectedAddress = arrayList.get(0);
+                        selectedAddress.setSelected(true);
+                        arrayList.set(0, selectedAddress);
+
+                        mAddressListAdapter.notifyDataSetChanged();
+
+                    }
                 } else {
                     Utility.toastMessage(mContext, "No Address found");
                 }
@@ -266,6 +265,19 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
                     mAddressListAdapter.notifyDataSetChanged();
                     listView.setAdapter(mAddressListAdapter);
                 }
+                break;
+
+            case AppConstants.APICode.ADDRESS_UPDATE_DEFAULT:
+                Type setBillingAddressType = new TypeToken<BaseResponse<List<Address>>>(){}.getType();
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                BaseResponse<List<Address>> baseResponse = gson.fromJson(response, setBillingAddressType);
+
+                Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(baseResponse.getStatus() == ApiResponseStatus.CART_BILLING_ADDRESS_UPDATE_SUCCESS.getStatus_code()){
+                    startActivity(new Intent(this, ActivityCheckoutPaymentMethod.class));
+                    this.finish();
+                }
+
                 break;
         }
     }

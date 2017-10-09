@@ -15,12 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.adapter.AddressListAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.models.Address;
@@ -41,17 +43,17 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
         AddressListner, ApiResponse {
 
     public static String TAG = ActivityShippingAddress.class.getSimpleName();
-    Context mContext;
-    RelativeLayout relativeLayout;
-    Button continueTextView;
-    List<Address> arrayList;
-    RecyclerView recyclerView;
-    ListView listView;
+    private Context mContext;
+    private RelativeLayout relativeLayout;
+    private Button continueTextView;
+    private List<Address> arrayList;
+    private RecyclerView recyclerView;
+    private ListView listView;
     private LinearLayoutManager linearLayoutManager;
-    Address selectedAddress;
-    //    AddressAdapter mAddressAdapter;
-    AddressListAdapter mAddressListAdapter;
-    AnimatedFloatingActionButtonBottom addAddressFab;
+    private Address selectedAddress;
+     //  private AddressAdapter mAddressAdapter;
+    private AddressListAdapter mAddressListAdapter;
+    private AnimatedFloatingActionButtonBottom addAddressFab;
 
     int deleteIndex;
     private Menu menu;
@@ -215,8 +217,7 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
 
-                Type addressListType = new TypeToken<BaseResponse<List<Address>>>() {
-                }.getType();
+                Type addressListType = new TypeToken<BaseResponse<List<Address>>>() {}.getType();
                 BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
                 if (addressResponse.getInfo().size() != 0) {
@@ -227,9 +228,20 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
                         arrayList.clear();
                     }
 
-                    arrayList.addAll(addressResponse.getInfo());
-                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 0);
-                    listView.setAdapter(mAddressListAdapter);
+                    if(addressResponse.getInfo().size() > 0){
+
+                        arrayList.addAll(addressResponse.getInfo());
+
+                        mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 0);
+                        listView.setAdapter(mAddressListAdapter);
+
+                        selectedAddress = arrayList.get(0);
+                        selectedAddress.setSelected(true);
+                        arrayList.set(0, selectedAddress);
+
+                        mAddressListAdapter.notifyDataSetChanged();
+                    }
+
                 } else {
                     Utility.toastMessage(mContext, "No Address found");
                 }
@@ -246,6 +258,18 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
                     mAddressListAdapter.notifyDataSetChanged();
                     listView.setAdapter(mAddressListAdapter);
                 }
+                break;
+            case AppConstants.APICode.ADDRESS_UPDATE_DEFAULT:
+                Type setShippingAddressType = new TypeToken<BaseResponse<List<Address>>>(){}.getType();
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                BaseResponse<List<Address>> baseResponse = gson.fromJson(response, setShippingAddressType);
+
+                Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                if(baseResponse.getStatus() == ApiResponseStatus.CART_SHIPPING_ADDRESS_UPDATE_SUCCESS.getStatus_code()){
+                    startActivity(new Intent(this, ActivityBillingAddress.class));
+                    this.finish();
+                }
+
                 break;
         }
 
