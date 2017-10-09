@@ -6,11 +6,22 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
+import com.mohit.shopebazardroid.listener.ApiResponse;
+import com.mohit.shopebazardroid.models.Environment;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
+import com.mohit.shopebazardroid.network.HTTPWebRequest;
+import com.mohit.shopebazardroid.utility.AppConstants;
+import com.mohit.shopebazardroid.utility.Utility;
 
-public class SplashActivity extends BaseActivity  {
+import java.lang.reflect.Type;
+
+public class SplashActivity extends BaseActivity implements ApiResponse {
 
     private static final String TAG = SplashActivity.class.getSimpleName();
     Context context;
@@ -34,7 +45,7 @@ public class SplashActivity extends BaseActivity  {
 
         context = SplashActivity.this;
 
-        setIs_login_compulsory(1);
+        setIs_login_compulsory(true);
         /*String firebaseid = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "firebaseID:- "+firebaseid);
         if(!TextUtils.isEmpty(firebaseid)){
@@ -55,7 +66,7 @@ public class SplashActivity extends BaseActivity  {
         opensans_semi_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLD.TTF");
         opensans_semi_bold_italic = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLDITALIC.TTF");
 
-        init();
+        HTTPWebRequest.Basic(this, "0", AppConstants.APICode.BASIC, this);
     }
 
     private void init() {
@@ -76,7 +87,7 @@ public class SplashActivity extends BaseActivity  {
 //
 //                }else {
                 Intent intent;
-                if(getIs_login_compulsory() == 1){
+                if(getIs_login_compulsory()){
                     intent = new Intent(context, LoginActivity.class);
                 } else{
                     intent = new Intent(context, NavigationDrawerActivity.class); // for guest login
@@ -92,4 +103,33 @@ public class SplashActivity extends BaseActivity  {
         }, SPLASH_TIME_OUT);
     }
 
+    @Override
+    public void apiResponsePostProcessing(String response, int apiCode) {
+        if (response == null) {
+            Utility.toastMessage(this, R.string.host_not_reachable);
+            return;
+        }
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        switch (apiCode) {
+            case AppConstants.APICode.BASIC:
+
+                Type type = new TypeToken<BaseResponse<Environment>>() {
+                }.getType();
+                BaseResponse<Environment> baseResponse = new Gson().fromJson(response, type);
+                Environment environment = baseResponse.getInfo();
+                setIs_login_compulsory(environment.isLoginCompalsory());
+                init();
+        }
+    }
+
+    @Override
+    public void networkError(int apiCode) {
+
+    }
+
+    @Override
+    public void responseError(int apiCode) {
+
+    }
 }

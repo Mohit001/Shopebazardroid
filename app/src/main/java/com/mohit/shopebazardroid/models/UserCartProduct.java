@@ -1,22 +1,27 @@
 package com.mohit.shopebazardroid.models;
 
-import java.io.Serializable;
-
-public class UserCartProduct implements Serializable {
+public class UserCartProduct {
 
 	private int user_cart_product_id;
 	private int cart_id;
 	private int product_id;
 	private String product_name;
 	private int product_qty;
-	private double product_price;
+	private String product_price;
 	private String product_code;
 	private int shipping_charge;
 	private String status;
 	private String gst_type;
 	private double gst;
+	private String subtotal;
+	private String imagePath;
 	
-	
+	public String getImagePath() {
+		return imagePath;
+	}
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
 	public String getGst_type() {
 		return gst_type;
 	}
@@ -59,10 +64,10 @@ public class UserCartProduct implements Serializable {
 	public void setProduct_qty(int product_qty) {
 		this.product_qty = product_qty;
 	}
-	public double getProduct_price() {
+	public String getProduct_price() {
 		return product_price;
 	}
-	public void setProduct_price(double product_price) {
+	public void setProduct_price(String product_price) {
 		this.product_price = product_price;
 	}
 	public String getProduct_code() {
@@ -82,6 +87,12 @@ public class UserCartProduct implements Serializable {
 	}
 	public void setStatus(String status) {
 		this.status = status;
+	}
+	public String getSubtotal() {
+		return subtotal;
+	}
+	public void setSubtotal(String subtotal) {
+		this.subtotal = subtotal;
 	}
 	
 	

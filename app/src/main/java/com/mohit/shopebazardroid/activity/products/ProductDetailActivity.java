@@ -37,7 +37,9 @@ import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
@@ -49,11 +51,9 @@ import com.mohit.shopebazardroid.adapter.ReviewListAdapter;
 import com.mohit.shopebazardroid.adapter.SpinnerProductDetailAdapter;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
-import com.mohit.shopebazardroid.model.request.CartItemRequest;
 import com.mohit.shopebazardroid.model.request.CustomOptionRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
 import com.mohit.shopebazardroid.model.request.RelatedProductsRequest;
-import com.mohit.shopebazardroid.model.response.AddCartResponse;
 import com.mohit.shopebazardroid.model.response.CustomerReviewList;
 import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.RelatedProductList;
@@ -62,11 +62,15 @@ import com.mohit.shopebazardroid.model.response.ReviewList;
 import com.mohit.shopebazardroid.model.response.WishListResponse;
 import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.models.ProductImage;
+import com.mohit.shopebazardroid.models.UserCart;
+import com.mohit.shopebazardroid.models.UserCartProduct;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.ImageSlider_DescriptionAnimation;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -748,36 +752,39 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 break;
             case R.id.pd_addtocart_btn:
 
-                boolean allowtoadd = true;
+
                 for (int i = 0; i < customOptionRequestsArray.size(); i++) {
                     Log.d(TAG, "onClick: " + customOptionRequestsArray.get(i).getCustom_title_value());
                     if (customOptionRequestsArray.get(i).getCustom_title_value().equalsIgnoreCase("Select")) {
-                        allowtoadd = false;
                         Toast.makeText(mContext, "Please select " + customOptionRequestsArray.get(i).getCustom_title(), Toast.LENGTH_SHORT).show();
                         break;
                     }
                 }
 
-                if (allowtoadd) {
-                    CartItemRequest cartItemRequest = new CartItemRequest();
-//                    cartItemRequest.setProductId(product_id);
-                    cartItemRequest.setProductQty(Integer.parseInt(quentityTextView.getText()
-                            .toString().trim()));
-                    if (isCustomOption) {
-                        cartItemRequest.setConfigurable(false);
-                    } else {
-                        cartItemRequest.setConfigurable(true);
-                    }
-                    cartItemRequest.setCustomOptions(customOptionRequestsArray);
-                    cartItemRequest.setCode(MyApplication.preferenceGetString(AppConstants
-                            .SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, "USD"));
-                    cartItemRequest.setCustomer_id(customerid);
-                    cartItemRequest.setStore_id(storeid);
-                    cartItemRequest.setFinal_price(latestPriceTextView.getText().toString().substring(1));
+                UserCart userCart = new UserCart();
+                String cartid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
 
-                    HTTPWebRequest.AddToCart(mContext, cartItemRequest, AppConstants.APICode
-                            .ADDTOCART, this, getSupportFragmentManager());
-                }
+                userCart.setCart_id(Integer.parseInt(cartid));
+                userCart.setToken(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_TOKEN, FirebaseInstanceId.getInstance().getToken()));
+                userCart.setUser_id(Integer.parseInt(getUserid()));
+
+                UserCartProduct userCartProduct = new UserCartProduct();
+                userCartProduct.setCart_id(Integer.parseInt(cartid));
+                userCartProduct.setProduct_id(product.getPro_mst_id());
+                userCartProduct.setProduct_name(product.getPro_name());
+                userCartProduct.setProduct_qty(Integer.parseInt(quentityTextView.getText().toString().trim()));
+                userCartProduct.setProduct_price(product.getPro_price());
+                userCartProduct.setProduct_code(product.getPro_code());
+                userCartProduct.setShipping_charge(30);
+                userCartProduct.setGst(product.getGst());
+                userCartProduct.setGst_type(product.getGst_type());
+
+                List<UserCartProduct> list = new ArrayList<>();
+                list.add(userCartProduct);
+                userCart.setUserCartProduct(list);
+
+                String jsonRequest = new Gson().toJson(userCart);
+                HTTPWebRequest.AddUpdateCart(mContext, jsonRequest, AppConstants.APICode.ADDTOCART, this, getSupportFragmentManager());
 
 
                 break;
@@ -797,26 +804,17 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
         switch (apiCode) {
 
             case AppConstants.APICode.ADDTOCART:
-                AddCartResponse addCartResponse = new Gson().fromJson(response, AddCartResponse
-                        .class);
 
-                if (addCartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-                if (addCartResponse.getStatus().equalsIgnoreCase("success")) {
-                    Utility.toastMessage(mContext, addCartResponse.getResult().getMessage());
-                    cartid = addCartResponse.getResult().getData().getShoppingcartid();
-                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID,
-                            addCartResponse.getResult().getData().getShoppingcartid());
-                    MyApplication.preferencePutString(AppConstants
-                            .SharedPreferenceKeys.CART_TOTAL_ITEMS, "" + addCartResponse.getResult().getData().getItems_count());
-                    cartItemBadge.setText("" + addCartResponse.getResult().getData().getItems_count());
-                } else {
-                    Utility.toastMessage(mContext, addCartResponse.getResult().getMessage());
+                Type addToCartType = new TypeToken<BaseResponse<UserCart>>(){}.getType();
+                BaseResponse<UserCart> baseResponse = new Gson().fromJson(response, addToCartType);
+                Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if (baseResponse.getStatus() == 1) {
+                    UserCart userCart = baseResponse.getInfo();
+                    cartid = String.valueOf(userCart.getCart_id());
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID,cartid);
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(userCart.getCartCount()));
+                    cartItemBadge.setText(String.valueOf(userCart.getCartCount()));
                 }
 
                 break;

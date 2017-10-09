@@ -38,7 +38,7 @@ public class BaseActivity extends AppCompatActivity {
     protected static TextView cartItemBadge;
     private String fragmentTAG;
     private static String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "");
-    private static int is_login_compulsory = -1;
+    private static boolean is_login_compulsory = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -187,11 +187,11 @@ public class BaseActivity extends AppCompatActivity {
         return MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "1");
     }
 
-    public int getIs_login_compulsory() {
+    public boolean getIs_login_compulsory() {
         return is_login_compulsory;
     }
 
-    public  void setIs_login_compulsory(int is_login_compulsory) {
+    public  void setIs_login_compulsory(boolean is_login_compulsory) {
         this.is_login_compulsory = is_login_compulsory;
     }
 

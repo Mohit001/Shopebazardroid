@@ -1,9 +1,8 @@
 package com.mohit.shopebazardroid.models;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class UserCart implements Serializable {
+public class UserCart {
 	
 	private int cart_id;
 	private String create_date;
@@ -15,6 +14,7 @@ public class UserCart implements Serializable {
 	private int billing_address_id;
 	private int payment_type_id;
 	private String salt;
+	private int cartCount;
 	private List<UserCartProduct> userCartProduct;
 	
 	public int getCart_id() {
@@ -77,6 +77,12 @@ public class UserCart implements Serializable {
 	}
 	public void setSalt(String salt) {
 		this.salt = salt;
+	}
+	public int getCartCount() {
+		return cartCount;
+	}
+	public void setCartCount(int cartCount) {
+		this.cartCount = cartCount;
 	}
 	public List<UserCartProduct> getUserCartProduct() {
 		return userCartProduct;

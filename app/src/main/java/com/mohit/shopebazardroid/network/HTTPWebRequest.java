@@ -10,11 +10,9 @@ import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.AddCommentInOrderRequest;
 import com.mohit.shopebazardroid.model.request.AddRemoveWishListRequest;
 import com.mohit.shopebazardroid.model.request.AddReviewRequest;
-import com.mohit.shopebazardroid.model.request.AddressRequest;
 import com.mohit.shopebazardroid.model.request.ApplyRewardsRequest;
 import com.mohit.shopebazardroid.model.request.AreaListRequest;
 import com.mohit.shopebazardroid.model.request.BestSellingRequest;
-import com.mohit.shopebazardroid.model.request.CartItemRequest;
 import com.mohit.shopebazardroid.model.request.CityListRequest;
 import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
@@ -40,7 +38,6 @@ import com.mohit.shopebazardroid.model.request.StripePayment;
 import com.mohit.shopebazardroid.model.request.TrendingNowRequest;
 import com.mohit.shopebazardroid.model.request.UserDetailsRequest;
 import com.mohit.shopebazardroid.model.request.VerifyCouponRequest;
-import com.mohit.shopebazardroid.model.response.CartItems;
 import com.mohit.shopebazardroid.model.response.SearchRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 
@@ -130,14 +127,6 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_COUNTRY, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddressList(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, String.valueOf(1));
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
-    }
-
     public static void AddressList(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         String url = UrlFormetter.getURL(context, R.string.api_get_address_list, userid);
@@ -151,14 +140,16 @@ public class HTTPWebRequest {
     }
 
 
-    public static void AddressUpdateDefault(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.DEFAULT_ADDRESS_ID, String.valueOf(request.getAddressId()));
-        postDataParams.put(AppConstants.RequestDataKey.MODE, String.valueOf(request.getMode()));
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, request.getShoppingCartID());
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS_UPDATE_DEFAULT, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void setCartShippingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_set_shipping_address, cart_id, address_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
+
+    public static void setCartBillingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_set_billing_address, cart_id, address_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    }
+
 
 
     public static void AddressAdd(Context context, String request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -215,39 +206,22 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_SEARCH, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddToCart(Context context, CartItemRequest cartItemRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void AddUpdateCart(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, cartItemRequest.getStore_id());
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, cartItemRequest.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_USER_ID, MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0"));
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_SHOPPINGCART_ID, MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_PRODUCT_ID, cartItemRequest.getProductId());
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_QTY, String.valueOf(cartItemRequest.getProductQty()));
-        postDataParams.put(AppConstants.RequestDataKey.CODE, cartItemRequest.getCode());
-        postDataParams.put(AppConstants.RequestDataKey.FINAL_PRICE, cartItemRequest.getFinal_price());
-
-        if (!cartItemRequest.isConfigurable()) {
-            postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_OPTION_TYPE, "simple");
-            for (int i = 0; i < cartItemRequest.getCustomOptions().size(); i++) {
-                postDataParams.put("option_id[" + i + "]", String.valueOf(cartItemRequest.getCustomOptions().get(i).getCustom_title_id()));
-                postDataParams.put("value_id[" + i + "]", String.valueOf(cartItemRequest.getCustomOptions().get(i).getCustom_title_value_id()));
-            }
-        } else {
-            postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_OPTION_TYPE, "configurable");
-            for (int i = 0; i < cartItemRequest.getCustomOptions().size(); i++) {
-                postDataParams.put("super_attribute_id[" + i + "]", String.valueOf(cartItemRequest.getCustomOptions().get(i).getCustom_title_id()));
-                postDataParams.put("super_value_id[" + i + "]", String.valueOf(cartItemRequest.getCustomOptions().get(i).getCustom_title_value_id()));
-            }
-        }
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADD_TO_CART, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_add_update_product);
+        new OKHttpAsyncTask(context, url, jsonRequest, AppConstants.DialogMessage.ADDING_PRODUCT_TO_CART, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void GetCartItems(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void UpdateCart(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_GET_CART_ITEMS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_update_cart);
+        new OKHttpAsyncTask(context, url, jsonRequest, AppConstants.DialogMessage.UPDATING_CART, apiCode, false, fragmentManager).execute(apiResponse);
+    }
+
+
+    public static void GetCartItems(Context context, String cart_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_get_cart_item, cart_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void SetShippingMethodToCart(Context context, ShippingRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -288,27 +262,9 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_CART, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void RemoveProductFromCart(Context context, CartItems cartItems, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));
-        postDataParams.put(AppConstants.RequestDataKey.PRODUCT_ID, cartItems.getProduct_id());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, "" + 2);
-        if (cartItems.getProduct_type().equalsIgnoreCase("simple")) {
-            postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_OPTION_TYPE, "simple");
-
-            for (int i = 0; i < cartItems.getCustom_option_id().size(); i++) {
-                postDataParams.put("option_id[" + i + "]", String.valueOf(cartItems.getCustom_option_id().get(i).getOption_id()));
-                postDataParams.put("value_id[" + i + "]", String.valueOf(cartItems.getCustom_option_id().get(i).getValue_id()));
-            }
-        } else {
-            postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_OPTION_TYPE, "configurable");
-            for (int i = 0; i < cartItems.getSupper_attribute_id().size(); i++) {
-                postDataParams.put("super_attribute_id[" + i + "]", String.valueOf(cartItems.getSupper_attribute_id().get(i).getOption_id()));
-                postDataParams.put("super_value_id[" + i + "]", String.valueOf(cartItems.getSupper_attribute_id().get(i).getValue_id()));
-            }
-        }
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_MANAGE_CART, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void RemoveProductFromCart(Context context, int cart_id, int product_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_remove_cart_item, String.valueOf(cart_id), String.valueOf(product_id));
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void UpdateProductFromCart(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

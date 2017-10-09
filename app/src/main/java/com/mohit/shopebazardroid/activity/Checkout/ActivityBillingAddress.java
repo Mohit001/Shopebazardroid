@@ -20,12 +20,9 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
 import com.mohit.shopebazardroid.activity.BaseActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.adapter.AddressListAdapter;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.AddressRequest;
-import com.mohit.shopebazardroid.model.response.AddressResponse;
 import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
@@ -91,10 +88,9 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 
 
     private void setupAddressLive() {
-        AddressRequest request = new AddressRequest();
-        request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .USER_ID, "0"));
-        HTTPWebRequest.AddressList(mContext, request, AppConstants.APICode.ADDRESS_LIST, this,
+        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+                .USER_ID, "0");
+        HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
                 getSupportFragmentManager());
     }
 
@@ -164,13 +160,9 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
                     return;
                 }
 
-                AddressRequest request = new AddressRequest();
-                request.setAddressId(String.valueOf(selecteedAddress.getAddress_id()));
-                request.setMode(1);
-                request.setShoppingCartID(MyApplication.preferenceGetString(AppConstants
-                        .SharedPreferenceKeys.CART_ID, "0"));
-                HTTPWebRequest.AddressUpdateDefault(mContext, request, AppConstants.APICode
-                        .ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
+                String cart_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
+                HTTPWebRequest.setCartBillingAddress(mContext, cart_id, String.valueOf(selecteedAddress.getAddress_id()), AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
+
 
                 break;
         }
@@ -196,8 +188,8 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 
         deleteIndex = index;
         Address address = arrayList.get(index);
-        AddressRequest request = new AddressRequest();
-        HTTPWebRequest.AddressDelete(mContext, String.valueOf(request.getAddressId()), AppConstants.APICode.ADDRESS_DELETE,
+        String addressID = String.valueOf(address.getAddress_id());
+        HTTPWebRequest.AddressDelete(mContext, addressID, AppConstants.APICode.ADDRESS_DELETE,
                 this, getSupportFragmentManager());
 
     }
@@ -244,17 +236,18 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
-                Type addressListType =  new TypeToken<List<Address>>(){}.getType();
+
+                Type addressListType = new TypeToken<BaseResponse<List<Address>>>() {
+                }.getType();
                 BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
                 if (addressResponse.getInfo().size() != 0) {
 
-                    if(arrayList == null){
+                    if (arrayList == null) {
                         arrayList = new ArrayList<>();
                     }
 
                     arrayList.addAll(addressResponse.getInfo());
-
                     mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, false, 0);
                     listView.setAdapter(mAddressListAdapter);
                 } else {
@@ -262,37 +255,16 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
                 }
                 break;
             case AppConstants.APICode.ADDRESS_DELETE:
-                Type removeAddressType = new TypeToken<List<Address>>(){}.getType();
+                Type removeAddressType = new TypeToken<BaseResponse<List<Address>>>() {
+                }.getType();
                 BaseResponse<List<Address>> removeAddresResponse = new Gson().fromJson(response, removeAddressType);
                 Toast.makeText(mContext, removeAddresResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                if(removeAddresResponse.getStatus() == 1 && deleteIndex != 0){
+                if (removeAddresResponse.getStatus() == 1 && deleteIndex != -1) {
 
                     arrayList.remove(deleteIndex);
-                    deleteIndex = 0;
-                }
-                break;
-
-            case AppConstants.APICode.ADDRESS_UPDATE_DEFAULT:
-                AddressResponse addressResponse2 = new Gson().fromJson(response, AddressResponse
-                        .class);
-
-                if(addressResponse2.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0"))
-                {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-
-                if (addressResponse2.getStatus().equalsIgnoreCase("success")) {
-                    Utility.toastMessage(mContext, "Billing address saved successfully");
-
-//                    ActivityCheckoutOrderReview.address_billing = selectedAddress;
-                    startActivity(new Intent(mContext, ActivityShippingAddress.class));
-                    finish();
-                } else {
-                    Utility.toastMessage(mContext, "Billing address not saved!!.\n Try again...");
+                    deleteIndex = -1;
+                    mAddressListAdapter.notifyDataSetChanged();
+                    listView.setAdapter(mAddressListAdapter);
                 }
                 break;
         }

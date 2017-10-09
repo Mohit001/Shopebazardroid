@@ -77,7 +77,7 @@
             android:layout_marginLeft="@dimen/margin_5"
             android:layout_marginTop="@dimen/margin_5"
             android:text="email"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/address_mobile_lbl"
@@ -159,6 +159,17 @@
             android:layout_marginLeft="@dimen/margin_5"
             android:layout_marginTop="@dimen/margin_5"
             android:text="postcode" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/address_additional_details_lbl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_5"
+            android:layout_marginTop="@dimen/margin_5"
+            android:visibility="gone"
+            android:text="" />
+
+
 
 
 

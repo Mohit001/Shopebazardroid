@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.widget.AppCompatRadioButton;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,14 +101,7 @@ public class AddressListAdapter extends BaseAdapter {
             holder.selectedRadioButton.setChecked(false);
         }*/
 
-//        holder.selectedRadioButton.setOnCheckedChangeListener(new CompoundButton
-//                .OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                listner.onSelectionChange(position);
-////                Utility.toastMessage(mContext,"Clicked "+tempPosition);
-//            }
-//        });
+
 
 
         holder.selectedRadioButton.setOnClickListener(new View.OnClickListener() {
@@ -119,19 +113,21 @@ public class AddressListAdapter extends BaseAdapter {
 
 
 
-
         holder.selectedRadioButton.setText(entity.getFull_name());
         holder.alias.setVisibility(View.GONE);
-
-
-        holder.street.setText(entity.getAddress1());
-        holder.landmark.setText(entity.getAddress2());
+        holder.mobileno.setText(entity.getContact_number());
+        holder.homeOfficeNo.setText(entity.getAddress1());
+        holder.street.setText(entity.getAddress2());
         holder.city.setText(entity.getCity());
         holder.state.setText(entity.getState());
         holder.pincode.setText(entity.getPostcode());
         holder.email.setText(entity.getEmail());
-
-
+        if(TextUtils.isEmpty(entity.getAddition_detail())){
+            holder.additionalDetails.setText(entity.getAddition_detail());
+            holder.additionalDetails.setVisibility(View.VISIBLE);
+        } else {
+            holder.additionalDetails.setVisibility(View.GONE);
+        }
 
         holder.edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -189,6 +185,7 @@ public class AddressListAdapter extends BaseAdapter {
         AppCompatTextView pincode;
         AppCompatTextView email;
         AppCompatTextView mobileno;
+        AppCompatTextView additionalDetails;
         ImageView edit;
         ImageView delete;
 
@@ -228,6 +225,10 @@ public class AddressListAdapter extends BaseAdapter {
 
             mobileno = (AppCompatTextView) itemView.findViewById(R.id.address_mobile_lbl);
             mobileno.setTypeface(SplashActivity.opensans_regular);
+
+            additionalDetails = (AppCompatTextView) itemView.findViewById(R.id.address_additional_details_lbl);
+            additionalDetails.setTypeface(SplashActivity.opensans_regular);
+
 
             edit = (ImageView) itemView.findViewById(R.id.address_edit_image);
             delete = (ImageView) itemView.findViewById(R.id.address_delete_image);
