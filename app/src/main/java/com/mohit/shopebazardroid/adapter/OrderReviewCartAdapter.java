@@ -2,7 +2,6 @@ package com.mohit.shopebazardroid.adapter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,19 +16,18 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.CartListner;
-import com.mohit.shopebazardroid.model.response.CartCustomOption;
-import com.mohit.shopebazardroid.model.response.OrderReviewCartItem;
+import com.mohit.shopebazardroid.models.UserCartProduct;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
  */
 public class OrderReviewCartAdapter extends BaseAdapter {
     Context mContext;
-    ArrayList<OrderReviewCartItem> arrayList;
+    List<UserCartProduct> arrayList;
     CartListner listner;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
@@ -37,7 +35,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
     String paymentMethod = "";
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public OrderReviewCartAdapter(Context mContext, ArrayList<OrderReviewCartItem> arrayList) {
+    public OrderReviewCartAdapter(Context mContext, List<UserCartProduct> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         this.listner = listner;
@@ -59,7 +57,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
     }
 
     @Override
-    public OrderReviewCartItem getItem(int i) {
+    public UserCartProduct getItem(int i) {
         return arrayList.get(i);
     }
 
@@ -70,7 +68,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
-        OrderReviewCartItem entity = getItem(position);
+        UserCartProduct entity = getItem(position);
         ViewHolder holder;
         if (view == null) {
             view = LayoutInflater.from(mContext).inflate(R.layout.adapter_orderreview_cart,
@@ -82,7 +80,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
         }
 
 
-        holder.productName.setText(entity.getName());
+        holder.productName.setText(entity.getProduct_name());
         /*if(entity.getDiscount_amount() > 0)
         {
             float tempPrice = (float) entity.getDiscount_amount()*baseCurrencyValue;
@@ -99,11 +97,16 @@ public class OrderReviewCartAdapter extends BaseAdapter {
             holder.oldPrice.setVisibility(View.GONE);
         }*/
 
-        float tempPrice = (float) (entity.getPrice_incl_tax()/* * baseCurrencyValue*/);
-        holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", tempPrice)));
-        holder.oldPrice.setVisibility(View.GONE);
+//        float tempPrice = (float) (entity.getpricePrice_incl_tax()/* * baseCurrencyValue*/);
+//        holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", tempPrice)));
+//        holder.oldPrice.setVisibility(View.GONE);
 
-        if (entity.getCustom_option() != null) {
+            holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", Double.parseDouble(entity.getProduct_price()))));
+            holder.oldPrice.setVisibility(View.GONE);
+
+        holder.customOption.setVisibility(View.GONE);
+
+        /*if (entity.getCustom_option() != null) {
             CartCustomOption customOption;
             for (int i = 0; i < entity.getCustom_option().size(); i++) {
                 customOption = entity.getCustom_option().get(i);
@@ -117,21 +120,26 @@ public class OrderReviewCartAdapter extends BaseAdapter {
             }
         } else {
             holder.customOption.setVisibility(View.GONE);
-        }
-        holder.quentity.setText(String.valueOf(entity.getQty()));
-        float tempSubtotal = (float) (entity.getRow_total_incl_tax() /* * baseCurrencyValue*/);
-        holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
+        }*/
 
-        if(entity.getMedia() != null
-                && entity.getMedia().size() > 0){
 
-            String imgurl = entity.getMedia().get(0).getFile();
+        holder.quentity.setText(String.valueOf(entity.getProduct_qty()));
+
+//        float tempSubtotal = (float) (entity.getRow_total_incl_tax() /* * baseCurrencyValue*/);
+//        holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
+
+        holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", Double.parseDouble(entity.getSubtotal())));
+
+        if(entity.getImagePath() != null
+                && entity.getImagePath().length() > 0){
+
+            String imgurl = entity.getImagePath();
             if (TextUtils.isEmpty(imgurl)) {
                 holder.imageView.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),
                         R.drawable.ic_placeholder));
             } else {
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getMedia().get(0).getFile())
+                        .load(imagePrefix+entity.getImagePath())
                         .error(R.drawable.ic_placeholder)
                         .placeholder(R.drawable.ic_placeholder)
                         .into(holder.imageView);
@@ -143,7 +151,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
 
         holder.cart_custom_option_ll.removeAllViews();
 
-        if(entity.getCustom_option() != null){
+        /*if(entity.getCustom_option() != null){
 
             for (int i = 0; i < entity.getCustom_option().size(); i++) {
                 LinearLayout horlinearLayout = new LinearLayout(mContext);
@@ -181,7 +189,7 @@ public class OrderReviewCartAdapter extends BaseAdapter {
                 horlinearLayout.addView(valueTv);
                 holder.cart_custom_option_ll.addView(horlinearLayout);
             }
-        }
+        }*/
 
         return view;
     }

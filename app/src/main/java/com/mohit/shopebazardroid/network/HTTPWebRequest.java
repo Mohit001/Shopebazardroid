@@ -246,11 +246,9 @@ public class HTTPWebRequest {
     }
 
 
-    public static void GetCartDetails(Context context, String cartid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, cartid);
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_CART, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void GetCartDetails(Context context, String cart_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_order_review, cart_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void RemoveProductFromCart(Context context, int cart_id, int product_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

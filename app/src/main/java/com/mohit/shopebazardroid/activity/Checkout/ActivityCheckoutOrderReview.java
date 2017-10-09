@@ -21,6 +21,8 @@ import android.widget.TextView;
 
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
@@ -29,22 +31,26 @@ import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.CartTotalPricesAdapter;
 import com.mohit.shopebazardroid.adapter.OrderReviewCartAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.VerifyCouponRequest;
-import com.mohit.shopebazardroid.model.response.Address;
 import com.mohit.shopebazardroid.model.response.LoginResponse;
-import com.mohit.shopebazardroid.model.response.OrderReviewCartItem;
-import com.mohit.shopebazardroid.model.response.OrderReviewEntity;
 import com.mohit.shopebazardroid.model.response.OrderReviewResponse;
 import com.mohit.shopebazardroid.model.response.OrderTotals;
 import com.mohit.shopebazardroid.model.response.PaymentMethod;
 import com.mohit.shopebazardroid.model.response.RewardsResponse;
+import com.mohit.shopebazardroid.models.Address;
+import com.mohit.shopebazardroid.models.UserCart;
+import com.mohit.shopebazardroid.models.UserCartProduct;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 26/7/16.
@@ -55,7 +61,7 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
     public static String TAG = ActivityCheckoutOrderReview.class.getSimpleName();
     Context mContext;
 
-    public static ArrayList<OrderReviewCartItem> cartEntityArrayList;
+    public List<UserCartProduct> cartEntityArrayList;
     public static int paymentMethod;
     //    public static Address address_billing;
     public static float shippingCharge;
@@ -84,7 +90,7 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
 
     double total = 0, discount = 0, grossTotal = 0, tax = 0;
 
-    OrderReviewEntity cart;
+    UserCart cart;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
 
@@ -281,136 +287,48 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
                 .CART_ID, "0");
         HTTPWebRequest.GetCartDetails(mContext, cartid, AppConstants.APICode.GET_CART, this,
                 getSupportFragmentManager());
+
     }
 
     private void setupLayout() {
 
-        cartEntityArrayList = cart.getItems();
+        cartEntityArrayList = cart.getUserCartProduct();
         adapter = new OrderReviewCartAdapter(mContext, cartEntityArrayList);
         listView.setExpanded(true);
         listView.setAdapter(adapter);
 
-        float tempSubtotal = (float) (/*baseCurrencyValue **/ cart.getSubtotal());
-        totalTextView.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
+//        float tempSubtotal = (float) (/*baseCurrencyValue **/ cart.getSubtotal());
+//        totalTextView.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
 
-        Address address_billing = cart.getBilling_address();
-        String[] street_billing = address_billing.getStreet().split("\n");
+        totalTextView.setText(baseCurrencyCode + String.format("%.2f", calculateTotal()));
 
-        String addressString, getLandmark, getCity, getRegion, getCountry, getPostcode, getEmail,
-                getTelephone;
-
-        getLandmark = address_billing.getLandmark();
-        getCity = address_billing.getCity();
-        getRegion = address_billing.getRegion();
-        getCountry = address_billing.getCountry();
-        getPostcode = address_billing.getPostcode();
-        getEmail = address_billing.getEmail();
-        getTelephone = address_billing.getTelephone();
-
-        addressString = address_billing.getFirstname()
-                + "\n" + street_billing[0]
-                + "\n" + street_billing[1];
-
-        if (!TextUtils.isEmpty(getLandmark)) {
-            addressString = addressString + "\n" + address_billing.getLandmark();
-        }
-        if (!TextUtils.isEmpty(getCity)) {
-            addressString = addressString + "\n" + address_billing.getCity();
-
-        }
-        if (!TextUtils.isEmpty(getRegion)) {
-            addressString = addressString + "\n" + address_billing.getRegion();
-
-        }
-        if (!TextUtils.isEmpty(getCountry)) {
-            addressString = addressString + "\n" + address_billing.getCountry();
-
-        }
-        if (!TextUtils.isEmpty(getPostcode)) {
-            addressString = addressString + "\n" + address_billing.getPostcode();
-
-        }
-        if (!TextUtils.isEmpty(getEmail)) {
-            addressString = addressString + "\n" + address_billing.getEmail();
-
-        }
-//        if (!TextUtils.isEmpty(getCity)) {
-//            addressString = addressString + "\n" + address_billing.getCity();
-//
-//        }
-//        if (!TextUtils.isEmpty(getTelephone)) {
-//            addressString = addressString + "\n" + address_billing.getTelephone() ;
-//
-//        }
-
-        billingAddressTextView.setText(addressString);
+        Address billingAddress = cart.getBillingAddress();
 
 
-        Address address_shipping = cart.getShipping_address();
-        String[] street_shipping = address_shipping.getStreet().split("\n");
+        billingAddressTextView.setText(billingAddress.getFull_name()
+            +"\n"+ billingAddress.getEmail()
+            +"\n"+ billingAddress.getContact_number()
+            +"\n"+ billingAddress.getAddress1()
+            +"\n"+billingAddress.getAddress2()
+            +"\n"+billingAddress.getState()
+            +"\n"+ billingAddress.getCity() +", "+ billingAddress.getPostcode()
+            +"\n"+billingAddress.getAddition_detail());
 
 
-        String shippingAddressString, s_getCity, s_getRegion, s_getCountry, s_getPostcode,
-                s_getEmail, s_getTelephone;
-
-        s_getCity = address_shipping.getCity();
-        s_getRegion = address_shipping.getRegion();
-        s_getCountry = address_shipping.getCountry();
-        s_getPostcode = address_shipping.getPostcode();
-        s_getEmail = address_shipping.getEmail();
-        s_getTelephone = address_shipping.getTelephone();
-
-
-        shippingAddressString = address_shipping.getFirstname()
-                + "\n" + street_shipping[0]
-                + "\n" + street_shipping[1];
-
-        if (!TextUtils.isEmpty(s_getCity)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getCity();
-        }
-
-        if (!TextUtils.isEmpty(s_getRegion)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getRegion();
-        }
-
-        if (!TextUtils.isEmpty(s_getCountry)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getCountry();
-        }
-
-        if (!TextUtils.isEmpty(s_getPostcode)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getPostcode();
-        }
-
-        if (!TextUtils.isEmpty(s_getEmail)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getEmail();
-        }
-
-//        if (!TextUtils.isEmpty(s_getTelephone)) {
-//            shippingAddressString = shippingAddressString + "\n" + address_shipping.getTelephone();
-//        }
+        Address shippingAddress = cart.getShippingAddress();
+        shippingAddressTextView.setText(shippingAddress.getFull_name()
+                +"\n"+ shippingAddress.getEmail()
+                +"\n"+ shippingAddress.getContact_number()
+                +"\n"+ shippingAddress.getAddress1()
+                +"\n"+shippingAddress.getAddress2()
+                +"\n"+shippingAddress.getState()
+                +"\n"+ shippingAddress.getCity() +", "+ shippingAddress.getPostcode()
+                +"\n"+shippingAddress.getAddition_detail());
 
 
-        shippingAddressTextView.setText(shippingAddressString);
 
-//        if (!TextUtils.isEmpty(cart.getCoupon_code()))
-//            verifycoupanTextInputLayout.getEditText().setText(cart.getCoupon_code());
-
-
-        /*switch (paymentMethod)
-        {
-            case 0:
-                paymentMethodTextView.setText("COD");
-                break;
-            case 1:
-                paymentMethodTextView.setText("card payment");
-                break;
-            case 2:
-                paymentMethodTextView.setText("Bank transfer");
-                break;
-        }*/
-
-
-        paymentMethodTextView.setText(cart.getPayment().getMethod());
+//        paymentMethodTextView.setText(cart.getPayment().getMethod());
+        paymentMethodTextView.setText("COD");
 
 
 //        double deliveryCharges = Double.parseDouble(cart.getBase_grand_total()) - cart
@@ -502,7 +420,7 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
 
     public void callPlaceOrderApi(){
         CreateOrderRequest orderRequest = new CreateOrderRequest();
-        orderRequest.setShoppingcartid(String.valueOf(cart.getQuote_id()));
+        orderRequest.setShoppingcartid(String.valueOf(cart.getCart_id()));
         orderRequest.setIshideprice(ishideprice);
         orderRequest.setStore_id(storeid);
         orderRequest.setUser_id(userid);
@@ -521,25 +439,20 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
 
         switch (apiCode) {
             case AppConstants.APICode.GET_CART:
-                OrderReviewResponse reviewResponse = new Gson().fromJson(response,
-                        OrderReviewResponse.class);
-                if (reviewResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
+                Type orderReviewType = new TypeToken<BaseResponse<UserCart>>(){}.getType();
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                BaseResponse<UserCart> baseResponse = gson.fromJson(response, orderReviewType);
+
+                if (baseResponse.getStatus() == ApiResponseStatus.CART_GET_DETAILS_SUCCESS.getStatus_code()) {
+                    cart = baseResponse.getInfo();
+
+//                    totals_adapter = new CartTotalPricesAdapter(mContext, totals);
+//                    recyclerView.setAdapter(totals_adapter);
+                    grossTotal = calculateTotal();
+                    setupLayout();
+
                 }
 
-                if (reviewResponse.getStatus().equalsIgnoreCase("success")) {
-                    cart = reviewResponse.getResult().getCart();
-                }
-                totals = reviewResponse.getResult().getTotals();
-
-                totals_adapter = new CartTotalPricesAdapter(mContext, totals);
-                recyclerView.setAdapter(totals_adapter);
-                grossTotal = Double.parseDouble(reviewResponse.getResult().getCart().getGrand_total());
-                setupLayout();
                 break;
             case AppConstants.APICode.GET_PLACEORDER:
                 OrderReviewResponse placeOrderResponse = new Gson().fromJson(response,
@@ -660,6 +573,15 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private double calculateTotal(){
+        total = 0;
+        List<UserCartProduct> list = cart.getUserCartProduct();
+        for (UserCartProduct userCartProduct : list){
+            total += Double.parseDouble(userCartProduct.getSubtotal());
+        }
+
+        return total;
+    }
 
 
 }
