@@ -20,12 +20,9 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Address.AddUpdateAddressActivity;
 import com.mohit.shopebazardroid.activity.BaseActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.adapter.AddressListAdapter;
 import com.mohit.shopebazardroid.listener.AddressListner;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.AddressRequest;
-import com.mohit.shopebazardroid.model.response.AddressResponse;
 import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
@@ -106,9 +103,10 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
     }
 
     private void setupAddressLive() {
-        AddressRequest request = new AddressRequest();
-        request.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0"));
-        HTTPWebRequest.AddressList(mContext, request, AppConstants.APICode.ADDRESS_LIST, this, getSupportFragmentManager());
+        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+                .USER_ID, "0");
+        HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
+                getSupportFragmentManager());
     }
 
     @Override
@@ -139,29 +137,17 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-//            case R.id.add_address_fab:
-//                startActivity(new Intent(mContext, AddUpdateAddressActivity.class));
-//                break;
+
             case R.id.proceed_checkout_btn:
 
-                Address selecteedAddress = null, address;
-
-                for (int i = 0; i < arrayList.size(); i++) {
-                    address = arrayList.get(i);
-                    /*if (address.isSelected())
-                        selecteedAddress = address;*/
-                }
-
-                if (selecteedAddress == null) {
-                    Utility.toastMessage(mContext, R.string.address_empty_selection);
+                if(selectedAddress == null){
+                    Toast.makeText(mContext, R.string.address_empty_selection, Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                /*AddressRequest request = new AddressRequest();
-                request.setAddressId(selecteedAddress.getAddress_id());
-                request.setMode(0);
-                request.setShoppingCartID(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0"));*/
-//                HTTPWebRequest.AddressUpdateDefault(mContext, request, AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
+                String cart_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_ID, "0");
+
+                HTTPWebRequest.setCartShippingAddress(mContext, cart_id, String.valueOf(selectedAddress.getAddress_id()), AppConstants.APICode.ADDRESS_UPDATE_DEFAULT, this, getSupportFragmentManager());
 
                 break;
         }
@@ -192,35 +178,28 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
         deleteIndex = index;
         Address address = arrayList.get(index);
         String addressID = String.valueOf(address.getAddress_id());
-        HTTPWebRequest.AddressDelete(mContext, String.valueOf(deleteIndex), AppConstants.APICode.ADDRESS_DELETE, this, getSupportFragmentManager());
+        HTTPWebRequest.AddressDelete(mContext, addressID, AppConstants.APICode.ADDRESS_DELETE,
+                this, getSupportFragmentManager());
 
     }
 
     @Override
     public void onSelectionChange(int index) {
-//        ArrayList<Address> list = new ArrayList<>();
-//        list.addAll(arrayList);
-//
-//        arrayList.clear();
 
         Address address;
         for (int i = 0; i < arrayList.size(); i++) {
             address = arrayList.get(i);
             if (i == index) {
-                /*address.setIs_default_billing(true);
-                address.setSelected(true);*/
-                selectedAddress = arrayList.get(index);
+                address.setSelected(true);
+                selectedAddress = address;
             } else {
-                /*address.setIs_default_billing(false);
-                address.setSelected(false);*/
+                address.setSelected(false);
+
             }
 
             arrayList.set(i, address);
         }
 
-//        arrayList.addAll(list);
-//        mAddressAdapter = new AddressAdapter(mContext, arrayList, this, true, 1);
-//        recyclerView.setAdapter(mAddressAdapter);
 
         mAddressListAdapter.notifyDataSetChanged();
     }
@@ -235,62 +214,43 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
 
         switch (apiCode) {
             case AppConstants.APICode.ADDRESS_LIST:
-                Type addressListType =  new TypeToken<List<Address>>(){}.getType();
+
+                Type addressListType = new TypeToken<BaseResponse<List<Address>>>() {
+                }.getType();
                 BaseResponse<List<Address>> addressResponse = new Gson().fromJson(response, addressListType);
 
                 if (addressResponse.getInfo().size() != 0) {
 
-                    if(arrayList == null){
+                    if (arrayList == null) {
                         arrayList = new ArrayList<>();
+                    } else {
+                        arrayList.clear();
                     }
 
                     arrayList.addAll(addressResponse.getInfo());
-
-                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, false, 0);
+                    mAddressListAdapter = new AddressListAdapter(mContext, arrayList, this, true, 0);
                     listView.setAdapter(mAddressListAdapter);
                 } else {
                     Utility.toastMessage(mContext, "No Address found");
                 }
                 break;
             case AppConstants.APICode.ADDRESS_DELETE:
-                Type removeAddressType = new TypeToken<List<Address>>(){}.getType();
+                Type removeAddressType = new TypeToken<BaseResponse<List<Address>>>() {
+                }.getType();
                 BaseResponse<List<Address>> removeAddresResponse = new Gson().fromJson(response, removeAddressType);
                 Toast.makeText(mContext, removeAddresResponse.getMessage(), Toast.LENGTH_SHORT).show();
-                if(removeAddresResponse.getStatus() == 1 && deleteIndex != 0){
+                if (removeAddresResponse.getStatus() == 1 && deleteIndex != -1) {
 
                     arrayList.remove(deleteIndex);
-                    deleteIndex = 0;
+                    deleteIndex = -1;
+                    mAddressListAdapter.notifyDataSetChanged();
+                    listView.setAdapter(mAddressListAdapter);
                 }
                 break;
-            case AppConstants.APICode.ADDRESS_UPDATE_DEFAULT:
-
-                AddressResponse addressResponse2 = new Gson().fromJson(response, AddressResponse
-                        .class);
-
-                if (addressResponse2.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
-
-                if (addressResponse2.getStatus().equalsIgnoreCase("success")) {
-                    Utility.toastMessage(mContext, "Shipping address saved successfully");
-
-                    if (ishideprice.equalsIgnoreCase("0")) {
-                        //                    ActivityCheckoutOrderReview.address_shipping = selectedAddress;
-                        startActivity(new Intent(mContext, ActivityShippingMethod.class));
-                        finish();
-                    }
-
-                } else {
-                    Utility.toastMessage(mContext, "Shipping address not saved!!.\n Try again...");
-                }
-                break;
-
         }
+
     }
+
 
     @Override
     public void networkError(int apiCode) {

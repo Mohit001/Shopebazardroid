@@ -19,8 +19,15 @@ public class Address implements Serializable{
 	private String full_name;
 	private String email;
 	private String contact_number;
-	
-	
+	private boolean selected;
+
+
+	public boolean getSelected() {
+		return selected;
+	}
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
 	public int getAddress_id() {
 		return address_id;
 	}
@@ -105,8 +112,24 @@ public class Address implements Serializable{
 	public void setContact_number(String contact_number) {
 		this.contact_number = contact_number;
 	}
-	
-	
-	
 
+	@Override
+	public String toString() {
+		return "Address{" +
+				"address_id=" + address_id +
+				", address1='" + address1 + '\'' +
+				", address2='" + address2 + '\'' +
+				", state='" + state + '\'' +
+				", city='" + city + '\'' +
+				", postcode='" + postcode + '\'' +
+				", addition_detail='" + addition_detail + '\'' +
+				", user_id='" + user_id + '\'' +
+				", is_enable=" + is_enable +
+				", default_value=" + default_value +
+				", create_date=" + create_date +
+				", full_name='" + full_name + '\'' +
+				", email='" + email + '\'' +
+				", contact_number='" + contact_number + '\'' +
+				'}';
+	}
 }

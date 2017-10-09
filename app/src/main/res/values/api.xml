@@ -36,4 +36,6 @@
     <string name="api_update_cart">shppebazar/rest/cart/updateCart</string>
     <string name="api_get_cart_item">shppebazar/rest/cart/getCart/%1$s</string>
     <string name="api_remove_cart_item">shppebazar/rest/cart/removeCartProduct/%1$s/%2$s</string>
+    <string name="api_cart_set_shipping_address">shppebazar/rest/cart/setShippingAddress/%1$s/%2$s</string>
+    <string name="api_cart_set_billing_address">shppebazar/rest/cart/setBillingAddress/%1$s/%2$s</string>
 </resources>

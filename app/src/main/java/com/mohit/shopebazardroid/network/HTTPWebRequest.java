@@ -10,7 +10,6 @@ import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.model.request.AddCommentInOrderRequest;
 import com.mohit.shopebazardroid.model.request.AddRemoveWishListRequest;
 import com.mohit.shopebazardroid.model.request.AddReviewRequest;
-import com.mohit.shopebazardroid.model.request.AddressRequest;
 import com.mohit.shopebazardroid.model.request.ApplyRewardsRequest;
 import com.mohit.shopebazardroid.model.request.AreaListRequest;
 import com.mohit.shopebazardroid.model.request.BestSellingRequest;
@@ -128,14 +127,6 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_COUNTRY, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddressList(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, String.valueOf(1));
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
-    }
-
     public static void AddressList(Context context, String userid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         String url = UrlFormetter.getURL(context, R.string.api_get_address_list, userid);
@@ -149,14 +140,16 @@ public class HTTPWebRequest {
     }
 
 
-    public static void AddressUpdateDefault(Context context, AddressRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.DEFAULT_ADDRESS_ID, String.valueOf(request.getAddressId()));
-        postDataParams.put(AppConstants.RequestDataKey.MODE, String.valueOf(request.getMode()));
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, request.getShoppingCartID());
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADDRESS_UPDATE_DEFAULT, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void setCartShippingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_set_shipping_address, cart_id, address_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
+
+    public static void setCartBillingAddress(Context context, String cart_id, String address_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_cart_set_billing_address, cart_id, address_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    }
+
 
 
     public static void AddressAdd(Context context, String request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
