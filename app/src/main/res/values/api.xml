@@ -3,39 +3,40 @@
 
     <!--<string name="base_url">http://localhost:8080/</string>-->
     <!--<string name="api_base_url">http://10.0.2.2:8080/</string>-->
-    <string name="api_base_url">http://192.168.0.4:8080/</string>
+    <!--<string name="api_base_url">http://192.168.0.4:8080/</string>-->
+    <string name="api_base_url">http://52.91.52.204/teshppebazar/rest/</string>
 
     <!-- app environment user_id=0 for guest user-->
-    <string name="api_environment">shppebazar/rest/user/environment/%1$s</string>
+    <string name="api_environment">user/environment/%1$s</string>
 
-    <string name="api_login">shppebazar/rest/user/login</string>
-    <string name="api_user_register">shppebazar/rest/user/registerUser</string>
+    <string name="api_login">user/login</string>
+    <string name="api_user_register">user/registerUser</string>
     <!--variable will be user id-->
-    <string name="api_user_profile">shppebazar/rest/user/userProfile/%1$s</string>
+    <string name="api_user_profile">user/userProfile/%1$s</string>
     <!--  Variable will be user email -->
-    <string name="api_forgot_password">shppebazar/rest/user/forgotPassowrd/%1$s</string>
-    <string name="api_update_profie">shppebazar/rest/user/updateUser</string>
+    <string name="api_forgot_password">user/forgotPassowrd/%1$s</string>
+    <string name="api_update_profie">user/updateUser</string>
 
 
-    <string name="api_category">/shppebazar/rest/Category</string>
+    <string name="api_category">/Category</string>
     <!-- Variable will be category id-->
-    <string name="api_category_product_list">shppebazar/rest/Category/getProducts/%1$s</string>
+    <string name="api_category_product_list">Category/getProducts/%1$s</string>
 
     <!--variable will be product id-->
-    <string name="api_product_details">shppebazar/rest/product/$1$s</string>
+    <string name="api_product_details">product/$1$s</string>
 
     <!--variable will be user id-->
-    <string name="api_get_address_list">shppebazar/rest/address/get/%1$s</string>
-    <string name="api_add_new_address">shppebazar/rest/address/add</string>
+    <string name="api_get_address_list">address/get/%1$s</string>
+    <string name="api_add_new_address">address/add</string>
     <!--variable will be address id-->
-    <string name="api_delete_address">shppebazar/rest/address/remove/%1$s</string>
-    <string name="api_update_address">shppebazar/rest/address/update</string>
+    <string name="api_delete_address">address/remove/%1$s</string>
+    <string name="api_update_address">address/update</string>
 
 
-    <string name="api_add_update_product">shppebazar/rest/cart/addUpdateProduct</string>
-    <string name="api_update_cart">shppebazar/rest/cart/updateCart</string>
-    <string name="api_get_cart_item">shppebazar/rest/cart/getCart/%1$s</string>
-    <string name="api_remove_cart_item">shppebazar/rest/cart/removeCartProduct/%1$s/%2$s</string>
-    <string name="api_cart_set_shipping_address">shppebazar/rest/cart/setShippingAddress/%1$s/%2$s</string>
-    <string name="api_cart_set_billing_address">shppebazar/rest/cart/setBillingAddress/%1$s/%2$s</string>
+    <string name="api_add_update_product">cart/addUpdateProduct</string>
+    <string name="api_update_cart">cart/updateCart</string>
+    <string name="api_get_cart_item">cart/getCart/%1$s</string>
+    <string name="api_remove_cart_item">cart/removeCartProduct/%1$s/%2$s</string>
+    <string name="api_cart_set_shipping_address">cart/setShippingAddress/%1$s/%2$s</string>
+    <string name="api_cart_set_billing_address">cart/setBillingAddress/%1$s/%2$s</string>
 </resources>
