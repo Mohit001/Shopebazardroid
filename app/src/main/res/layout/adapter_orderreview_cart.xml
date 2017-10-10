@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="4000"
-                    android:textColor="@color/bg_grey" />
+                    android:textColor="@color/order_review_gray" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/cart_product_old_price_content"
@@ -126,10 +126,41 @@
             </LinearLayout>
 
             <RelativeLayout
-                android:id="@+id/cart_product_subtotal_ll"
+                android:id="@+id/cart_product_shipping_charge_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/cart_product_quentity_ll"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/cart_product_shipping_charge_lbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="Shipping Charge : "
+                    android:textColor="@color/order_review_gray" />
+
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/cart_product_shipping_charge_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toLeftOf="@id/cart_product_delete_image"
+                    android:layout_toRightOf="@id/cart_product_shipping_charge_lbl"
+                    android:text="4000"
+                    android:textColor="@color/order_review_gray" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/cart_product_subtotal_ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/cart_product_shipping_charge_ll"
                 android:layout_marginTop="8dp"
                 android:orientation="horizontal">
 
@@ -139,13 +170,14 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="Subtotal : "
-                    android:textColor="@color/subtotle" />
+                    android:textColor="@color/order_review_gray" />
 
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/cart_product_subttotal_content"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="right"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="8dp"
                     android:layout_toLeftOf="@id/cart_product_delete_image"

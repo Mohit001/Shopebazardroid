@@ -127,7 +127,8 @@ public class OrderReviewCartAdapter extends BaseAdapter {
 
 //        float tempSubtotal = (float) (entity.getRow_total_incl_tax() /* * baseCurrencyValue*/);
 //        holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
-
+        double shippingCharge = entity.getShipping_charge() * entity.getProduct_qty();
+        holder.shippingCharge.setText(String.valueOf(shippingCharge));
         holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", Double.parseDouble(entity.getSubtotal())));
 
         if(entity.getImagePath() != null
@@ -200,10 +201,11 @@ public class OrderReviewCartAdapter extends BaseAdapter {
         AppCompatTextView oldPrice;
         AppCompatTextView customOption;
         AppCompatTextView quentity;
+        AppCompatTextView shippingCharge;
         AppCompatTextView subtotal;
         LinearLayout cart_custom_option_ll;
 
-        AppCompatTextView cart_product_size_lbl, cart_product_quentity_lbl,
+        AppCompatTextView cart_product_size_lbl, cart_product_quentity_lbl, shipping_charge_lbl,
                 cart_product_subtotal_lbl;
 
         ImageView imageView;
@@ -239,12 +241,19 @@ public class OrderReviewCartAdapter extends BaseAdapter {
             cart_product_quentity_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_quentity_lbl);
             cart_product_quentity_lbl.setTypeface(SplashActivity.opensans_regular);
 
+            shipping_charge_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_shipping_charge_lbl);
+            shipping_charge_lbl.setTypeface(SplashActivity.opensans_regular);
+
             cart_product_subtotal_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_subtotal_lbl);
             cart_product_subtotal_lbl.setTypeface(SplashActivity.opensans_regular);
 
-            subtotal = (AppCompatTextView) itemView.findViewById(R.id
-                    .cart_product_subttotal_content);
+
+            shippingCharge = (AppCompatTextView) itemView.findViewById(R.id.cart_product_shipping_charge_content);
+            shippingCharge.setTypeface(SplashActivity.opensans_semi_bold);
+
+            subtotal = (AppCompatTextView) itemView.findViewById(R.id.cart_product_subttotal_content);
             subtotal.setTypeface(SplashActivity.opensans_semi_bold);
+
 
             imageView = (ImageView) itemView.findViewById(R.id.cart_product_image);
 
