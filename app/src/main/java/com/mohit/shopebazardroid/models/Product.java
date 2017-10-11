@@ -3,7 +3,7 @@ package com.mohit.shopebazardroid.models;
 import java.io.Serializable;
 import java.util.List;
 
-public class Product implements Serializable {
+public class Product implements Serializable{
 
 	private int pro_mst_id;
 	private String pro_name;
@@ -12,7 +12,9 @@ public class Product implements Serializable {
 	private String pro_price;
 	private int is_enable;
 	private int cat_id;
+	private String cat_name;
 	private int brand_id;
+	private String brand_name;
 	private int user_id;
 	private String gst_type;
 	private int gst;
@@ -107,14 +109,19 @@ public class Product implements Serializable {
 		this.productImage = productImage;
 	}
 	
-	@Override
-	public String toString() {
-		return "Product [pro_mst_id=" + pro_mst_id + ", pro_name=" + pro_name + ", pro_code=" + pro_code
-				+ ", pro_description=" + pro_description + ", pro_price=" + pro_price + ", is_enable=" + is_enable
-				+ ", cat_id=" + cat_id + ", brand_id=" + brand_id + ", user_id=" + user_id + ", gst_type=" + gst_type
-				+ ", gst=" + gst + ", discount_price=" + discount_price + ", pro_image=" + pro_image + ", productImage="
-				+ productImage + "]";
+	public String getCat_name() {
+		return cat_name;
 	}
+	public void setCat_name(String cat_name) {
+		this.cat_name = cat_name;
+	}
+	public String getBrand_name() {
+		return brand_name;
+	}
+	public void setBrand_name(String brand_name) {
+		this.brand_name = brand_name;
+	}
+	
 	
 	
 	

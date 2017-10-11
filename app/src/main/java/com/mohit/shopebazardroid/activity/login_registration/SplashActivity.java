@@ -107,6 +107,7 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
     public void apiResponsePostProcessing(String response, int apiCode) {
         if (response == null) {
             Utility.toastMessage(this, R.string.host_not_reachable);
+            this.finish();
             return;
         }
 

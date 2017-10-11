@@ -772,12 +772,22 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 userCartProduct.setCart_id(Integer.parseInt(cartid));
                 userCartProduct.setProduct_id(product.getPro_mst_id());
                 userCartProduct.setProduct_name(product.getPro_name());
+                userCartProduct.setDescription(product.getPro_description());
                 userCartProduct.setProduct_qty(Integer.parseInt(quentityTextView.getText().toString().trim()));
                 userCartProduct.setProduct_price(product.getPro_price());
                 userCartProduct.setProduct_code(product.getPro_code());
                 userCartProduct.setShipping_charge(30);
                 userCartProduct.setGst(product.getGst());
                 userCartProduct.setGst_type(product.getGst_type());
+                userCartProduct.setCat_id(product.getCat_id());
+                userCartProduct.setCategory_name(product.getCat_name());
+                userCartProduct.setBrand_id(product.getBrand_id());
+                userCartProduct.setBrand_name(product.getBrand_name());
+                userCartProduct.setDiscount_price(String.valueOf(product.getDiscount_price()));
+                userCartProduct.setImage_name(product.getPro_image());
+
+                double subtotal = userCartProduct.getProduct_qty() * userCartProduct.getShipping_charge();
+                userCartProduct.setSubtotal(String.valueOf(subtotal));
 
                 List<UserCartProduct> list = new ArrayList<>();
                 list.add(userCartProduct);
@@ -813,6 +823,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                     UserCart userCart = baseResponse.getInfo();
                     cartid = String.valueOf(userCart.getCart_id());
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID,cartid);
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN,userCart.getToken());
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(userCart.getCartCount()));
                     cartItemBadge.setText(String.valueOf(userCart.getCartCount()));
                 }

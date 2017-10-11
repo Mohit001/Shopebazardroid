@@ -34,9 +34,9 @@
             android:id="@+id/nav_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
-            android:divider="@color/white"
-            android:dividerHeight="0.5dp" />
+            android:background="@color/white"
+            android:divider="@color/colorPrimary"
+            android:dividerHeight="1dp" />
     </LinearLayout>
 
     <!--<com.appeaser.sublimenavigationviewlibrary.SublimeNavigationView

@@ -14,7 +14,6 @@ import com.mohit.shopebazardroid.model.request.ApplyRewardsRequest;
 import com.mohit.shopebazardroid.model.request.AreaListRequest;
 import com.mohit.shopebazardroid.model.request.BestSellingRequest;
 import com.mohit.shopebazardroid.model.request.CityListRequest;
-import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.CustomerReviewListRequest;
 import com.mohit.shopebazardroid.model.request.FeatureProductRequest;
 import com.mohit.shopebazardroid.model.request.FeedbackRequest;
@@ -273,15 +272,11 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_SHIPPING_METHOD, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
-    public static void PlaceOrder(Context context, CreateOrderRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void PlaceOrder(Context context, String requestJson, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.SHOPPING_CART_ID, request.getShoppingcartid());
-        postDataParams.put(AppConstants.RequestDataKey.IS_HIDE_PRICE, request.getIshideprice());
-        postDataParams.put(AppConstants.RequestDataKey.USER_ID, request.getUser_id());
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
+        String url = UrlFormetter.getURL(context, R.string.api_place_order);
+        new OKHttpAsyncTask(context, url, requestJson,AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
 
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_PLACEORDER, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
     }
 
     public static void OrderHistory(Context context, OrderHistoryRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

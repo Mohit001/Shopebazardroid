@@ -18,10 +18,12 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
@@ -33,12 +35,9 @@ import com.mohit.shopebazardroid.adapter.CartTotalPricesAdapter;
 import com.mohit.shopebazardroid.adapter.OrderReviewCartAdapter;
 import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.request.CreateOrderRequest;
 import com.mohit.shopebazardroid.model.request.VerifyCouponRequest;
 import com.mohit.shopebazardroid.model.response.LoginResponse;
-import com.mohit.shopebazardroid.model.response.OrderReviewResponse;
 import com.mohit.shopebazardroid.model.response.OrderTotals;
-import com.mohit.shopebazardroid.model.response.PaymentMethod;
 import com.mohit.shopebazardroid.model.response.RewardsResponse;
 import com.mohit.shopebazardroid.models.Address;
 import com.mohit.shopebazardroid.models.UserCart;
@@ -419,14 +418,10 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
     }
 
     public void callPlaceOrderApi(){
-        CreateOrderRequest orderRequest = new CreateOrderRequest();
-        orderRequest.setShoppingcartid(String.valueOf(cart.getCart_id()));
-        orderRequest.setIshideprice(ishideprice);
-        orderRequest.setStore_id(storeid);
-        orderRequest.setUser_id(userid);
 
-        HTTPWebRequest.PlaceOrder(mContext, orderRequest,
-                AppConstants.APICode.GET_PLACEORDER, this, getSupportFragmentManager());
+        String requestJson =  new Gson().toJson(cart);
+
+        HTTPWebRequest.PlaceOrder(mContext, requestJson,AppConstants.APICode.GET_PLACEORDER, this, getSupportFragmentManager());
     }
 
     @Override
@@ -455,24 +450,26 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
 
                 break;
             case AppConstants.APICode.GET_PLACEORDER:
-                OrderReviewResponse placeOrderResponse = new Gson().fromJson(response,
-                        OrderReviewResponse.class);
 
-                if (placeOrderResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                Type placeOrderType = new TypeToken<BaseResponse<String>>(){}.getType();
+                Gson placeOrderGson = new GsonBuilder().serializeNulls().create();
+                try {
 
+                    BaseResponse<String> placeOrderBaseResponse = placeOrderGson.fromJson(response, placeOrderType);
 
-                if (placeOrderResponse.getStatus().equalsIgnoreCase("success")) {
-//                    Utility.toastMessage(mContext, R.string.order_place_success);
+                    Toast.makeText(mContext, placeOrderBaseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    if (placeOrderBaseResponse.getStatus() == ApiResponseStatus.ORDER_PLACE_SUCCESS.getStatus_code()) {
+
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID,"0");
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS,"0");
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN,"");
+
+                        this.finish();
+
+                    /*//                    Utility.toastMessage(mContext, R.string.order_place_success);
                     PaymentMethod paymentMethod = (PaymentMethod) getIntent().getSerializableExtra(AppConstants.INTENTDATA.PAYMENT_METHOD);
 //                    paymentMethod.setCode("payucheckout_shared");
-                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID,"0");
-                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS,"0");
 
                     if(paymentMethod.getCode().equalsIgnoreCase("payucheckout_shared")){
 //                        callPayumoneyPaymentApi(placeOrderResponse.getResult().getOrderid());
@@ -484,11 +481,16 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
+                    }*/
+
                     }
 
-                } else {
-                    Utility.toastMessage(mContext, placeOrderResponse.getResult().getMessage());
+                }catch (JsonSyntaxException e){
+                    e.printStackTrace();
+                    Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
                 break;
             case AppConstants.APICode.COUPON_CODE:
                 LoginResponse couponCodeResponse = new Gson().fromJson(response, LoginResponse

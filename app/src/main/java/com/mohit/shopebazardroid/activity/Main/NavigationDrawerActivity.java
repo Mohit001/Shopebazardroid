@@ -123,7 +123,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
     private FrameLayout profileFrameLayout;
     Menu menu;
     View cartBadget;
-    private ImageView toolbarlogo;
     public List<Category> getCategoryArraylist() {
         return liveCategoryArraylist;
     }
@@ -160,11 +159,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         mContext = this;
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbarlogo = (ImageView) toolbar.findViewById(R.id.toolbarlogo);
-        toolbar.setTitle("");
-        toolbarlogo.setVisibility(View.VISIBLE);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setTitle(R.string.app_name);
 
         profileFrameLayout = (FrameLayout) findViewById(R.id.profile_framelayout);
         userDetailsRelativeLayout = (RelativeLayout) findViewById(R.id.user_details_rleativelayout);
@@ -206,9 +202,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
-
-        toolbarlogo.setVisibility(View.VISIBLE);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
         HTTPWebRequest.Basic(mContext, userid,AppConstants.APICode.BASIC, this);
@@ -280,14 +273,10 @@ public class NavigationDrawerActivity extends BaseActivity implements
         updateCartCount();
 
         if(isUserLogin()){
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbarlogo.setVisibility(View.VISIBLE);
             userName.setText(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
                     .NAME, "John doe"));
             userDetailsRelativeLayout.setVisibility(View.VISIBLE);
         } else {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            toolbarlogo.setVisibility(View.GONE);
             userDetailsRelativeLayout.setVisibility(View.GONE);
         }
 
@@ -307,9 +296,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
             } else{
 
             }
-
-            toolbarlogo.setVisibility(View.VISIBLE);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             if(isUserLogin()){
                 Category childrens = new Category();
@@ -340,13 +326,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
         logoutDialog.dismiss();
 
         HomeFragment  fragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
-        if(fragment == null){
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            toolbarlogo.setVisibility(View.GONE);
-        } else {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            toolbarlogo.setVisibility(View.VISIBLE);
-        }
 
     }
 
@@ -372,9 +351,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                             HomeFragment.TAG)
                     .commit();
         }
-
-        toolbarlogo.setVisibility(View.VISIBLE);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         MyApplication.clearPreference();
         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, FirebaseInstanceId.getInstance().getToken());
@@ -446,7 +422,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
             cartBadget.setVisibility(View.VISIBLE);
 
             if (childrens.getCat_name().equalsIgnoreCase("home")) {
-//                toolbar.setTitle(R.string.app_name);
+                getSupportActionBar().setTitle(R.string.app_name);
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
@@ -528,13 +504,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 logoutDialog.show(getSupportFragmentManager(), LogoutDialog.TAG);
 
                 HomeFragment  fragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
-                if(fragment == null){
-                    getSupportActionBar().setDisplayShowTitleEnabled(true);
-                    toolbarlogo.setVisibility(View.GONE);
-                } else {
-                    getSupportActionBar().setDisplayShowTitleEnabled(false);
-                    toolbarlogo.setVisibility(View.VISIBLE);
-                }
 
             } else if (childrens.getCat_name().equalsIgnoreCase("Login")) {
 //                toolbar.setTitle(R.string.app_name);
@@ -575,14 +544,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 }
             }
 
-
-            if(childrens.getCat_name().equalsIgnoreCase("home")){
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
-                toolbarlogo.setVisibility(View.VISIBLE);
-            } else{
-                getSupportActionBar().setDisplayShowTitleEnabled(true);
-                toolbarlogo.setVisibility(View.GONE);
-            }
 
         }
         drawer.closeDrawer(GravityCompat.START);
@@ -745,10 +706,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                         .beginTransaction()
                         .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
                         .commit();
-
-
-                    getSupportActionBar().setDisplayShowTitleEnabled(false);
-                    toolbarlogo.setVisibility(View.VISIBLE);
 
 
                 break;

@@ -1,6 +1,7 @@
 package com.mohit.shopebazardroid.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -51,6 +52,7 @@ public class NavigationDrawerAdapter extends BaseAdapter {
         AppCompatTextView navItemName = (AppCompatTextView) view.findViewById(R.id.adapter_navdrawer_item_lbl);
         navItemName.setTypeface(SplashActivity.montserrat_Regular);
         navItemName.setText(navDrawer.getCat_name());
+        navItemName.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         return view;
     }
 }
