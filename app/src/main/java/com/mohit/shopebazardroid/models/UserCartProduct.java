@@ -19,12 +19,12 @@ public class UserCartProduct implements Serializable {
 	private String imagePath;
 	private String description;
 	private int cat_id;
-	private int brand_id;	
+	private int brand_id;
 	private String discount_price;
 	private String image_name;
 	private String category_name;
 	private String brand_name;
-	
+
 	public String getImagePath() {
 		return imagePath;
 	}
@@ -146,6 +146,6 @@ public class UserCartProduct implements Serializable {
 		this.brand_name = brand_name;
 	}
 
-	
+
 	
 }
