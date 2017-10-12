@@ -1,7 +1,6 @@
 package com.mohit.shopebazardroid.activity.login_registration;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.NavUtils;
@@ -20,8 +19,8 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
-import com.mohit.shopebazardroid.model.response.LoginResponse;
 import com.mohit.shopebazardroid.models.Person;
 import com.mohit.shopebazardroid.models.Profile;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
@@ -45,7 +44,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
     private ImageView btn_back;
 
     private TextInputLayout firstnameEditText, lastnameEditText,
-            emailEditText, passwordEditText, confPasswordEditText;
+            emailEditText, passwordEditText, confPasswordEditText, mobileNumberEditText;
     private AppCompatButton submitButton;
 
     private  Person person;
@@ -65,6 +64,10 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
         emailEditText = (TextInputLayout) findViewById(R.id.email_inputlayout_txt);
         emailEditText.setTypeface(SplashActivity.opensans_regular);
+
+        mobileNumberEditText = (TextInputLayout) findViewById(R.id.mobile_inputlayout_txt);
+        mobileNumberEditText.setTypeface(SplashActivity.opensans_regular);
+
 
         passwordEditText = (TextInputLayout) findViewById(R.id.password_inputlayout_txt);
         passwordEditText.setTypeface(SplashActivity.opensans_regular);
@@ -147,6 +150,16 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     return;
                 }
 
+                String mobileNumberString = mobileNumberEditText.getEditText().getText().toString().trim();
+                if (mobileNumberString.length() != 10) {
+//                    mobileNumberEditText.setErrorEnabled(true);
+//                    mobileNumberEditText.setError(getString(R.string.empty_email));
+                    Utility.toastMessage(mContext, R.string.invalid_mobile);
+                    Log.d(TAG, "Please enter mobile");
+                    return;
+                }
+
+
                 String passwordString = passwordEditText.getEditText().getText().toString().trim();
                 if (!isUpdate) {
 
@@ -198,6 +211,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 Profile profile = new Profile();
                 profile.setFname(firstnameString);
                 profile.setLname(lastnameString);
+                profile.setMobile(mobileNumberString);
 
                 if(person == null)
                     person = new Person();
@@ -261,7 +275,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     Profile profile = person.getProfile();
                     firstnameEditText.getEditText().setText(profile.getFname());
                     lastnameEditText.getEditText().setText(profile.getLname());
-
+                    mobileNumberEditText.getEditText().setText(profile.getMobile());
                     //set email non editable
                     emailEditText.setEnabled(false);
 
@@ -270,21 +284,15 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 }
                 break;
             case AppConstants.APICode.UPDATE_PROFILE:
-                LoginResponse updateProfileLoginResponse = new Gson().fromJson(response,
-                        LoginResponse.class);
+               Type updateProfileType = new TypeToken<BaseResponse<Person>>(){}.getType();
+                Gson updateProfileGson = new GsonBuilder().serializeNulls().create();
+                BaseResponse<Person> updateProfileResponse = updateProfileGson.fromJson(response, updateProfileType);
 
-                if(updateProfileLoginResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0"))
-                {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
+                Toast.makeText(mContext, updateProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
 
-                if (updateProfileLoginResponse.getStatus().equalsIgnoreCase("success")) {
-                    Utility.toastMessage(mContext, updateProfileLoginResponse.getResult()
-                            .getMessage());
+                if (updateProfileResponse.getStatus() == ApiResponseStatus.UPDATE_PROFILE_SUCCESS.getStatus_code()) {
+                    Profile profile = updateProfileResponse.getInfo().getProfile();
+                    firstnameString =  profile.getFname() + " " + profile.getLname();
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME,
                             firstnameString);
                     NavigationDrawerActivity.userName.setText(firstnameString);

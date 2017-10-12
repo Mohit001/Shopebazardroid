@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -87,7 +88,10 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
 //
 //                }else {
                 Intent intent;
-                if(getIs_login_compulsory()){
+                String userid = getUserid();
+                if(getIs_login_compulsory()
+                        && TextUtils.isEmpty(userid)
+                        && userid.equalsIgnoreCase("0")){
                     intent = new Intent(context, LoginActivity.class);
                 } else{
                     intent = new Intent(context, NavigationDrawerActivity.class); // for guest login

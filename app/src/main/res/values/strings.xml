@@ -17,6 +17,7 @@
     <string name="empty_lastname">Please enter lastname</string>
     <string name="empty_middlename">Please enter middlename</string>
     <string name="empty_email">Please enter valid email id</string>
+    <string name="invalid_mobile">Please enter valid mobile number</string>
     <string name="empty_password">Please enter password</string>
     <string name="empty_password_conf">Please enter confirm password</string>
     <string name="host_not_reachable">Host Server not reachable. Please try later.</string>
@@ -30,6 +31,7 @@
 
     <!--hint messages-->
     <string name="hint_email">Email</string>
+    <string name="hint_mobile">Mobile number</string>
     <string name="hint_firstname">First Name</string>
     <string name="hint_middlename">Middle Name</string>
     <string name="hint_lastname">Last Name</string>

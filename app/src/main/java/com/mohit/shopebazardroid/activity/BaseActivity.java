@@ -66,8 +66,7 @@ public class BaseActivity extends AppCompatActivity {
 
                 if(className.equalsIgnoreCase(ProductDetailActivity.class.getSimpleName())){
                     MenuItem shareItem = menu.findItem(R.id.action_share);
-                    shareItem.setVisible(true);
-
+                    shareItem.setVisible(false);
                 }
 
                 MenuItem item = menu.findItem(R.id.action_search);

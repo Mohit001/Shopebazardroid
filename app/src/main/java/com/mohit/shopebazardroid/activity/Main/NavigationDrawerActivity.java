@@ -143,7 +143,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
 
     private RelativeLayout userDetailsRelativeLayout;
-
     private void setCurrentTheme() {
         int theme_code = MyApplication.preferenceGetInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, 1);
         setTheme(R.style.AppTheme);
@@ -167,7 +166,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
         userName = (TextView) findViewById(R.id.tvNamePlate);
         userName.setTypeface(SplashActivity.montserrat_Regular);
         userName.setText(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .NAME, "John doe"));
+                .NAME, ""));
         updateProfileImageView = (ImageView) findViewById(R.id.update_profile);
         closeImageView = (ImageView) findViewById(R.id.menu_close_icon);
 //        searchView = (MaterialSearchView) findViewById(R.id.search_view);
@@ -575,7 +574,9 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(environment.getCartCount()));
-                textView.setText(String.valueOf(environment.getCartCount()));
+                if(textView != null){
+                    textView.setText(String.valueOf(environment.getCartCount()));
+                }
 
                 PaymentInfo paymentInfo = environment.getPaymentInfo();
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_KEY, paymentInfo.getKey());

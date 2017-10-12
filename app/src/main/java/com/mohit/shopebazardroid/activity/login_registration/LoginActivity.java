@@ -30,6 +30,7 @@ import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.gcm.QuickstartPreferences;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.models.Person;
+import com.mohit.shopebazardroid.models.Profile;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
@@ -113,6 +114,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     MyApplication.preferencePutBooleanRemember(AppConstants.SharedPreferenceKeys.IS_REMEMBER_ME, true);
                     MyApplication.preferencePutStringRemember(AppConstants.SharedPreferenceKeys.EMAIL_Address, emailEditText.getEditText().getText().toString().trim());
                     MyApplication.preferencePutStringRemember(AppConstants.SharedPreferenceKeys.PASSWORD, passwordEditText.getEditText().getText().toString().trim());
+
                 } else {
                     MyApplication.preferencePutBooleanRemember(AppConstants.SharedPreferenceKeys.IS_REMEMBER_ME, false);
                 }
@@ -225,6 +227,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     if(baseResponse.getStatus() == 1){
                         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
+                        Profile profile = baseResponse.getInfo().getProfile();
+                        String fullname = profile.getFname() + " "+ profile.getLname();
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
+
                         setUserLoggedIn();
                         startActivity(new Intent(this, NavigationDrawerActivity.class));
 

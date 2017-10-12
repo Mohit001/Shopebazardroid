@@ -114,7 +114,6 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
                 cart_product_subtotal_ll.setVisibility(View.GONE);
             }
 
-
         }
     }
 
