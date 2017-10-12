@@ -13,24 +13,26 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.activity.history.OrderHistoryDetailActivity;
-import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.adapter.OrderHistoryAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.ReorderListner;
-import com.mohit.shopebazardroid.model.request.OrderHistoryRequest;
-import com.mohit.shopebazardroid.model.request.ReorderRequest;
 import com.mohit.shopebazardroid.model.response.AddCartResponse;
 import com.mohit.shopebazardroid.model.response.CurrencyEntity;
 import com.mohit.shopebazardroid.model.response.HistoryEntity;
-import com.mohit.shopebazardroid.model.response.HistoryResponse;
+import com.mohit.shopebazardroid.models.InvoiceMaster;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
     LinearLayoutManager layoutManager;
     OrderHistoryAdapter mAdapter;
 
-    List<HistoryEntity> arrayList;
+    List<InvoiceMaster> arrayList;
     List<CurrencyEntity> currencyArrayList;
     NavigationDrawerActivity activity;
 
@@ -83,7 +85,7 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
 
                         Intent intent = new Intent(mContext, OrderHistoryDetailActivity.class);
 
-                        intent.putExtra(AppConstants.RequestDataKey.INCREMENTID, incrementid);
+                        intent.putExtra(AppConstants.RequestDataKey.INVOICE_ID, incrementid);
                         intent.putExtra(AppConstants.RequestDataKey.STATUS, status);
                         intent.putExtra("isFrom", "order");
                         intent.putExtra(AppConstants.RequestDataKey.COUPON_CODE, TextUtils.isEmpty(coupanCode) ? "" : coupanCode);
@@ -104,11 +106,8 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
 //        setupOrderHistory();
 
         if(isUserLogin()){
-            OrderHistoryRequest request = new OrderHistoryRequest();
-            request.setCustomer_id(getUserid());
-            request.setStore_id(getStoreID());
-
-            HTTPWebRequest.OrderHistory(mContext, request, AppConstants.APICode.HISTORY, this,
+            String user_id = getUserid();
+            HTTPWebRequest.OrderHistory(mContext, user_id, AppConstants.APICode.HISTORY, this,
                     getFragmentManager());
         }
     }
@@ -168,37 +167,16 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
                 break;
             case AppConstants.APICode.HISTORY:
                 try {
-                    HistoryResponse historyResponse = new Gson().fromJson(response,
-                            HistoryResponse.class);
 
-                    if (historyResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(mContext, LoginActivity.class));
-                        getActivity().finish();
-                        return;
-                    }
+                    Type historyListType = new TypeToken<BaseResponse<List<InvoiceMaster>>>(){}.getType();
+                    Gson gson = new GsonBuilder().serializeNulls().create();
+                    BaseResponse<List<InvoiceMaster>> baseResponse = gson.fromJson(response, historyListType);
 
-                    if (historyResponse.getStatus().equalsIgnoreCase("success")) {
-                        if (historyResponse.getResult().getOrderlist().size() == 0) {
-                            Utility.toastMessage(mContext, "No order history found");
-                            return;
-                        }
-                        arrayList = historyResponse.getResult().getOrderlist();
+                    Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (baseResponse.getStatus() == ApiResponseStatus.ORDER_HISTORY_LIST_SUCCESS.getStatus_code()) {
+
+                        arrayList = baseResponse.getInfo();
                         HistoryEntity entity;
-                        for (int i = 0; i < arrayList.size(); i++) {
-                            entity = arrayList.get(i);
-                            for (CurrencyEntity currencyEntity : currencyArrayList) {
-                                if (currencyEntity.getCode().equalsIgnoreCase(entity
-                                        .getOrder_currency_code())) {
-                                    entity.setCurrencySymbol(currencyEntity.getSymbol());
-                                    arrayList.set(i, entity);
-                                    break;
-                                }
-                            }
-                        }
-
-
                         mAdapter = new OrderHistoryAdapter(mContext, arrayList, this);
                         mRecyclerView.setAdapter(mAdapter);
                     } else {
@@ -225,30 +203,23 @@ public class OrderHistoryFragment extends BaseFragment implements ApiResponse, R
     }
 
     @Override
-    public void orReorderClick(String orderid) {
-        ReorderRequest request = new ReorderRequest();
+    public void orReorderClick(int orderid) {
+        /*ReorderRequest request = new ReorderRequest();
         request.setCustomer_id(getUserid());
         request.setStore_id(getStoreID());
         request.setOrderid(orderid);
 
-        HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getFragmentManager());
+        HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getFragmentManager());*/
     }
 
     @Override
     public void onDetailsClick(int position) {
 
-        String incrementid = arrayList.get(position).getIncrement_id();
-        String status = arrayList.get(position).getStatus();
-        String coupanCode = arrayList.get(position).getCoupon_code();
-
+        int invoiceId = arrayList.get(position).getInvoice_id();
         Intent intent = new Intent(mContext, OrderHistoryDetailActivity.class);
-
-        intent.putExtra(AppConstants.RequestDataKey.INCREMENTID, incrementid);
-        intent.putExtra(AppConstants.RequestDataKey.STATUS, status);
+        intent.putExtra(AppConstants.RequestDataKey.INVOICE_ID, invoiceId);
         intent.putExtra("isFrom", "order");
-        intent.putExtra(AppConstants.RequestDataKey.COUPON_CODE, TextUtils.isEmpty(coupanCode) ? "" : coupanCode);
-        intent.putExtra(AppConstants.RequestDataKey.CURRENCY_SYMBOL, arrayList.get(position).getCurrencySymbol());
-
         startActivity(intent);
+
     }
 }

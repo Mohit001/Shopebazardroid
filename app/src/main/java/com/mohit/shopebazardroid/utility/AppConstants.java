@@ -95,7 +95,7 @@ public class AppConstants {
         public static final String STATUS = "status";
         public static final String COUPON_CODE = "coupon_code";
         public static final String ORDER_ID = "order_id";
-        public static final String INCREMENTID = "incrementid";
+        public static final String INVOICE_ID = "invoice_id";
         public static final String CURRENCY_SYMBOL = "currency_symbol";
 
         public static final String IS_NOTIFICATION = "is_notification";

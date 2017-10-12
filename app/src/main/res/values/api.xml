@@ -43,5 +43,6 @@
     <string name="api_cart_set_payment_method">cart/setPaymentType/%1$s/%2$s</string>
     <string name="api_cart_order_review">cart/orderReview/%1$s</string>
     <string name="api_place_order">cart/placeOrder</string>
+    <string name="api_order_history">history/getOrderHistoryList/%1$s</string>
 
 </resources>

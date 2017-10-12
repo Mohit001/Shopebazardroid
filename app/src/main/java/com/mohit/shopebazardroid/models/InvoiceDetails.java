@@ -1,4 +1,4 @@
-package model;
+package com.mohit.shopebazardroid.models;
 
 public class InvoiceDetails {
 	private int invoice_details_id;

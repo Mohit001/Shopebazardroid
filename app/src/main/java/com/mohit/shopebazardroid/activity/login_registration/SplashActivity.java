@@ -67,7 +67,7 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
         opensans_semi_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLD.TTF");
         opensans_semi_bold_italic = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLDITALIC.TTF");
 
-        HTTPWebRequest.Basic(this, "0", AppConstants.APICode.BASIC, this);
+        HTTPWebRequest.Basic(this, getUserid(), AppConstants.APICode.BASIC, this);
     }
 
     private void init() {

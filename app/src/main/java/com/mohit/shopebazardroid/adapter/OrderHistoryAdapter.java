@@ -14,7 +14,7 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.ReorderListner;
-import com.mohit.shopebazardroid.model.response.HistoryEntity;
+import com.mohit.shopebazardroid.models.InvoiceMaster;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
@@ -24,17 +24,16 @@ import java.util.List;
 /**
  * Created by msp on 23/7/16.
  */
-public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter
-        .RecyclerViewHolders> {
+public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapter.RecyclerViewHolders> {
     Context mContext;
-    List<HistoryEntity> arrayList;
+    List<InvoiceMaster> arrayList;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
 
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     private ReorderListner reorderListner;
 
-    public OrderHistoryAdapter(Context mContext, List<HistoryEntity> arrayList, ReorderListner reorderListner) {
+    public OrderHistoryAdapter(Context mContext, List<InvoiceMaster> arrayList, ReorderListner reorderListner) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         baseCurrencyCode = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
@@ -120,19 +119,20 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, final int position) {
-        final HistoryEntity entity = arrayList.get(position);
+        final InvoiceMaster entity = arrayList.get(position);
 
-        holder.orderno.setText(entity.getIncrement_id());
-        holder.date.setText(Utility.convertToNotDateFormat(entity.getCreated_at()));
-        float tempAmount = (float) (baseCurrencyValue * Double.parseDouble(entity.getGrand_total()));
-        String currencyCode = entity.getBase_currency_code();
-        holder.amount.setText(baseCurrencyCode + String.format("%.2f", tempAmount));
-        holder.status.setText(entity.getState());
+        holder.orderno.setText(String.valueOf(entity.getInvoice_id()));
+
+//        holder.date.setVisibility(View.GONE);
+        holder.date.setText(Utility.convertToNotDateFormat(entity.getCreate_date()));
+
+        holder.amount.setText(baseCurrencyCode + entity.getGrand_total());
+        holder.status.setText(entity.getOrder_status());
         holder.reorderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(reorderListner != null){
-                    reorderListner.orReorderClick(entity.getIncrement_id());
+                    reorderListner.orReorderClick(entity.getInvoice_id());
                 }
             }
         });

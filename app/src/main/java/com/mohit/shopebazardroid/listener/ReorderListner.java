@@ -5,6 +5,6 @@ package com.mohit.shopebazardroid.listener;
  */
 
 public interface ReorderListner {
-    void orReorderClick(String orderid);
+    void orReorderClick(int orderid);
     void onDetailsClick(int position);
 }

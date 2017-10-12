@@ -330,6 +330,7 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
                     this.finish();
                 } else{
                     startActivity(new Intent(this, ActivityShippingAddress.class));
+                    this.finish();
                 }
             }
             break;

@@ -118,7 +118,7 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
                 return super.onOptionsItemSelected(item);
             case android.R.id.home:
 //                startActivity(new Intent(mContext, ActivityBillingAddress.class));
-                this.finish();
+                onBackPressed();
                 return true;
             case R.id.action_plus:
 //                startActivity(new Intent(mContext, AddUpdateAddressActivity.class));
@@ -127,6 +127,13 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
                 startActivity(i);
                 return true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, CartActivity.class));
+        this.finish();
     }
 
     @Override

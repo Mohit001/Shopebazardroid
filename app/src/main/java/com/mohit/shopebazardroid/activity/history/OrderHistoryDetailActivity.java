@@ -201,7 +201,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
         recyclerView.setNestedScrollingEnabled(false);
 
         orderid = getIntent().getStringExtra("notification");
-        incrementid = getIntent().getStringExtra(AppConstants.RequestDataKey.INCREMENTID);
+        incrementid = getIntent().getStringExtra(AppConstants.RequestDataKey.INVOICE_ID);
         status = getIntent().getStringExtra(AppConstants.RequestDataKey.STATUS);
         coupanCode = getIntent().getStringExtra(AppConstants.RequestDataKey.COUPON_CODE);
         baseCurrencyCode = getIntent().getStringExtra(AppConstants.RequestDataKey.CURRENCY_SYMBOL);

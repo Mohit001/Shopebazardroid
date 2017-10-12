@@ -103,8 +103,7 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
             default:
                 return super.onOptionsItemSelected(item);
             case android.R.id.home:
-//                startActivity(new Intent(this, CartActivity.class));
-                this.finish();
+                onBackPressed();
                 return true;
             case R.id.action_plus:
                 Intent i =new Intent(mContext,AddUpdateAddressActivity.class);
@@ -113,6 +112,13 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 //                startActivity(new Intent(mContext, AddUpdateAddressActivity.class));
                 return true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, CartActivity.class));
+        this.finish();
     }
 
     @Override

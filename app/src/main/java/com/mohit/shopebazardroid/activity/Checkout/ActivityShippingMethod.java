@@ -92,12 +92,17 @@ public class ActivityShippingMethod extends BaseActivity implements ApiResponse,
             default:
                 return super.onOptionsItemSelected(item);
             case android.R.id.home:
-//                startActivity(new Intent(mContext, ActivityShippingAddress.class));
-                finish();
+                onBackPressed();
                 return true;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, CartActivity.class));
+        this.finish();
+    }
     @Override
     public void onEditAddressClick(int index) {
 

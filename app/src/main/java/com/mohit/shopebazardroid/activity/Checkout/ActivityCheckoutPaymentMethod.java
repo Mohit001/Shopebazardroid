@@ -89,10 +89,16 @@ public class ActivityCheckoutPaymentMethod extends BaseActivity implements ApiRe
             default:
                 return super.onOptionsItemSelected(item);
             case android.R.id.home:
-//                startActivity(new Intent(mContext, ActivityShippingMethod.class));
-                finish();
+                onBackPressed();
                 return true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(this, CartActivity.class));
+        this.finish();
     }
 
     @Override

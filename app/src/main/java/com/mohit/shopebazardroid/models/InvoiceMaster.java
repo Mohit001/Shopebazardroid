@@ -1,4 +1,4 @@
-package model;
+package com.mohit.shopebazardroid.models;
 
 import java.util.List;
 

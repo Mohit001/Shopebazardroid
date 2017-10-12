@@ -72,7 +72,7 @@ public class NotificationFragment extends BaseFragment implements ApiResponse, V
                 } else {
 
                     Intent intent = new Intent(mContext, OrderHistoryDetailActivity.class);
-                    intent.putExtra(AppConstants.RequestDataKey.INCREMENTID, increment_id);
+                    intent.putExtra(AppConstants.RequestDataKey.INVOICE_ID, increment_id);
                     intent.putExtra("isFrom", "order");
                     startActivity(intent);
                 }

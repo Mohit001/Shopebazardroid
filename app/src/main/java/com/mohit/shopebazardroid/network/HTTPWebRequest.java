@@ -21,7 +21,6 @@ import com.mohit.shopebazardroid.model.request.Mobile_return;
 import com.mohit.shopebazardroid.model.request.NotificationListRequest;
 import com.mohit.shopebazardroid.model.request.NotificationRequest;
 import com.mohit.shopebazardroid.model.request.OfferOfTheDayRequest;
-import com.mohit.shopebazardroid.model.request.OrderHistoryRequest;
 import com.mohit.shopebazardroid.model.request.PayuRequest;
 import com.mohit.shopebazardroid.model.request.ProductDetailRequest;
 import com.mohit.shopebazardroid.model.request.ProductRequest;
@@ -279,12 +278,10 @@ public class HTTPWebRequest {
 
     }
 
-    public static void OrderHistory(Context context, OrderHistoryRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void OrderHistory(Context context, String user_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_HISTORY, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+       String url = UrlFormetter.getURL(context, R.string.api_order_history, user_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void OrderDetails(Context context, String orderid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
