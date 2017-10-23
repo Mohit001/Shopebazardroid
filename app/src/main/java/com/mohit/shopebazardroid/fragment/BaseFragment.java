@@ -46,4 +46,12 @@ public class BaseFragment extends Fragment {
             baseActivity.updateCartCount();
         }
     }
+
+    public String getFirebaseId(){
+        if(baseActivity != null){
+            return baseActivity.getFirebaseId();
+        } else{
+            return "";
+        }
+    }
 }

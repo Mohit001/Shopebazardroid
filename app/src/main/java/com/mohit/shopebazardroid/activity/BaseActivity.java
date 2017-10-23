@@ -201,4 +201,8 @@ public class BaseActivity extends AppCompatActivity {
         cartItemBadge.setText(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, "0"));
         cartItemBadge.refreshDrawableState();
     }
+
+    public String getFirebaseId(){
+        return MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, "");
+    }
 }

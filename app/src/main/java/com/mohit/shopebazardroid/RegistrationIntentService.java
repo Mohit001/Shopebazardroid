@@ -39,20 +39,8 @@ public class RegistrationIntentService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
         try {
-            /*InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(getString(R.string.gcm_SenderId),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-            Log.i(TAG, "GCM Registration Token: " + token);*/
-
-            String token = intent.getStringExtra("FirebaseToken");
-
-            if (token != null) {
-                    /* Intent i =new Intent(this,GcmService.class);
-                     i.putExtra("token",""+token);
-                     startService(i);*/
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, token);
-            }
-//            }
+            String firebaseid = intent.getStringExtra("FirebaseToken");
+            MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, firebaseid);
         } catch (Exception e) {
             Log.d(TAG, "Failed to complete token refresh", e);
 

@@ -6,11 +6,14 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.R;
+import com.mohit.shopebazardroid.RegistrationIntentService;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.listener.ApiResponse;
@@ -47,13 +50,14 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
         context = SplashActivity.this;
 
         setIs_login_compulsory(true);
-        /*String firebaseid = FirebaseInstanceId.getInstance().getToken();
+        String firebaseid = FirebaseInstanceId.getInstance().getToken();
+
         Log.d(TAG, "firebaseID:- "+firebaseid);
         if(!TextUtils.isEmpty(firebaseid)){
             Intent intent = new Intent(this, RegistrationIntentService.class);
             intent.putExtra("FirebaseToken", firebaseid);
             startService(intent);
-        }*/
+        }
 
         montserrat_Regular = Typeface.createFromAsset(this.getAssets(), "Montserrat-Regular_0.otf");
         opensans_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-BOLD.TTF");
@@ -67,7 +71,7 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
         opensans_semi_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLD.TTF");
         opensans_semi_bold_italic = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLDITALIC.TTF");
 
-        HTTPWebRequest.Basic(this, getUserid(), AppConstants.APICode.BASIC, this);
+        HTTPWebRequest.Basic(this, firebaseid, AppConstants.APICode.BASIC, this);
     }
 
     private void init() {

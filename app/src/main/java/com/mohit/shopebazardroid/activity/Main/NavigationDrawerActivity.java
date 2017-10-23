@@ -202,8 +202,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
 
-        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
-        HTTPWebRequest.Basic(mContext, userid,AppConstants.APICode.BASIC, this);
+//        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
     }
 
 
