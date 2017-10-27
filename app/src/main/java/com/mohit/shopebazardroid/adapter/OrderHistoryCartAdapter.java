@@ -2,7 +2,6 @@ package com.mohit.shopebazardroid.adapter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,13 +16,10 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.CartListner;
-import com.mohit.shopebazardroid.model.response.AttributesInfo;
-import com.mohit.shopebazardroid.model.response.HistoryCartItem;
-import com.mohit.shopebazardroid.model.response.HistoryProductOptions;
+import com.mohit.shopebazardroid.models.InvoiceDetails;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +27,7 @@ import java.util.List;
  */
 public class OrderHistoryCartAdapter extends BaseAdapter {
     Context mContext;
-    ArrayList<HistoryCartItem> arrayList;
+    List<InvoiceDetails> arrayList;
     CartListner listner;
     String baseCurrencyCode = "";
     float baseCurrencyValue;
@@ -41,7 +37,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public OrderHistoryCartAdapter(Context mContext, ArrayList<HistoryCartItem> arrayList) {
+    public OrderHistoryCartAdapter(Context mContext, List<InvoiceDetails> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         this.listner = listner;
@@ -60,7 +56,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
     }
 
     @Override
-    public HistoryCartItem getItem(int i) {
+    public InvoiceDetails getItem(int i) {
         return arrayList.get(i);
     }
 
@@ -71,7 +67,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
-        HistoryCartItem entity = getItem(position);
+        InvoiceDetails entity = getItem(position);
         ViewHolder holder;
         if (view == null) {
             view = LayoutInflater.from(mContext).inflate(R.layout.adapter_orderreview_cart,
@@ -83,8 +79,8 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
         }
 
 
-        holder.productName.setText(entity.getName());
-        double discountAmount = Double.parseDouble(entity.getDiscount_amount());
+        holder.productName.setText(entity.getProduct_name());
+//        double discountAmount = Double.parseDouble(entity.getDiscount_amount());
         /*if(discountAmount > 0)
         {
             float tempPrice = (float) discountAmount*baseCurrencyValue;
@@ -103,7 +99,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
         }*/
 
         try {
-            float tempPrice = (float) (Double.parseDouble(entity.getPrice_incl_tax()) *
+            float tempPrice = (float) (Double.parseDouble(entity.getProduct_price()) *
                     baseCurrencyValue);
             holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", tempPrice)));
             holder.oldPrice.setVisibility(View.GONE);
@@ -113,7 +109,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
 
         }
 
-        if (entity.getProduct_options().getOptions() != null) {
+        /*if (entity.getProduct_options().getOptions() != null) {
             ArrayList<HistoryProductOptions.Options> optionsArrayList = entity.getProduct_options
                     ().getOptions();
             HistoryProductOptions.Options options;
@@ -126,38 +122,36 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
                             "\n");
                 }
             }
-        } else {
+
+            holder.customOption.setVisibility(View.VISIBLE);
+        }  else {
             holder.customOption.setVisibility(View.GONE);
-        }
-        holder.quentity.setText(String.format("%.0f", Double.parseDouble(entity.getQty_ordered())));
-        float tempSubtotal = (float) (Double.parseDouble(entity.getRow_total()) *
-                baseCurrencyValue);
+        }*/
+
+        holder.quentity.setText(String.valueOf(entity.getProduct_qty()));
+        double tempSubtotal = (double) ( Double.parseDouble(entity.getProduct_price()) * entity.getProduct_qty() * baseCurrencyValue);
         holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
 
-        if(entity.getMedia() != null
-                && entity.getMedia().size() > 0){
 
-            String imgurl = entity.getMedia().get(0).getFile();
+
+            String imgurl = entity.getProduct_image_name();
             if (TextUtils.isEmpty(imgurl)) {
                 holder.imageView.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),
                         R.drawable.ic_placeholder));
             } else {
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getMedia().get(0).getFile())
+                        .load(imagePrefix+entity.getProduct_image_name())
                         .error(R.drawable.ic_placeholder)
                         .placeholder(R.drawable.ic_placeholder)
                         .into(holder.imageView);
             }
-        } else {
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),
-                    R.drawable.ic_placeholder));
-        }
+
 
 
         holder.cart_custom_option_ll.removeAllViews();
 
 
-        if(entity.getProduct_options().getAttributes_info() != null){
+        /*if(entity.getProduct_options().getAttributes_info() != null){
             List<AttributesInfo> attributesInfos = entity.getProduct_options().getAttributes_info();
 
             //configurable option
@@ -178,7 +172,11 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
                 horlinearLayout.addView(valueTv);
                 holder.cart_custom_option_ll.addView(horlinearLayout);
             }
-        }
+
+            holder.cart_custom_option_ll.setVisibility(View.VISIBLE);
+        } else {
+            holder.cart_custom_option_ll.setVisibility(View.GONE);
+        }*/
 
         return view;
     }
@@ -215,8 +213,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
                     .cart_product_size_lbl);
             cart_product_size_lbl.setTypeface(SplashActivity.opensans_regular);
 
-            customOption = (AppCompatTextView) itemView.findViewById(R.id
-                    .cart_product_customoption_content);
+            customOption = (AppCompatTextView) itemView.findViewById(R.id.cart_product_customoption_content);
             customOption.setTypeface(SplashActivity.opensans_regular);
 
             cart_product_quentity_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_quentity_lbl);

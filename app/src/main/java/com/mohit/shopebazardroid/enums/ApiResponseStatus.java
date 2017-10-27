@@ -14,6 +14,7 @@ public enum ApiResponseStatus {
 	REQUEST_PARSING_ERROR(2003, "Error in parsing request. Please contact to administrator"),
 	
 	//User related enums 101-199
+	ENVIRONMENT_FAIL(0, "please pass valid unique id"),
 	ENVIRONMENT_SUCCESS(1, "Environment retrive successfully"),
 	LOGIN_FAIL(0, "Please provide valid username and password"),
 	LOGIN_SUCCESS(1, "User login successfully"),
@@ -55,6 +56,7 @@ public enum ApiResponseStatus {
 	
 	// cart related enums 3001 - 3099 
 	CART_LIST_SUCCESS(1, "All cart items"),
+	CART_UPDATE_SUCCESS(1, "Cart information update successfully"),
 	CART_PRODUCT_ADD_FAIL(0, "Fail to add product in cart"),
 	CART_PRODUCT_ADD_SUCCESS(1, "Product added successfully"),
 	CART_PRODUCT_UPDATE_FAIL(0, "Fail to update product infromation"),
