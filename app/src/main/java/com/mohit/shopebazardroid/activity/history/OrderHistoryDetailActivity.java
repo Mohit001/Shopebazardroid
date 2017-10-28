@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.github.paolorotolo.expandableheightlistview.ExpandableHeightListView;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
@@ -27,6 +29,7 @@ import com.mohit.shopebazardroid.adapter.AddCommentsOrderHistoryAdapter;
 import com.mohit.shopebazardroid.adapter.OrderHistoryCartAdapter;
 import com.mohit.shopebazardroid.dialog.ConfirmDialog;
 import com.mohit.shopebazardroid.dialog.TrackingProcessDialog;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.ConfirmDialogListner;
 import com.mohit.shopebazardroid.model.request.AddCommentInOrderRequest;
@@ -35,15 +38,17 @@ import com.mohit.shopebazardroid.model.request.ReorderRequest;
 import com.mohit.shopebazardroid.model.response.AddCartResponse;
 import com.mohit.shopebazardroid.model.response.AddCommentResponse;
 import com.mohit.shopebazardroid.model.response.Address;
-import com.mohit.shopebazardroid.model.response.HistoryCartItem;
-import com.mohit.shopebazardroid.model.response.HistoryEntity;
 import com.mohit.shopebazardroid.model.response.HistoryStatus;
-import com.mohit.shopebazardroid.model.response.OrderReviewResponse;
+import com.mohit.shopebazardroid.models.InvoiceDetails;
+import com.mohit.shopebazardroid.models.InvoiceMaster;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msp on 27/7/16.
@@ -52,7 +57,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 
     public static String TAG = OrderHistoryDetailActivity.class.getSimpleName();
     Context mContext;
-    private ArrayList<HistoryCartItem> arrayList;
+    private List<InvoiceDetails> arrayList;
     private int paymentMethod = 0;
     private Address address;
 
@@ -75,7 +80,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 
     double total = 0, discount = 0, grossTotal = 0;
     private String status, coupanCode, incrementid;
-    private HistoryEntity orderinfo;
+    private InvoiceMaster orderinfo;
 
     String baseCurrencyCode = "";
     float baseCurrencyRate;
@@ -376,9 +381,9 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 
                 if (!edt_add_comment.getText().toString().trim().isEmpty()) {
                     AddCommentInOrderRequest comment_request = new AddCommentInOrderRequest();
-                    comment_request.setIncrement_id(orderinfo.getIncrement_id());
+                    comment_request.setIncrement_id(String.valueOf(orderinfo.getInvoice_id()));
                     comment_request.setComment(edt_add_comment.getText().toString());
-                    comment_request.setOrder_status(orderinfo.getStatus());
+                    comment_request.setOrder_status(orderinfo.getOrder_status());
 
                     HTTPWebRequest.AddCommentOrder(mContext, comment_request, AppConstants.APICode.ADD_COMMENT, this,
                             getSupportFragmentManager());
@@ -431,21 +436,18 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 
             case AppConstants.APICode.MOBILE_RETURN:
             case AppConstants.APICode.ORDER_DETAIL:
-                OrderReviewResponse reviewResponse = new Gson().fromJson(response,
-                        OrderReviewResponse.class);
-                if (reviewResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase
-                        ("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(this, LoginActivity.class));
-                    this.finish();
-                    return;
-                }
 
-                if (reviewResponse.getStatus().equalsIgnoreCase("success")) {
-                    if (apiCode == AppConstants.APICode.MOBILE_RETURN)
-                        Utility.toastMessage(mContext, reviewResponse.getResult().getMessage());
-                    orderinfo = reviewResponse.getResult().getOrderinfo();
+                Gson gson = new GsonBuilder().serializeNulls().create();
+                Type orderDetailsType = new TypeToken<BaseResponse<InvoiceMaster>>(){}.getType();
+                BaseResponse<InvoiceMaster> baseResponse = gson.fromJson(response, orderDetailsType);
+
+                Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+
+                if (baseResponse.getStatus() == ApiResponseStatus.ORDER_HISTORY_DETAILS_SUCCESS.getStatus_code()) {
+                    /*if (apiCode == AppConstants.APICode.MOBILE_RETURN)
+                        Utility.toastMessage(mContext, reviewResponse.getResult().getMessage());*/
+
+                    orderinfo = baseResponse.getInfo();
 
                 }
                 setupLayout();
@@ -496,23 +498,22 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
         if(orderinfo == null)
             return;
 
-        arrayList = orderinfo.getItems();
+        arrayList = orderinfo.getInvoiceProductList();
         adapter = new OrderHistoryCartAdapter(mContext, arrayList);
 
-        status_history = orderinfo.getStatus_history();
+        /*status_history = orderinfo.getStatus_history();
         comment_adapter = new AddCommentsOrderHistoryAdapter(mContext, status_history);
-        recyclerView.setAdapter(comment_adapter);
+        recyclerView.setAdapter(comment_adapter);*/
 
         listView.setExpanded(true);
         listView.setAdapter(adapter);
 
 //        str_disable = orderinfo.getDisabled();
-        str_return_days = orderinfo.getReturn_days();
-        str_web_track = orderinfo.getState();
-        str_delivery_date = orderinfo.getDelivery_date();
+//        str_return_days = orderinfo.getReturn_days();
+//        str_web_track = orderinfo.getState();
+//        str_delivery_date = orderinfo.getDelivery_date();
 
-        float tempSubtotal = (float) (baseCurrencyRate * Double.parseDouble(orderinfo
-                .getSubtotal()));
+        float tempSubtotal = (float) (baseCurrencyRate * Double.parseDouble(orderinfo.getTotal_amount()));
         totalTextView.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
 
 //        orderStatusTextView.setText(TextUtils.isEmpty(str_web_track)?status_history.get(status_history.size() -1).getStatus():str_web_track);
@@ -520,60 +521,13 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
         coupancodeTextView.setText(TextUtils.isEmpty(coupanCode) == true ? "No coupon" :
                 coupanCode);
 
-        Address address_billing = orderinfo.getBilling_address();
-        String[] street_billing = address_billing.getStreet().split("\n");
+        String billingAddressString  = orderinfo.getBilling_address1()
+                +"\n"+orderinfo.getBilling_address2()
+                +"\n"+orderinfo.getBilling_state()
+                +"\n"+orderinfo.getBilling_city()
+                +"\n"+orderinfo.getBilling_postcode()
+                
 
-        String addressString, getLandmark, getCity, getRegion, getCountry, getPostcode, getEmail,
-                getTelephone;
-
-        getLandmark = address_billing.getLandmark();
-        getCity = address_billing.getCity();
-        getRegion = address_billing.getRegion();
-        getCountry = address_billing.getCountry();
-        getPostcode = address_billing.getPostcode();
-        getEmail = address_billing.getEmail();
-        getTelephone = address_billing.getTelephone();
-
-
-        addressString = address_billing.getFirstname()
-                + "\n" + street_billing[0];
-        if(street_billing.length > 1) {
-            addressString = addressString+"\n" + street_billing[1];
-        }
-
-        if (!TextUtils.isEmpty(getLandmark)) {
-            addressString = addressString + "\n" + address_billing.getLandmark();
-        }
-        if (!TextUtils.isEmpty(getCity)) {
-            addressString = addressString + "\n" + address_billing.getCity();
-
-        }
-        if (!TextUtils.isEmpty(getRegion)) {
-            addressString = addressString + "\n" + address_billing.getRegion();
-
-        }
-        if (!TextUtils.isEmpty(getCountry)) {
-            addressString = addressString + "\n" + address_billing.getCountry();
-
-        }
-        if (!TextUtils.isEmpty(getPostcode)) {
-            addressString = addressString + "\n" + address_billing.getPostcode();
-
-        }
-        if (!TextUtils.isEmpty(getEmail)) {
-            addressString = addressString + "\n" + address_billing.getEmail();
-
-        }
-//        if (!TextUtils.isEmpty(getCity)) {
-//            addressString = addressString + "\n" + address_billing.getCity();
-//
-//        }
-//        if (!TextUtils.isEmpty(getTelephone)) {
-//            addressString = addressString + "\n" + address_billing.getTelephone() ;
-//
-//        }
-
-//        addressString = addressString.replace("null", "");
 
         billingAddressTextView.setText(addressString);
 
