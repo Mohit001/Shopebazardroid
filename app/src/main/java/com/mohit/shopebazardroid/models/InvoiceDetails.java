@@ -1,6 +1,8 @@
 package com.mohit.shopebazardroid.models;
 
-public class InvoiceDetails {
+import java.io.Serializable;
+
+public class InvoiceDetails implements Serializable{
 	private int invoice_details_id;
 	private int invoice_id;
 	private int product_id;
@@ -18,6 +20,26 @@ public class InvoiceDetails {
 	private String product_category_name;
 	private String product_brand_name;
 	private int product_qty;
+	private String shipping_charge;
+	
+	
+	public InvoiceDetails() {
+		super();
+		this.product_name = "";
+		this.product_code = "";
+		this.product_description = "";
+		this.product_price = "";
+		this.product_cat_id = "";
+		this.product_brand_id = "";
+		this.product_gst_type = "";
+		this.product_gst = "";
+		this.product_discount_price = "";
+		this.create_date = "";
+		this.product_image_name = "";
+		this.product_category_name = "";
+		this.product_brand_name = "";
+		this.shipping_charge = "";
+	}
 	public int getInvoice_details_id() {
 		return invoice_details_id;
 	}
@@ -119,6 +141,12 @@ public class InvoiceDetails {
 	}
 	public void setProduct_qty(int product_qty) {
 		this.product_qty = product_qty;
+	}
+	public String getShipping_charge() {
+		return shipping_charge;
+	}
+	public void setShipping_charge(String shipping_charge) {
+		this.shipping_charge = shipping_charge;
 	}
 
 }

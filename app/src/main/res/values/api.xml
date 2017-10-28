@@ -2,8 +2,8 @@
 <resources>
 
     <!--<string name="base_url">http://localhost:8080/shppebazar/rest/</string>-->
-     <string name="api_base_url">http://10.0.2.2:8080/shppebazar/rest/</string>
-    <!--<string name="api_base_url">http://192.168.0.4:8080/shppebazar/rest/</string>-->
+     <!--<string name="api_base_url">http://10.0.2.2:8080/shppebazar/rest/</string>-->
+    <string name="api_base_url">http://192.168.0.2:8080/shppebazar/rest/</string>
     <!--<string name="api_base_url">http://52.91.52.204/teshppebazar/rest/</string>-->
 
     <!-- app environment user_id=0 for guest user-->
@@ -44,5 +44,6 @@
     <string name="api_cart_order_review">cart/orderReview/%1$s</string>
     <string name="api_place_order">cart/placeOrder</string>
     <string name="api_order_history">history/getOrderHistoryList/%1$s</string>
+    <string name="api_order_history_details">history/getOrderHistoryDetails/%1$s</string>
 
 </resources>

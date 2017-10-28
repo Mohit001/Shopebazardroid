@@ -98,6 +98,9 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
             holder.oldPrice.setVisibility(View.GONE);
         }*/
 
+        holder.shippingCharge.setText(baseCurrencyCode+entity.getShipping_charge());
+        holder.shippingCharge.setVisibility(View.VISIBLE);
+
         try {
             float tempPrice = (float) (Double.parseDouble(entity.getProduct_price()) *
                     baseCurrencyValue);
@@ -189,7 +192,7 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
         AppCompatTextView quentity;
         AppCompatTextView subtotal;
         LinearLayout cart_custom_option_ll;
-
+        AppCompatTextView shippingCharge;
         AppCompatTextView cart_product_size_lbl,
                 cart_product_quentity_lbl, cart_product_subtotal_lbl;
 
@@ -229,6 +232,8 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
 
             cart_product_subtotal_lbl = (AppCompatTextView) itemView.findViewById(R.id.cart_product_subtotal_lbl);
             cart_product_subtotal_lbl.setTypeface(SplashActivity.opensans_regular);
+
+            shippingCharge = (AppCompatTextView) itemView.findViewById(R.id.cart_product_shipping_charge_content);
 
             subtotal = (AppCompatTextView) itemView.findViewById(R.id
                     .cart_product_subttotal_content);

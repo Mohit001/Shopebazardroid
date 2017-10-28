@@ -79,7 +79,8 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 
 
     double total = 0, discount = 0, grossTotal = 0;
-    private String status, coupanCode, incrementid;
+    private String status, coupanCode;
+    private String incrementid;
     private InvoiceMaster orderinfo;
 
     String baseCurrencyCode = "";
@@ -206,7 +207,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
         recyclerView.setNestedScrollingEnabled(false);
 
         orderid = getIntent().getStringExtra("notification");
-        incrementid = getIntent().getStringExtra(AppConstants.RequestDataKey.INVOICE_ID);
+        incrementid = String.valueOf(getIntent().getIntExtra(AppConstants.RequestDataKey.INVOICE_ID, 0));
         status = getIntent().getStringExtra(AppConstants.RequestDataKey.STATUS);
         coupanCode = getIntent().getStringExtra(AppConstants.RequestDataKey.COUPON_CODE);
         baseCurrencyCode = getIntent().getStringExtra(AppConstants.RequestDataKey.CURRENCY_SYMBOL);
@@ -513,11 +514,11 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
 //        str_web_track = orderinfo.getState();
 //        str_delivery_date = orderinfo.getDelivery_date();
 
-        float tempSubtotal = (float) (baseCurrencyRate * Double.parseDouble(orderinfo.getTotal_amount()));
+        float tempSubtotal = (float) (baseCurrencyRate * Double.parseDouble(orderinfo.getGrand_total()));
         totalTextView.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
 
 //        orderStatusTextView.setText(TextUtils.isEmpty(str_web_track)?status_history.get(status_history.size() -1).getStatus():str_web_track);
-        orderStatusTextView.setText(TextUtils.isEmpty(str_web_track)?status_history.get(status_history.size() -1).getStatus():str_web_track);
+        orderStatusTextView.setText(orderinfo.getOrder_status());
         coupancodeTextView.setText(TextUtils.isEmpty(coupanCode) == true ? "No coupon" :
                 coupanCode);
 
@@ -526,142 +527,47 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
                 +"\n"+orderinfo.getBilling_state()
                 +"\n"+orderinfo.getBilling_city()
                 +"\n"+orderinfo.getBilling_postcode()
-                
+                +"\n"+orderinfo.getBilling_email()
+                +"\n"+orderinfo.getBilling_contact_no();
 
 
-        billingAddressTextView.setText(addressString);
+        billingAddressTextView.setText(billingAddressString);
 
-        Address address_shipping = orderinfo.getShipping_address();
-        String[] street_shipping = address_shipping.getStreet().split("\n");
-
-        String shippingAddressString, s_getCity, s_getRegion, s_getCountry, s_getPostcode,
-                s_getEmail, s_getTelephone;
-
-        s_getCity = address_shipping.getCity();
-        s_getRegion = address_shipping.getRegion();
-        s_getCountry = address_shipping.getCountry();
-        s_getPostcode = address_shipping.getPostcode();
-        s_getEmail = address_shipping.getEmail();
-        s_getTelephone = address_shipping.getTelephone();
-
-
-        shippingAddressString = address_shipping.getFirstname()
-                + "\n" + street_shipping[0];
-
-        if(street_shipping.length > 1){
-            shippingAddressString = shippingAddressString + "\n" + street_shipping[1];
-        }
-
-        if (!TextUtils.isEmpty(s_getCity)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getCity();
-        }
-
-        if (!TextUtils.isEmpty(s_getRegion)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getRegion();
-        }
-
-        if (!TextUtils.isEmpty(s_getCountry)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getCountry();
-        }
-
-        if (!TextUtils.isEmpty(s_getPostcode)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getPostcode();
-        }
-
-        if (!TextUtils.isEmpty(s_getEmail)) {
-            shippingAddressString = shippingAddressString + "\n" + address_shipping.getEmail();
-        }
-//
-//        if (!TextUtils.isEmpty(s_getTelephone)) {
-//            shippingAddressString = shippingAddressString + "\n" + address_shipping
-// .getTelephone();
-//        }
-
-//        shippingAddressString = shippingAddressString.replace("null", "");
-
+        String shippingAddressString = orderinfo.getShiping_address1()
+                +"\n"+orderinfo.getShiping_address2()
+                +"\n"+orderinfo.getShiping_state()
+                +"\n"+orderinfo.getShiping_city()
+                +"\n"+orderinfo.getShiping_postcode()
+                +"\n"+orderinfo.getShiping_email()
+                +"\n"+orderinfo.getShipping_contact_no();
         shippingAddressTextView.setText(shippingAddressString);
 
-        paymentMethodTextView.setText(orderinfo.getPayment().getMethod());
+        paymentMethodTextView.setText(orderinfo.getOrder_type());
 
 
 //        float tempDeliveryCharges = (float) ((Double.parseDouble(orderinfo.getGrand_total()) +
 //                Double.parseDouble(orderinfo.getDiscount_amount())) - Double.parseDouble
 //                (orderinfo.getSubtotal()));
 //        tempDeliveryCharges = baseCurrencyValue * tempDeliveryCharges;
-        float tempDeliveryCharges = (float) (baseCurrencyRate * Double.parseDouble(orderinfo
-                .getShipping_amount()));
-        deliveryChargesTextView.setText(baseCurrencyCode + String.format("%.2f", Math.abs
-                (tempDeliveryCharges)));
 
-        discount = baseCurrencyRate * Double.parseDouble(orderinfo.getDiscount_amount());
-        discountTextView.setText(baseCurrencyCode + String.format("%.2f", Math.abs(discount)));
+        deliveryChargesTextView.setText(orderinfo.getShipping_charge());
+
+//        discount = baseCurrencyRate * Double.parseDouble(orderinfo.getDiscount_amount());
+//        discountTextView.setText(baseCurrencyCode + String.format("%.2f", Math.abs(discount)));
+//        discountTextView.setVisibility(View.GONE);
+
+        discountTextView.setText(baseCurrencyCode+0);
 
         grossTotal = baseCurrencyRate * Double.parseDouble(orderinfo.getGrand_total());
         grossTotalTextView.setText(baseCurrencyCode + String.format("%.2f", grossTotal));
 
 
-        custom_shipment_id = orderinfo.getCustom_shipment_id();
-        order_id = orderinfo.getOrder_id();
+//        custom_shipment_id = orderinfo.getCustom_shipment_id();
+        order_id = orderinfo.getOrder_no();
 
         btn_order_tracking.setVisibility(View.GONE);
         btn_refund_process.setVisibility(View.GONE);
         rel_comments.setVisibility(View.GONE);
-
-        /*if (str_disable.equalsIgnoreCase("1")) {
-            btn_order_tracking.setVisibility(View.GONE);
-            btn_refund_process.setVisibility(View.GONE);
-            rel_comments.setVisibility(View.GONE);
-        } else {
-            btn_order_tracking.setVisibility(View.VISIBLE);
-            btn_refund_process.setVisibility(View.VISIBLE);
-            rel_comments.setVisibility(View.VISIBLE);
-
-            if (str_web_track.equalsIgnoreCase("Canceled")) {
-                btn_order_tracking.setVisibility(View.GONE);
-                btn_refund_process.setVisibility(View.GONE);
-                rel_comments.setVisibility(View.GONE);
-            }
-
-            if (!TextUtils.isEmpty(str_delivery_date)) {
-
-//        String dt = "2016-10-14";  // Start date
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                Calendar c = Calendar.getInstance();
-                try {
-                    c.setTime(sdf.parse(str_delivery_date));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                c.add(Calendar.DATE, Integer.parseInt(str_return_days));  // number of days to add, can also use Calendar.DAY_OF_MONTH in place of Calendar.DATE
-                SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
-
-                String DeliveryDate = sdf1.format(c.getTime());
-
-                String Current_date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
-                Log.e("Delivery Date", "---->>>" + DeliveryDate);
-
-                Log.e("Current date ", "---->>>>" + Current_date);
-
-                Date strDate = null;
-                Date curdate = null;
-                try {
-                    strDate = sdf.parse(DeliveryDate);
-                    curdate = sdf.parse(Current_date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if (curdate.after(strDate)) {
-                    btn_refund_process.setVisibility(View.GONE);
-                }
-            }
-        }*/
-
-
-//        if (sdf1.parse(Current_date).after(sdf1.parse(DeliveryDate))){
-//
-//        }
 
     }
 

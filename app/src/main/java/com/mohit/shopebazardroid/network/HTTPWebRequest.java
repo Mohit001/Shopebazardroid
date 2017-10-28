@@ -48,7 +48,7 @@ public class HTTPWebRequest {
     public static void Basic(Context context, String user_id, int apiCode, ApiResponse apiResponse) {
 
         String url = UrlFormetter.getURL(context, R.string.api_environment, user_id);
-        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true).execute(apiResponse);
+        new OKHttpAsyncTask(context, url, null , apiCode, true).execute(apiResponse);
     }
 
 
@@ -72,20 +72,6 @@ public class HTTPWebRequest {
         new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void Registration(Context context, RegistrationRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.ACTION, request.getAction());
-        postDataParams.put(AppConstants.RequestDataKey.FIRSTNAME, request.getFirstname());
-        postDataParams.put(AppConstants.RequestDataKey.MIDDLENAME, request.getMiddlename());
-        postDataParams.put(AppConstants.RequestDataKey.LASTNAME, request.getLastname());
-        postDataParams.put(AppConstants.RequestDataKey.EMAIL, request.getEmail());
-        postDataParams.put(AppConstants.RequestDataKey.PASSWORD, request.getPassword());
-        postDataParams.put(AppConstants.RequestDataKey.DEVICE_TYPE, request.getDevice_type());
-        postDataParams.put(AppConstants.RequestDataKey.DEVICE_TOKEN, request.getDevice_token());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_REGISTRATION, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
-    }
 
     public static void Registration(Context context, String jsonRequest, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
         String url = UrlFormetter.getURL(context, R.string.api_user_register);
@@ -107,7 +93,7 @@ public class HTTPWebRequest {
 
     public static void CategoryList(Context context, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
         String url = UrlFormetter.getURL(context, R.string.api_category);
-        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
+        new OKHttpAsyncTask(context, url, null, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void products(Context context, String categoryid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -286,9 +272,8 @@ public class HTTPWebRequest {
 
     public static void OrderDetails(Context context, String orderid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.ORDER_ID, orderid);
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_HISTORY_ORDER_DETAIL, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+        String url = UrlFormetter.getURL(context, R.string.api_order_history_details, orderid);
+        new OKHttpAsyncTask(context, url, AppConstants.APIURL.URL_HISTORY_ORDER_DETAIL, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void BannerHome(Context context, String store_id, int apiCode, ApiResponse apiResponse) {

@@ -767,6 +767,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 userCart.setCart_id(Integer.parseInt(cartid));
                 userCart.setToken(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.CART_TOKEN, FirebaseInstanceId.getInstance().getToken()));
                 userCart.setUser_id(Integer.parseInt(getUserid()));
+                userCart.setUnique_id(getFirebaseId());
 
                 UserCartProduct userCartProduct = new UserCartProduct();
                 userCartProduct.setCart_id(Integer.parseInt(cartid));

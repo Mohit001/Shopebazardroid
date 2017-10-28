@@ -3,6 +3,7 @@ package com.mohit.shopebazardroid.network;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.mohit.shopebazardroid.MyApplication;
@@ -48,9 +49,14 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
         this.url = url;
         this.code = code;
         this.isGET = isGET;
-        dialog = new ProgressDialog();
-        dialog.setDialogMessage(dialogMessage);
         this.fragmentManager = fragmentManager;
+        if(!TextUtils.isEmpty(dialogMessage)){
+            dialog = new ProgressDialog();
+            dialog.setDialogMessage(dialogMessage);
+        } else {
+            dialog = null;
+        }
+
     }
 
     public OKHttpAsyncTask(Context context, String url, String requestJson, String dialogMessage, int code, boolean isGET, FragmentManager fragmentManager) {
@@ -60,9 +66,14 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
         this.code = code;
         this.isGET = isGET;
         this.requestJson = requestJson;
-        dialog = new ProgressDialog();
-        dialog.setDialogMessage(dialogMessage);
         this.fragmentManager = fragmentManager;
+        if(!TextUtils.isEmpty(dialogMessage)){
+            dialog = new ProgressDialog();
+            dialog.setDialogMessage(dialogMessage);
+        } else {
+            dialog = null;
+        }
+
     }
 
 
@@ -104,7 +115,11 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
         Log.d(TAG, "onPreExecute: "+url);
 
         if (this.isCancelled())
+        {
+
             return null;
+
+        }
 
         apiResponse = (ApiResponse) arg0[0];
         String responseJson = "";
@@ -147,17 +162,8 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
     @Override
     protected void onPostExecute(String response) {
 
-
-        try {
-            if (this.dialog != null && this.dialog.isVisible()) {
-                this.dialog.dismiss();
-            }
-        } catch (final IllegalArgumentException e) {
-            // Handle or log or ignore
-        } catch (final Exception e) {
-            // Handle or log or ignore
-        } finally {
-            this.dialog = null;
+        if (this.dialog != null && this.dialog.isVisible()) {
+            this.dialog.dismiss();
         }
 
         System.out.println("Response in ASYNC :" + response);
@@ -179,7 +185,9 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
 		}*/
         apiResponse.apiResponsePostProcessing(response, code);
 
-
+        if (this.dialog != null && this.dialog.isVisible()) {
+            this.dialog.dismiss();
+        }
     }
 
 
