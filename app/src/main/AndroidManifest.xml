@@ -65,10 +65,9 @@
             </intent-filter>
         </service>
         <service
-            android:name=".gcm.MyInstanceIDListenerService"
-            android:exported="false">
+            android:name=".gcm.MyFirebaseInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
         <service

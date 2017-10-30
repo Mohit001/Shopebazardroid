@@ -1,9 +1,14 @@
 package com.mohit.shopebazardroid.models;
 
 import java.io.Serializable;
-import java.sql.Date;
+
 
 public class Address implements Serializable{
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	private int address_id;
 	private String address1;
@@ -15,13 +20,38 @@ public class Address implements Serializable{
 	private String user_id;
 	private int is_enable;
 	private int default_value;
-	private Date create_date;
 	private String full_name;
 	private String email;
 	private String contact_number;
 	private boolean selected;
+	private String country;
+	private String country_name;
+	private String state_name;
+	private String city_name;
 
+	
 
+	public Address() {
+		super();
+		this.address_id = 0;
+		this.address1 = "";
+		this.address2 = "";
+		this.state = "";
+		this.city = "";
+		this.postcode = "";
+		this.addition_detail = "";
+		this.user_id = "";
+		this.is_enable = 1;
+		this.default_value = 0;
+		this.full_name = "";
+		this.email = "";
+		this.contact_number = "";
+		this.selected = false;
+		this.country = "";
+		this.country_name = "";
+		this.state_name = "";
+		this.city_name = "";
+	}
 	public boolean getSelected() {
 		return selected;
 	}
@@ -88,12 +118,7 @@ public class Address implements Serializable{
 	public void setDefault_value(int default_value) {
 		this.default_value = default_value;
 	}
-	public Date getCreate_date() {
-		return create_date;
-	}
-	public void setCreate_date(Date create_date) {
-		this.create_date = create_date;
-	}
+
 	public String getFull_name() {
 		return full_name;
 	}
@@ -112,24 +137,30 @@ public class Address implements Serializable{
 	public void setContact_number(String contact_number) {
 		this.contact_number = contact_number;
 	}
-
-	@Override
-	public String toString() {
-		return "Address{" +
-				"address_id=" + address_id +
-				", address1='" + address1 + '\'' +
-				", address2='" + address2 + '\'' +
-				", state='" + state + '\'' +
-				", city='" + city + '\'' +
-				", postcode='" + postcode + '\'' +
-				", addition_detail='" + addition_detail + '\'' +
-				", user_id='" + user_id + '\'' +
-				", is_enable=" + is_enable +
-				", default_value=" + default_value +
-				", create_date=" + create_date +
-				", full_name='" + full_name + '\'' +
-				", email='" + email + '\'' +
-				", contact_number='" + contact_number + '\'' +
-				'}';
+	public String getCountry() {
+		return country;
 	}
+	public void setCountry(String country) {
+		this.country = country;
+	}
+	public String getCountry_name() {
+		return country_name;
+	}
+	public void setCountry_name(String country_name) {
+		this.country_name = country_name;
+	}
+	public String getState_name() {
+		return state_name;
+	}
+	public void setState_name(String state_name) {
+		this.state_name = state_name;
+	}
+	public String getCity_name() {
+		return city_name;
+	}
+	public void setCity_name(String city_name) {
+		this.city_name = city_name;
+	}
+
+	
 }

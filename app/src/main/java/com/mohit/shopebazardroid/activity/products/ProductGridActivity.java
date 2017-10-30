@@ -243,13 +243,6 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
 
         MenuItem itemFilter = menu.findItem(R.id.action_filter);
 
-        if (ishideprice.equalsIgnoreCase("0")) {
-            item.setVisible(true);
-            itemFilter.setVisible(true);
-        } else {
-            item.setVisible(false);
-            itemFilter.setVisible(false);
-        }
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);

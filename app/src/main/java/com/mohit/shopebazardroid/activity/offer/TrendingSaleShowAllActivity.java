@@ -228,32 +228,16 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
                 filterDialog.show(getSupportFragmentManager(), FilterDialog.TAG);
                 return true;
             case R.id.action_sorting:
-                /*if (filterAttributesArrayList == null || filterAttributesArrayList.size() == 0) {
-                    filterAttributesArrayList = new ArrayList<>();
-                    if (productResult.getFilter_attributes() != null &&
-                            productResult.getFilter_attributes().size() > 0) {
 
-                        filterAttributesArrayList.addAll(productResult.getFilter_attributes());
-                        return true;
-                    } else {
-                        Utility.toastMessage(mContext, getResources().getString(R.string.no_sorting));
-                        return false;
-                    }
-
-                }*/
                 if (noProductFound){
                     Utility.toastMessage(mContext, getResources().getString(R.string.no_sorting));
                     return false;
                 }
-//                if (arrayList.size() > 0) {
                 sortDialog = new SortDialog();
                 sortDialog.setListner(this);
                 sortDialog.show(getSupportFragmentManager(), SortDialog.TAG);
                 return true;
-//                } else {
-//                    Utility.toastMessage(mContext, "no shorting data");
-//                    return false;
-//                }
+
             case R.id.action_cart:
 //                Utility.toastMessage(mContext, "Cart clicked");
                 startActivity(new Intent(mContext, CartActivity.class));

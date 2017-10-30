@@ -205,4 +205,9 @@ public class BaseActivity extends AppCompatActivity {
     public String getFirebaseId(){
         return MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, "");
     }
+
+    public void setFirebaseId(String firebaseid){
+        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, firebaseid);
+    }
+
 }

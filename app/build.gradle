@@ -31,6 +31,9 @@ android {
 repositories {
     mavenCentral()
     maven { url "https://jitpack.io" }
+    maven {
+        url "https://maven.google.com" // Google's Maven repository
+    }
 }
 
 
@@ -46,7 +49,7 @@ dependencies {
     compile 'com.appeaser.sublimenavigationviewlibrary:sublimenavigationviewlibrary:0.0.1'
     compile 'com.thefinestartist:finestwebview:1.2.7'
     compile 'com.miguelcatalan:materialsearchview:1.4.0'
-    compile 'com.squareup.picasso:picasso:2.3.2'
+    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.5@aar'
     compile 'com.github.ParkSangGwon:TedPermission:v1.0.12'
@@ -61,6 +64,7 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.5'
     androidTestCompile 'com.android.support:support-annotations:25.3.1'
 }
+
 
 
 apply plugin: 'com.google.gms.google-services'

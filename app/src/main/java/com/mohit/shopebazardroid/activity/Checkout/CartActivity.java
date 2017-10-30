@@ -21,6 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
+import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.CartAdapter;
 import com.mohit.shopebazardroid.enums.ApiResponseStatus;
@@ -176,7 +177,12 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
                     return;
                 } else {
                     isCallFromBackPress = false;
-                    callUpdateCart();
+                    if(TextUtils.isEmpty(getUserid()) || getUserid().equalsIgnoreCase("0")){
+                        startActivity(new Intent(this, LoginActivity.class));
+                    }else {
+                        userCart.setUser_id(Integer.parseInt(getUserid()));
+                        callUpdateCart();
+                    }
                 }
                 break;
         }

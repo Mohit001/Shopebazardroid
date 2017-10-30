@@ -202,10 +202,14 @@ public class NavigationDrawerActivity extends BaseActivity implements
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
 
-//        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
-        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
+        setupEnvironment();
+
     }
 
+
+    private void setupEnvironment(){
+        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -359,8 +363,11 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         if(getIs_login_compulsory()){
             startActivity(new Intent(this, LoginActivity.class));
-            this.finish();
+//            this.finish();
         }
+
+//        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
+        setupEnvironment();
     }
 
 

@@ -132,7 +132,10 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
         }*/
 
         holder.quentity.setText(String.valueOf(entity.getProduct_qty()));
-        double tempSubtotal = (double) ( Double.parseDouble(entity.getProduct_price()) * entity.getProduct_qty() * baseCurrencyValue);
+        double tempSubtotal = (double) ( baseCurrencyValue *(
+                Double.parseDouble(entity.getProduct_price()) * entity.getProduct_qty()
+                + Double.parseDouble(entity.getShipping_charge())));
+
         holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", tempSubtotal));
 
 

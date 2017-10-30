@@ -49,15 +49,7 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
 
         context = SplashActivity.this;
 
-        setIs_login_compulsory(true);
-        String firebaseid = FirebaseInstanceId.getInstance().getToken();
 
-        Log.d(TAG, "firebaseID:- "+firebaseid);
-        if(!TextUtils.isEmpty(firebaseid)){
-            Intent intent = new Intent(this, RegistrationIntentService.class);
-            intent.putExtra("FirebaseToken", firebaseid);
-            startService(intent);
-        }
 
         montserrat_Regular = Typeface.createFromAsset(this.getAssets(), "Montserrat-Regular_0.otf");
         opensans_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-BOLD.TTF");
@@ -71,7 +63,39 @@ public class SplashActivity extends BaseActivity implements ApiResponse {
         opensans_semi_bold = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLD.TTF");
         opensans_semi_bold_italic = Typeface.createFromAsset(this.getAssets(), "OPENSANS-SEMIBOLDITALIC.TTF");
 
-        HTTPWebRequest.Basic(this, firebaseid, AppConstants.APICode.BASIC, this);
+        setIs_login_compulsory(false);
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        initBasic();
+    }
+
+    private void  initBasic(){
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                String firebaseid = FirebaseInstanceId.getInstance().getToken();
+
+                Log.d(TAG, "firebaseID:- "+firebaseid);
+                if(!TextUtils.isEmpty(firebaseid)){
+                    Intent intent = new Intent(SplashActivity.this, RegistrationIntentService.class);
+                    intent.putExtra("FirebaseToken", firebaseid);
+                    startService(intent);
+                    setFirebaseId(firebaseid);
+                    HTTPWebRequest.Basic(SplashActivity.this, getFirebaseId(), AppConstants.APICode.BASIC, SplashActivity.this);
+
+                } else {
+                    initBasic();
+                }
+            }
+        }, 1000);
+
     }
 
     private void init() {

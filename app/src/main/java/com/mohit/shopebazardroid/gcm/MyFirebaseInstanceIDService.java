@@ -19,11 +19,13 @@ package com.mohit.shopebazardroid.gcm;
 import android.content.Intent;
 import android.util.Log;
 
-import com.google.android.gms.iid.InstanceIDListenerService;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.RegistrationIntentService;
+import com.mohit.shopebazardroid.utility.AppConstants;
 
-public class MyInstanceIDListenerService extends InstanceIDListenerService {
+public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyInstanceIDLS";
 
@@ -43,6 +45,7 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
         Intent intent = new Intent(this, RegistrationIntentService.class);
         intent.putExtra("FirebaseToken", refreshedToken);
         startService(intent);
+        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, refreshedToken);
     }
     // [END refresh_token]
 }

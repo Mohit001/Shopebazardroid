@@ -232,7 +232,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
 
                         setUserLoggedIn();
-                        startActivity(new Intent(this, NavigationDrawerActivity.class));
+//                        startActivity(new Intent(this, NavigationDrawerActivity.class));
 
                         this.finish();
                     }
