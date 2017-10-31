@@ -582,8 +582,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(environment.getCartCount()));
                 if(textView != null){
                     textView.setText(String.valueOf(environment.getCartCount()));

@@ -273,6 +273,8 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
                     cart_gross_total_rl.setVisibility(View.GONE);
                 }
 
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(userCart.getUserCartProduct().size()));
+
                 break;
             /*case AppConstants.APICode.REMOVE_CART:
                 RemoveCartResponse removeCartResponse = gson.fromJson(response, RemoveCartResponse.class);
