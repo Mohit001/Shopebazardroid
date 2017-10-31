@@ -351,7 +351,10 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.reorder_button:
-                ReorderRequest request = new ReorderRequest();
+
+                Toast.makeText(mContext, R.string.comming_soon, Toast.LENGTH_SHORT).show();
+
+                /*ReorderRequest request = new ReorderRequest();
                 request.setCustomer_id(getUserid());
                 request.setStore_id(getStoreID());
                 if (getIntent().getStringExtra("isFrom").equalsIgnoreCase("notif")) {
@@ -361,7 +364,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
                 }
 
 
-                HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getSupportFragmentManager());
+                HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getSupportFragmentManager());*/
 
                 break;
             case R.id.btn_order_tracking:
