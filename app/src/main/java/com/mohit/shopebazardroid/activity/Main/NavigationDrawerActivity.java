@@ -711,10 +711,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 req.setEmail(email);
                 req.setStore_id(getStoreID());
 
-                if (!TextUtils.isEmpty(email))
-                    HTTPWebRequest.UserDetail(mContext, req, AppConstants.APICode.USER_DETAILS,
-                            this, getSupportFragmentManager());
-//                toolbar.setTitle("Sales Genie");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
