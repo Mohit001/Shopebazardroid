@@ -259,6 +259,13 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
                 Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 if(baseResponse.getStatus() == 1){
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
+                    Profile profile = baseResponse.getInfo().getProfile();
+                    String fullname = profile.getFname() + " "+ profile.getLname();
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
+
+                    setUserLoggedIn();
+
                     this.finish();
                 }
                 break;

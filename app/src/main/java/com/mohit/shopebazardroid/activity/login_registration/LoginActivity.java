@@ -203,6 +203,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 RegistrationActivity.isUpdate = false;
                 Intent intent = new Intent(mContext, RegistrationActivity.class);
                 startActivity(intent);
+                this.finish();
                 break;
         }
     }

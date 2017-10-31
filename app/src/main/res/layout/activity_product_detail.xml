@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
-        android:text="ADD TO CART"
+        android:text="@string/buy_now"
         android:textColor="@color/white" />
 
     <ScrollView
