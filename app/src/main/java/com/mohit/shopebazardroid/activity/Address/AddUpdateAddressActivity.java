@@ -118,6 +118,9 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
         cancelButton.setOnClickListener(this);
         submitButton.setOnClickListener(this);
 
+        String emailString = getStringPreferencesValue(AppConstants.SharedPreferenceKeys.EMAIL);
+        emailInputLayout.getEditText().setText(emailString);
+
         try {
 
             intent = getIntent();
@@ -130,6 +133,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
         } catch (Exception e) {
 
         }
+
     }
 
     private void setupScreen() {

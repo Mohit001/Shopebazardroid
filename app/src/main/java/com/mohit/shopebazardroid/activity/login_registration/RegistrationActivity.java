@@ -263,6 +263,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     Profile profile = baseResponse.getInfo().getProfile();
                     String fullname = profile.getFname() + " "+ profile.getLname();
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, baseResponse.getInfo().getEmail());
 
                     setUserLoggedIn();
 

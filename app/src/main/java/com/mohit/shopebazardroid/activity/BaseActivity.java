@@ -210,4 +210,14 @@ public class BaseActivity extends AppCompatActivity {
         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, firebaseid);
     }
 
+    public String getStringPreferencesValue(String property){
+        return MyApplication.preferenceGetString(property, "");
+    }
+
+    public int getIntPreferencesValue(String property){
+        return MyApplication.preferenceGetInteger(property, -1);
+    }
+
+
+
 }
