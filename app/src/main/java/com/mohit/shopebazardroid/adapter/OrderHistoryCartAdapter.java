@@ -131,6 +131,9 @@ public class OrderHistoryCartAdapter extends BaseAdapter {
             holder.customOption.setVisibility(View.GONE);
         }*/
 
+        if(TextUtils.isEmpty(entity.getShipping_charge()))
+            entity.setShipping_charge("0");
+
         holder.quentity.setText(String.valueOf(entity.getProduct_qty()));
         double tempSubtotal = (double) ( baseCurrencyValue *(
                 Double.parseDouble(entity.getProduct_price()) * entity.getProduct_qty()
