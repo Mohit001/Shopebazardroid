@@ -85,7 +85,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
         if (isUpdate) {
             getSupportActionBar().setTitle(R.string.lbl_update_profile);
-            userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+            userid = getUserid();
             HTTPWebRequest.GetProfile(mContext, userid, AppConstants.APICode.GET_PROFILE, this,
                     getSupportFragmentManager());
             // get profile api call

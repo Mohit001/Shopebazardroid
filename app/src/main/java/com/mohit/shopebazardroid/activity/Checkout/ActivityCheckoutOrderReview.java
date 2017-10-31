@@ -115,9 +115,6 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
 
 
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
-    String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "store_id");
-    String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "user_id");
-    String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.EMAIL, "");
 
 
     @Override

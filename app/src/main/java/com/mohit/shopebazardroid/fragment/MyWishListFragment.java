@@ -37,8 +37,7 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
     Context mContext;
     RecyclerView mRecyclerView;
 
-    String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.EMAIL, "");
-    String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+    String userid = getUserid();
 
     MyWishListAdapter adapter;
     ArrayList<ProductEntity> arrayList;

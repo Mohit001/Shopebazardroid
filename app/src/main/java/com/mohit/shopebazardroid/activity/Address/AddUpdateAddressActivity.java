@@ -334,7 +334,7 @@ public class AddUpdateAddressActivity extends BaseActivity implements View.OnCli
 
                     if(address == null) {
                         address = new Address();
-                        address.setUser_id(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0"));
+                        address.setUser_id(getUserid());
                     }
 
                     address.setFull_name(fullNameString);

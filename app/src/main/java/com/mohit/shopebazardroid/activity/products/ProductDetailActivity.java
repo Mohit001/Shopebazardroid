@@ -110,7 +110,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     int themeCode;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "1");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "");
+    String customerid = getUserid();
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 //    String product_list_attribute = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.PRODUCT_LIST_ATTRIBUTE, "product_list_attribute");
 

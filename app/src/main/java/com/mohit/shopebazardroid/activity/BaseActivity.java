@@ -179,7 +179,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public String getUserid(){
-        return customerid;
+        return MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
     }
 
     public String getStoreID(){

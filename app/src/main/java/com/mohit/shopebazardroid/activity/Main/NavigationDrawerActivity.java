@@ -314,7 +314,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
             }
         }
 
-        String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+        /*String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
                 .EMAIL, "");
         UserDetailsRequest request = new UserDetailsRequest();
         request.setEmail(email);
@@ -323,7 +323,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
         {
             HTTPWebRequest.UserDetail(mContext, request, AppConstants.APICode.USER_DETAILS,
                     this, getSupportFragmentManager());
-        }
+        }*/
 
     }
 

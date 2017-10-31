@@ -79,7 +79,7 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
     boolean noProductFound = false;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "0");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "");
+    String customerid = getUserid();
     String root_cat_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.ROOT_CAT_ID, "0");
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 

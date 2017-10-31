@@ -105,8 +105,7 @@ public class ActivityShippingAddress extends BaseActivity implements View.OnClic
     }
 
     private void setupAddressLive() {
-        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .USER_ID, "0");
+        String userid = getUserid();
         HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
                 getSupportFragmentManager());
     }

@@ -90,8 +90,7 @@ public class ActivityBillingAddress extends BaseActivity implements View.OnClick
 
 
     private void setupAddressLive() {
-        String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .USER_ID, "0");
+        String userid = getUserid();
         HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
                 getSupportFragmentManager());
     }

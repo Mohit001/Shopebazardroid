@@ -40,7 +40,7 @@ public class NotificationFragment extends BaseFragment implements ApiResponse, V
 
     String increment_id;
 
-    String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+    String userid = getUserid();
 
     @Nullable
     @Override

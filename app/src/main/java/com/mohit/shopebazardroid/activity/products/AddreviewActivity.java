@@ -49,7 +49,7 @@ public class AddreviewActivity extends BaseActivity implements ApiResponse, View
     Button btn_submit;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "store_id");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "user_id");
+    String customerid = getUserid();
 
     TextView txt_product_id, txt_rate_product, txt_nickname, txt_summary_review, txt_review;
     EditText edt_nickname, edt_summary_review, edt_review;
