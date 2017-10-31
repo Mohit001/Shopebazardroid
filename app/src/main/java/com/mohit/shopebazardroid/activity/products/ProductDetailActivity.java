@@ -796,6 +796,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 List<UserCartProduct> list = new ArrayList<>();
                 list.add(userCartProduct);
                 userCart.setUserCartProduct(list);
+                userCart.setUnique_id(getFirebaseId());
 
                 String jsonRequest = new Gson().toJson(userCart);
                 HTTPWebRequest.AddUpdateCart(mContext, jsonRequest, AppConstants.APICode.ADDTOCART, this, getSupportFragmentManager());
