@@ -415,9 +415,9 @@ public class ActivityCheckoutOrderReview extends BaseActivity implements View
     }
 
     public void callPlaceOrderApi(){
-
+        // App_A = Android, App_I = iOS
+        cart.setOrder_from("App_A");
         String requestJson =  new Gson().toJson(cart);
-
         HTTPWebRequest.PlaceOrder(mContext, requestJson,AppConstants.APICode.GET_PLACEORDER, this, getSupportFragmentManager());
     }
 

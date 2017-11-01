@@ -6,7 +6,7 @@ package com.mohit.shopebazardroid.listener;
 
 public interface DeleteWishlistProduct {
 
-    void DeleteProduct(int pos, String product_id);
+    void DeleteProduct(String wishlist_id);
     void ItemClick(int pos, String product_id);
 
 }

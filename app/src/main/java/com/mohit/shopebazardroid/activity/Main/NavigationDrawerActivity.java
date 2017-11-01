@@ -204,6 +204,12 @@ public class NavigationDrawerActivity extends BaseActivity implements
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
         setupEnvironment();
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_frame, new HomeFragment(),
+                        HomeFragment.TAG)
+                .commit();
     }
 
 
@@ -238,6 +244,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 startActivity(new Intent(mContext, CartActivity.class));
             }
         });
+
         return true;
     }
 
@@ -286,20 +293,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
 
         if(adapter != null && arrayList != null){
-
-            HomeFragment fragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
-
-            if(fragment == null && !isUserLogin()){
-//                toolbar.setTitle(R.string.app_name);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new HomeFragment(),
-                                HomeFragment.TAG)
-                        .commit();
-            } else{
-
-            }
 
             if(isUserLogin()){
                 Category childrens = new Category();
@@ -427,6 +420,13 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 intent.putExtra(Category.KEY_TYPE, 0);
                 startActivity(intent);
             }
+
+            getSupportActionBar().setTitle(R.string.app_name);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
+                    .commit();
+
         } else {
             item.setVisible(false);
             cartBadget.setVisibility(View.VISIBLE);
@@ -710,11 +710,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 UserDetailsRequest req = new UserDetailsRequest();
                 req.setEmail(email);
                 req.setStore_id(getStoreID());
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
-                        .commit();
 
 
                 break;
