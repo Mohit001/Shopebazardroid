@@ -25,6 +25,7 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 import com.mohit.shopebazardroid.activity.Checkout.CartActivity;
+import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.adapter.ProductGridAdapter;
 import com.mohit.shopebazardroid.dialog.ConfirmDialog;
 import com.mohit.shopebazardroid.dialog.FilterDialog;
@@ -565,7 +566,6 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         }
 
     }
-
 
     private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
