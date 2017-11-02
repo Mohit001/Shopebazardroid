@@ -85,7 +85,7 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 
         if (isUpdate) {
             getSupportActionBar().setTitle(R.string.lbl_update_profile);
-            userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
+            userid = getUserid();
             HTTPWebRequest.GetProfile(mContext, userid, AppConstants.APICode.GET_PROFILE, this,
                     getSupportFragmentManager());
             // get profile api call
@@ -259,6 +259,14 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
                 Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 if(baseResponse.getStatus() == 1){
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
+                    Profile profile = baseResponse.getInfo().getProfile();
+                    String fullname = profile.getFname() + " "+ profile.getLname();
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, baseResponse.getInfo().getEmail());
+
+                    setUserLoggedIn();
+
                     this.finish();
                 }
                 break;

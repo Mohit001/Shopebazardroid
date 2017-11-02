@@ -100,8 +100,7 @@ public class SettingFragment extends BaseFragment implements CompoundButton.OnCh
 //        Utility.toastMessage(mContext, "Notification : "+b);
         String isChecked = b ? "1" : "0";
         NotificationRequest request = new NotificationRequest();
-        request.setUserid(MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                .USER_ID, "0"));
+        request.setUserid(getUserid());
         request.setStatus(isChecked);
         HTTPWebRequest.Notification(mContext, request, AppConstants.APICode.NOTIFICATION, this,
                 getFragmentManager());
@@ -218,8 +217,7 @@ public class SettingFragment extends BaseFragment implements CompoundButton.OnCh
         setCurrencyRequest.setCode(selectedCurrencyEntity.getCode());
         setCurrencyRequest.setShoppingcartid(MyApplication.preferenceGetString(AppConstants
                 .SharedPreferenceKeys.CART_ID, "0"));
-        setCurrencyRequest.setUser_id(MyApplication.preferenceGetString(AppConstants
-                .SharedPreferenceKeys.USER_ID, "0"));
+        setCurrencyRequest.setUser_id(getUserid());
 
         HTTPWebRequest.SetCurrency(mContext, setCurrencyRequest, AppConstants.APICode
                 .SET_CURRENCY, this, getFragmentManager());

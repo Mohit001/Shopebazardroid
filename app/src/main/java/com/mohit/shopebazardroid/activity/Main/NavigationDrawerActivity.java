@@ -143,6 +143,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
 
     private RelativeLayout userDetailsRelativeLayout;
+
+    private boolean callCategoryApi = true;
     private void setCurrentTheme() {
         int theme_code = MyApplication.preferenceGetInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, 1);
         setTheme(R.style.AppTheme);
@@ -201,15 +203,14 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
-
         setupEnvironment();
-
     }
 
 
     private void setupEnvironment(){
         HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -313,14 +314,16 @@ public class NavigationDrawerActivity extends BaseActivity implements
             }
         }
 
-        String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+        /*String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
                 .EMAIL, "");
         UserDetailsRequest request = new UserDetailsRequest();
         request.setEmail(email);
         request.setStore_id(getStoreID());
         if (!TextUtils.isEmpty(email))
+        {
             HTTPWebRequest.UserDetail(mContext, request, AppConstants.APICode.USER_DETAILS,
                     this, getSupportFragmentManager());
+        }*/
 
     }
 
@@ -367,6 +370,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
         }
 
 //        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
+        callCategoryApi = false;
         setupEnvironment();
     }
 
@@ -578,8 +582,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(environment.getCartCount()));
                 if(textView != null){
                     textView.setText(String.valueOf(environment.getCartCount()));
@@ -590,7 +594,9 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_SALT, paymentInfo.getSalt());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_IS_LIVE_MODE, String.valueOf(paymentInfo.getIs_live_mode()));
 
-                HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+                if(callCategoryApi){
+                    HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+                }
 
                 break;
             case AppConstants.APICode.USER_DETAILS:
@@ -638,7 +644,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
             case AppConstants.APICode.CATEGORYLIST:
                 loadAgain = 1;
-
                 if(!TextUtils.isEmpty(response)){
 
                     Type basicType = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
@@ -706,10 +711,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 req.setEmail(email);
                 req.setStore_id(getStoreID());
 
-                if (!TextUtils.isEmpty(email))
-                    HTTPWebRequest.UserDetail(mContext, req, AppConstants.APICode.USER_DETAILS,
-                            this, getSupportFragmentManager());
-//                toolbar.setTitle("Sales Genie");
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)

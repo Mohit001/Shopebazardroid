@@ -58,14 +58,6 @@ public class HTTPWebRequest {
     }
 
 
-    public static void UserDetail(Context context, UserDetailsRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.EMAIL, request.getEmail());
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_USER_DETAIL, apiCode, false).execute(apiResponse);
-    }
-
     public static void ForgotPassword(Context context, String emailString, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
         String url = UrlFormetter.getURL(context, R.string.api_forgot_password, emailString);

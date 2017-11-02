@@ -351,7 +351,10 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.reorder_button:
-                ReorderRequest request = new ReorderRequest();
+
+                Toast.makeText(mContext, R.string.comming_soon, Toast.LENGTH_SHORT).show();
+
+                /*ReorderRequest request = new ReorderRequest();
                 request.setCustomer_id(getUserid());
                 request.setStore_id(getStoreID());
                 if (getIntent().getStringExtra("isFrom").equalsIgnoreCase("notif")) {
@@ -361,7 +364,7 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
                 }
 
 
-                HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getSupportFragmentManager());
+                HTTPWebRequest.Reorder(mContext, request, AppConstants.APICode.REORDER, this,getSupportFragmentManager());*/
 
                 break;
             case R.id.btn_order_tracking:
@@ -522,24 +525,35 @@ public class OrderHistoryDetailActivity extends BaseActivity implements ApiRespo
         coupancodeTextView.setText(TextUtils.isEmpty(coupanCode) == true ? "No coupon" :
                 coupanCode);
 
-        String billingAddressString  = orderinfo.getBilling_address1()
+        String billingAddressString  = orderinfo.getBilling_fullname()
+                +"\n"+orderinfo.getBilling_address1()
                 +"\n"+orderinfo.getBilling_address2()
                 +"\n"+orderinfo.getBilling_state()
                 +"\n"+orderinfo.getBilling_city()
                 +"\n"+orderinfo.getBilling_postcode()
-                +"\n"+orderinfo.getBilling_email()
-                +"\n"+orderinfo.getBilling_contact_no();
+                +"\n"+orderinfo.getBilling_email();
+
+                if(!TextUtils.isEmpty(orderinfo.getBilling_contact_no()))
+                    billingAddressString = billingAddressString+"\n"+orderinfo.getBilling_contact_no();
+                if(!TextUtils.isEmpty(orderinfo.getBilling_addtionaldeatails()))
+                    billingAddressString = billingAddressString+"\n"+orderinfo.getBilling_addtionaldeatails();
 
 
         billingAddressTextView.setText(billingAddressString);
 
-        String shippingAddressString = orderinfo.getShiping_address1()
+        String shippingAddressString = orderinfo.getShiping_fullname()
+                +"\n"+orderinfo.getShiping_address1()
                 +"\n"+orderinfo.getShiping_address2()
                 +"\n"+orderinfo.getShiping_state()
                 +"\n"+orderinfo.getShiping_city()
                 +"\n"+orderinfo.getShiping_postcode()
-                +"\n"+orderinfo.getShiping_email()
-                +"\n"+orderinfo.getShipping_contact_no();
+                +"\n"+orderinfo.getShiping_email();
+
+                if(!TextUtils.isEmpty(orderinfo.getShipping_contact_no()))
+                    shippingAddressString = shippingAddressString+"\n"+orderinfo.getShipping_contact_no();
+                if(!TextUtils.isEmpty(orderinfo.getShiping_additiondetails()))
+                    shippingAddressString = shippingAddressString+"\n"+orderinfo.getShiping_additiondetails();
+
         shippingAddressTextView.setText(shippingAddressString);
 
         paymentMethodTextView.setText(orderinfo.getOrder_type());

@@ -109,8 +109,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
     int themeCode;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "1");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "");
-    String root_cat_id = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.ROOT_CAT_ID, "");
+    String customerid = getUserid();
 
     RelativeLayout oftdMainRelativeLayout, trendingMainRelativeLayout, bestSellersMainRelativeLayout, featureProductMainRelativeLayout;
 

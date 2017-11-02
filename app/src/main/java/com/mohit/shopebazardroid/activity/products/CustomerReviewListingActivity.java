@@ -41,7 +41,6 @@ public class CustomerReviewListingActivity extends BaseActivity implements ApiRe
     RecyclerView recyclerview;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "store_id");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "user_id");
 
     String product_id;
     ArrayList<ReviewList> arr_review_list;
