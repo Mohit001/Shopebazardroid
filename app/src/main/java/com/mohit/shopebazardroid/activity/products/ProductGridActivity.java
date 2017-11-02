@@ -260,7 +260,13 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         cartBadget.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            startActivity(new Intent(mContext, CartActivity.class));
+                if (MyApplication.preferenceGetBoolean(AppConstants.SharedPreferenceKeys
+                        .IS_LOGGED_IN, false)) {
+                    startActivity(new Intent(mContext, CartActivity.class));
+                } else {
+                    finish();
+                    startActivity(new Intent(mContext, LoginActivity.class));
+                }
             }
         });
 

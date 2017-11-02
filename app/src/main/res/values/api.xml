@@ -2,7 +2,6 @@
 <resources>
 
      <!--<string name="api_base_url">http://10.0.2.2:8080/shppebazar/rest/</string>-->
-    <!--<string name="api_base_url">http://192.168.0.209:8080/shppebazar/rest/</string>-->
     <string name="api_base_url">http://192.168.0.219:8080/shppebazar/rest/</string>
     <!--<string name="api_base_url">http://52.91.52.204/shopebazarapi/rest/</string>-->
     <!--<string name="api_base_url">http://shopebazar.com/shopebazarapi/rest/</string>-->
