@@ -19,10 +19,10 @@
 
     <string name="api_category">Category</string>
     <!-- Variable will be category id-->
-    <string name="api_category_product_list">Category/getProducts/%1$s</string>
+    <string name="api_category_product_list">Category/getProducts/%1$s/%2$s</string>
 
-    <!--variable will be product id-->
-    <string name="api_product_details">product/$1$s</string>
+    <!--variable will be user_id and product_id-->
+    <string name="api_product_details">Category/product/details/%1$s/%2$s</string>
 
     <!--variable will be user id-->
     <string name="api_get_address_list">address/get/%1$s</string>
@@ -44,5 +44,9 @@
     <string name="api_place_order">cart/placeOrder</string>
     <string name="api_order_history">history/getOrderHistoryList/%1$s</string>
     <string name="api_order_history_details">history/getOrderHistoryDetails/%1$s</string>
+
+    <string name="api_my_wishlist">wishlist/get/%1$s</string>
+    <string name="api_remove_from_wishlist">wishlist/remove/%1$s</string>
+    <string name="api_add_to_wishlist">wishlist/add/%1$s/%2$s</string>
 
 </resources>

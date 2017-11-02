@@ -113,7 +113,7 @@ public class SubcategoryActivity extends BaseActivity {
         request.setPagesize(String.valueOf(10000));
 
         if(type == 0)
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST,this,
+            HTTPWebRequest.Products(mContext, request, AppConstants.APICode.PRODUCTSLIST,this,
             getSupportFragmentManager());
         else
             HTTPWebRequest.BannerProducts(mContext, request,AppConstants.APICode.BANNER_PRODUCTS,

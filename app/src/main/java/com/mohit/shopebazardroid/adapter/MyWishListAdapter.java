@@ -18,10 +18,12 @@ import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.DeleteWishlistProduct;
 import com.mohit.shopebazardroid.model.response.ProductEntity;
+import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -29,7 +31,7 @@ import java.util.ArrayList;
  */
 public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.RecyclerViewHolders> {
     Context mContext;
-    ArrayList<ProductEntity> arrayList;
+    List<Product> arrayList;
     DeleteWishlistProduct listner;
     String baseCurrencyCode = "";
     float baseCurrencyRate;
@@ -39,7 +41,7 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     String url = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.PRODUCT_MEDIA_URL, AppConstants.RequestDataKey.image_url);
 
-    public MyWishListAdapter(Context mContext, ArrayList<ProductEntity> arrayList, DeleteWishlistProduct listner) {
+    public MyWishListAdapter(Context mContext, List<Product> arrayList, DeleteWishlistProduct listner) {
         this.mContext = mContext;
         this.arrayList = arrayList;
         this.listner = listner;
@@ -75,6 +77,7 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
         ImageView imageView;
         LinearLayout cart_custom_option_ll, cart_product_quentity_ll;
         RelativeLayout cart_product_subtotal_ll, rel_item_click;
+        RelativeLayout cart_shipping_charge_ll;
 
         public RecyclerViewHolders(View itemView) {
             super(itemView);
@@ -115,43 +118,42 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
             delete_product = (ImageView) itemView.findViewById(R.id.cart_product_delete_image);
             imageView = (ImageView) itemView.findViewById(R.id.cart_product_image);
             cart_custom_option_ll = (LinearLayout) itemView.findViewById(R.id.cart_custom_option_ll);
-
+            cart_shipping_charge_ll = (RelativeLayout) itemView.findViewById(R.id.cart_product_shipping_charges_ll);
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, final int position) {
-        final ProductEntity entity = arrayList.get(position);
-        holder.productName.setText(entity.getName());
+        final Product entity = arrayList.get(position);
+        holder.productName.setText(entity.getPro_name());
 
-        Float tempPrice = Float.parseFloat(entity.getPrice() /** baseCurrencyValue*/);
+        Float tempPrice = Float.parseFloat(entity.getPro_price() /** baseCurrencyValue*/);
         holder.latestPrice.setText(baseCurrencyCode + (String.format("%.2f", tempPrice)));
         holder.oldPrice.setVisibility(View.GONE);
 
-        if (TextUtils.isEmpty(entity.getSpecial_price())) {
-            Float tempLatestPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
+        if (entity.getDiscount_price() == 0) {
+            Float tempLatestPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
             holder.latestPrice.setText(baseCurrencyCode + " " + (String.format("%.2f",tempLatestPrice)));
             holder.oldPrice.setVisibility(View.GONE);
         } else {
 
-            Float tempLatestPrice = Float.parseFloat(entity.getSpecial_price()) * baseCurrencyRate;
+            Float tempLatestPrice = entity.getDiscount_price() * baseCurrencyRate;
             holder.latestPrice.setText(baseCurrencyCode + " " + (String.format("%.2f",tempLatestPrice)));
 
-            Float tempOldPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
+            Float tempOldPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
             holder.oldPrice.setText(baseCurrencyCode + " " + (String.format("%.2f",tempOldPrice)));
             holder.oldPrice.setPaintFlags(holder.oldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.oldPrice.setVisibility(View.VISIBLE);
         }
 
-        String quantity = entity.getQty().split("\\.", 2)[0];
-        Log.e("TAG", "Quantity: " + quantity);
-        holder.quentity.setText(String.valueOf(quantity));
+        holder.quentity.setText("1");
+//        holder.quentity.setVisibility(View.GONE);
 
-        if (holder.cart_custom_option_ll.getChildCount() > 0)
+        /*if (holder.cart_custom_option_ll.getChildCount() > 0)
             holder.cart_custom_option_ll.removeAllViews();
-
+        */
         Picasso.with(mContext)
-                .load(url + entity.getImage())
+                .load(url + entity.getPro_image())
                 .placeholder(R.drawable.ic_placeholder)
                 .error(R.drawable.ic_placeholder)
                 .into(holder.imageView);
@@ -159,17 +161,18 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
         holder.delete_product.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listner.DeleteProduct(position, entity.getProduct_id());
+                listner.DeleteProduct(String.valueOf(entity.getWishlist_id()));
             }
         });
 
         holder.rel_item_click.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listner.ItemClick(position, entity.getProduct_id());
+                listner.ItemClick(position, String.valueOf(entity.getPro_mst_id()));
             }
         });
 
+        holder.cart_shipping_charge_ll.setVisibility(View.GONE);
     }
 
     @Override

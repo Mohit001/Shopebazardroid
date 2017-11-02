@@ -88,9 +88,9 @@ public class HTTPWebRequest {
         new OKHttpAsyncTask(context, url, null, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void products(Context context, String categoryid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+    public static void Products(Context context, String user_id, String categoryid, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
 
-        String url = UrlFormetter.getURL(context, R.string.api_category_product_list, categoryid);
+        String url = UrlFormetter.getURL(context, R.string.api_category_product_list, user_id, categoryid);
         new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
 
     }
@@ -512,13 +512,9 @@ public class HTTPWebRequest {
 
 
 
-    public static void ProductDetail(Context context, ProductDetailRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.PRODUCT_ID, request.getProduct_id());
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_Id());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_PRODUCT_DETAIL, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void ProductDetail(Context context, String user_id, String product_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_product_details, user_id, product_id);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void Ratings(Context context, RatingsRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
@@ -692,31 +688,19 @@ public class HTTPWebRequest {
 
     }
 
-    public static void MyWishList(Context context, String customer_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, customer_id);
-
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_MY_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void MyWishList(Context context, String user_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_my_wishlist, user_id);
+        new OKHttpAsyncTask(context, url, AppConstants.APIURL.URL_MY_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void AddToWishList(Context context, AddRemoveWishListRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_PRODUCT_ID, request.getProduct_id());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_ADD_TO_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void AddToWishList(Context context, String user_id, String product_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_add_to_wishlist, user_id, product_id);
+        new OKHttpAsyncTask(context, url, AppConstants.APIURL.URL_ADD_TO_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
-    public static void RemoveFromWishList(Context context, AddRemoveWishListRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
-
-        postDataParams = new HashMap<String, String>();
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.ADDTOCART_PRODUCT_ID, request.getProduct_id());
-
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_REMOVE_FROM_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).execute(apiResponse);
+    public static void RemoveFromWishList(Context context, String wishlist_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+        String url = UrlFormetter.getURL(context, R.string.api_remove_from_wishlist, wishlist_id);
+        new OKHttpAsyncTask(context, url, AppConstants.APIURL.URL_REMOVE_FROM_WISHLIST, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).execute(apiResponse);
     }
 
     public static void Reorder(Context context, ReorderRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
