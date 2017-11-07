@@ -12,6 +12,7 @@ import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.utility.Utility;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -87,7 +88,11 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
         if (MyApplication.isConnectivityAvailable(context)) {
 
             try {
-                client = new OkHttpClient();
+                client = new OkHttpClient().newBuilder()
+                                .connectTimeout(60, TimeUnit.SECONDS)
+                                .writeTimeout(60, TimeUnit.SECONDS)
+                                .readTimeout(60, TimeUnit.SECONDS)
+                                .build();
 
                 if (dialog != null) {
                     dialog.show(fragmentManager, ProgressDialog.TAG);

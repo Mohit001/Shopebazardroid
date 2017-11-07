@@ -580,7 +580,11 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
                 cmsArrayList.addAll(environment.getBasicCMSPage());
 
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
+                if(!TextUtils.isEmpty(environment.getImagePrefix()))
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
+                else
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "http://shopebazar.com/resources/productImage/");
+
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));

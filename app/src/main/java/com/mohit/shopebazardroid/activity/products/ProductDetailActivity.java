@@ -59,7 +59,6 @@ import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.RelatedProductList;
 import com.mohit.shopebazardroid.model.response.RelatedProductResponse;
 import com.mohit.shopebazardroid.model.response.ReviewList;
-import com.mohit.shopebazardroid.model.response.WishListResponse;
 import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.models.ProductImage;
 import com.mohit.shopebazardroid.models.UserCart;
@@ -678,9 +677,9 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
                 textSliderView
                         .description(banner.getImage_name())
-//                        .image(imagePrefix+banner.getImage_path())
-                        .image("http://demo.ajax-cart.com/photos/product/4/176/4.jpg")
-                        .setScaleType(BaseSliderView.ScaleType.CenterInside)
+                        .image(imagePrefix+banner.getImage_path())
+//                        .image("http://demo.ajax-cart.com/photos/product/4/176/4.jpg")
+                        .setScaleType(BaseSliderView.ScaleType.Fit)
                         .setOnSliderClickListener(this);
                 textSliderView.bundle(new Bundle());
                 textSliderView.getBundle().putString("extra", banner.getImage_name());
