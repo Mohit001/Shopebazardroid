@@ -131,16 +131,16 @@ public class OrderReviewCartAdapter extends BaseAdapter {
         holder.shippingCharge.setText(String.valueOf(shippingCharge));
         holder.subtotal.setText(baseCurrencyCode + String.format("%.2f", Double.parseDouble(entity.getSubtotal())));
 
-        if(entity.getImagePath() != null
-                && entity.getImagePath().length() > 0){
+        if(entity.getImage_name() != null
+                && entity.getImage_name().length() > 0){
 
-            String imgurl = entity.getImagePath();
+            String imgurl = entity.getImage_name();
             if (TextUtils.isEmpty(imgurl)) {
                 holder.imageView.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),
                         R.drawable.ic_placeholder));
             } else {
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getImagePath())
+                        .load(imagePrefix+imgurl)
                         .error(R.drawable.ic_placeholder)
                         .placeholder(R.drawable.ic_placeholder)
                         .into(holder.imageView);

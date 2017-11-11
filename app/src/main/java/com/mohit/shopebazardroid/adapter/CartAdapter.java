@@ -196,7 +196,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.RecyclerViewHo
         }*/
 
 
-        String imagePath = TextUtils.isEmpty(entity.getImagePath())?"":entity.getImagePath();
+        String imagePath = TextUtils.isEmpty(entity.getImage_name())?"":entity.getImage_name();
         if(!TextUtils.isEmpty(imagePath)){
 
             Picasso.with(mContext)

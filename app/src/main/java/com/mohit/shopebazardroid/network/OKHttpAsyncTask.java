@@ -90,8 +90,8 @@ public class OKHttpAsyncTask extends AsyncTask<Object, Void, String> {
             try {
                 client = new OkHttpClient().newBuilder()
                                 .connectTimeout(60, TimeUnit.SECONDS)
-                                .writeTimeout(60, TimeUnit.SECONDS)
-                                .readTimeout(60, TimeUnit.SECONDS)
+//                                .writeTimeout(60, TimeUnit.SECONDS)
+//                                .readTimeout(60, TimeUnit.SECONDS)
                                 .build();
 
                 if (dialog != null) {
