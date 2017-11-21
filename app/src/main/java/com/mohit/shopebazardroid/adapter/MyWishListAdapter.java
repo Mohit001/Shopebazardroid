@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,12 +15,10 @@ import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.listener.DeleteWishlistProduct;
-import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -39,7 +35,7 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
     int themeCode;
 
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
-    String url = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.PRODUCT_MEDIA_URL, AppConstants.RequestDataKey.image_url);
+    String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
     public MyWishListAdapter(Context mContext, List<Product> arrayList, DeleteWishlistProduct listner) {
         this.mContext = mContext;
@@ -153,7 +149,7 @@ public class MyWishListAdapter extends RecyclerView.Adapter<MyWishListAdapter.Re
             holder.cart_custom_option_ll.removeAllViews();
         */
         Picasso.with(mContext)
-                .load(url + entity.getPro_image())
+                .load(imagePrefix + entity.getPro_image())
                 .placeholder(R.drawable.ic_placeholder)
                 .error(R.drawable.ic_placeholder)
                 .into(holder.imageView);

@@ -159,7 +159,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         }*/
 
 
-        if(arrayList.size() <= pageSize){
+        if(arrayList.size() <= pageSize || mAdapter == null){
             mAdapter = new ProductGridAdapter(this, arrayList);
             recyclerView.setAdapter(mAdapter);
         } else {
