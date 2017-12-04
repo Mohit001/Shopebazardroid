@@ -8,25 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
-import com.mohit.shopebazardroid.model.response.CategoryChildrens;
+import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
+import com.mohit.shopebazardroid.models.Category;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
-public class Home_CategoriesAdapter extends RecyclerView.Adapter<Home_CategoriesAdapter.MyViewHolder> {
+public class Home_CategoriesGridAdapter extends RecyclerView.Adapter<Home_CategoriesGridAdapter.MyViewHolder> {
 
     public static String TAG = CategoriesAdapter.class.getSimpleName();
     Context mContext;
-    ArrayList<CategoryChildrens> arrayList;
+    List<Category> arrayList;
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public Home_CategoriesAdapter(Context mContext, ArrayList<CategoryChildrens> arrayList) {
+    public Home_CategoriesGridAdapter(Context mContext, List<Category> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
     }
@@ -35,7 +37,7 @@ public class Home_CategoriesAdapter extends RecyclerView.Adapter<Home_Categories
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_home_category, parent, false);
+                .inflate(R.layout.adapter_home_category_grid, parent, false);
         MyViewHolder holder = new MyViewHolder(itemView);
 
         return holder;
@@ -52,6 +54,10 @@ public class Home_CategoriesAdapter extends RecyclerView.Adapter<Home_Categories
 
             mImageView = (ImageView) itemView.findViewById(R.id.adp_oftd_image);
             lableTextView = (TextView) itemView.findViewById(R.id.adp_oftd_lable);
+
+            int viewHeightWidth = (int) NavigationDrawerActivity.width/2;
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(viewHeightWidth, viewHeightWidth);
+            mImageView.setLayoutParams(layoutParams);
         }
 
     }
@@ -59,17 +65,17 @@ public class Home_CategoriesAdapter extends RecyclerView.Adapter<Home_Categories
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        CategoryChildrens entity = arrayList.get(position);
+        Category entity = arrayList.get(position);
 
         holder.lableTextView.setVisibility(View.VISIBLE);
-        holder.lableTextView.setText(entity.getName());
+        holder.lableTextView.setText(entity.getCat_name());
 
         try {
 
-            if (!TextUtils.isEmpty(entity.getImage())) {
+            if (!TextUtils.isEmpty(entity.getCat_image())) {
 
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getImage())
+                        .load(imagePrefix+entity.getCat_image())
                         .placeholder(R.drawable.ic_placeholder)
                         .error(R.drawable.ic_placeholder)
                         .into(holder.mImageView);

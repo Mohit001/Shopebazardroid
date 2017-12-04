@@ -57,7 +57,7 @@ public class CategoriesAdapter extends BaseAdapter {
 
         if (convertview == null) {
             convertview = LayoutInflater.from(mContext).inflate(R.layout
-                    .adapter_home_category, viewGroup, false);
+                    .adapter_home_category_list, viewGroup, false);
             holder = new ViewHolder(convertview);
             convertview.setTag(holder);
 
