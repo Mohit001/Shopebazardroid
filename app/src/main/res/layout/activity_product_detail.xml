@@ -55,7 +55,7 @@
             android:layout_gravity="center"/>
 
         <TextView
-            android:id="@+id/txt_wishlist"
+            android:id="@+id/txt_rate_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
@@ -71,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
-        android:text="ADD TO CART"
+        android:text="@string/buy_now"
         android:textColor="@color/white" />
 
     <ScrollView
@@ -101,7 +101,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="@dimen/margin_5"
                 android:layout_marginRight="@dimen/margin_5"
-                android:src="@drawable/unlike_wishlist" />
+                android:src="@drawable/ic_favorite_outline"/>
 
             <RelativeLayout
                 android:id="@+id/product_detail_rl"

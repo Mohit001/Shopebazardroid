@@ -179,7 +179,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public String getUserid(){
-        return customerid;
+        return MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
     }
 
     public String getStoreID(){
@@ -209,5 +209,15 @@ public class BaseActivity extends AppCompatActivity {
     public void setFirebaseId(String firebaseid){
         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.GCM_TOKEN, firebaseid);
     }
+
+    public String getStringPreferencesValue(String property){
+        return MyApplication.preferenceGetString(property, "");
+    }
+
+    public int getIntPreferencesValue(String property){
+        return MyApplication.preferenceGetInteger(property, -1);
+    }
+
+
 
 }

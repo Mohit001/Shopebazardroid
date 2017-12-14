@@ -102,6 +102,7 @@
             android:text="@string/lbl_login"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorPrimary"
+            android:background="@color/colorPrimary"
             android:textAllCaps="false"
             />
 

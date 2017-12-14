@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.activity.BaseActivity;
 
 
@@ -52,6 +53,23 @@ public class BaseFragment extends Fragment {
             return baseActivity.getFirebaseId();
         } else{
             return "";
+        }
+    }
+
+    public String getStringPreferencesValue(String property){
+        if(baseActivity != null){
+            return MyApplication.preferenceGetString(property, "");
+        } else{
+            return "";
+        }
+
+    }
+
+    public int getIntPreferencesValue(String property){
+        if(baseActivity != null){
+            return MyApplication.preferenceGetInteger(property, -1);
+        } else{
+            return -1;
         }
     }
 }

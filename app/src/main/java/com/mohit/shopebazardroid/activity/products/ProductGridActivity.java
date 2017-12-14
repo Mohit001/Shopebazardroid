@@ -54,7 +54,7 @@ import java.util.List;
 
 /**
  * Created by msp on 23/7/16.
- *  display all products in pagination.
+ *  display all Products in pagination.
  */
 public class ProductGridActivity extends BaseActivity implements ApiResponse, View
         .OnClickListener, SortListner, FilterListner, ConfirmDialogListner {
@@ -141,15 +141,9 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         {
             countertextView.setText(""+cart_badge);
         }
-//
-//        Log.e(TAG, "Cart string: "+cart_badge );
-//
-//        BaseActivity.cartItemBadge.setText(cart_badge);
-//
-//        Log.e(TAG, "CartItemBadge-> " + MyApplication.preferenceGetString(AppConstants
-//                .SharedPreferenceKeys.CART_TOTAL_ITEMS, "0"));
 
-//        }
+        HTTPWebRequest.Products(mContext,getUserid(), subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
+                getSupportFragmentManager());
 
     }
 
@@ -165,7 +159,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         }*/
 
 
-        if(arrayList.size() <= pageSize){
+        if(arrayList.size() <= pageSize || mAdapter == null){
             mAdapter = new ProductGridAdapter(this, arrayList);
             recyclerView.setAdapter(mAdapter);
         } else {
@@ -295,6 +289,9 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
                         if(baseResponse.getInfo().size() != 0){
                             if(arrayList == null)
                                 arrayList = new ArrayList<>();
+                            else
+                                arrayList.clear();
+
 
                             arrayList.addAll(baseResponse.getInfo());
                             if(arrayList.size() == totalProducts)
@@ -473,7 +470,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
 
         isClearclicked = true;
         /*if (type == 0)
-            HTTPWebRequest.products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this,
+            HTTPWebRequest.Products(mContext, request, AppConstants.APICode.PRODUCTSLIST, this,
                     getSupportFragmentManager());
         else
             HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode
@@ -537,7 +534,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
         }
 
         if (type == 0)
-            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this, getSupportFragmentManager());
+            HTTPWebRequest.Products(mContext, getUserid(), subcategotyid, AppConstants.APICode.PRODUCTSLIST, this, getSupportFragmentManager());
         else if (type == 1){
 //            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode.BANNER_PRODUCTS, this, getSupportFragmentManager());
         }
@@ -562,14 +559,13 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
     public void onNegativeButtonClick() {
 
         if (type == 0)
-            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
+            HTTPWebRequest.Products(mContext, getUserid(), subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
                     getSupportFragmentManager());
         else{
 //            HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode.BANNER_PRODUCTS, this, getSupportFragmentManager());
         }
 
     }
-
 
     private RecyclerView.OnScrollListener recyclerViewOnScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -599,8 +595,7 @@ public class ProductGridActivity extends BaseActivity implements ApiResponse, Vi
 
         if (type == 0) {
             getSupportActionBar().setTitle(getIntent().getStringExtra(CategoryChildrens.KEY_NAME));
-            HTTPWebRequest.products(mContext, subcategotyid, AppConstants.APICode.PRODUCTSLIST, this,
-                    getSupportFragmentManager());
+
         } else {
             /*getSupportActionBar().setTitle("Products");
             HTTPWebRequest.BannerProducts(mContext, request, AppConstants.APICode

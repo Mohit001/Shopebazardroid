@@ -160,4 +160,7 @@
     <string name="dialog_msg_authenticating">Authenticating...</string>
     <string name="lbl_update_profile">Update Profile</string>
     <string name="rating_review">Rating &amp; Review</string>
+    <string name="buy_now">Buy Now</string>
+    <string name="comming_soon">Comming Soon</string>
+    <string name="contact_number">Contact Number</string>
 </resources>

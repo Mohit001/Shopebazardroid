@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
@@ -132,7 +133,8 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             @Override
             public void onClick(View v) {
                 if(reorderListner != null){
-                    reorderListner.orReorderClick(entity.getInvoice_id());
+//                    reorderListner.orReorderClick(entity.getInvoice_id());
+                    Toast.makeText(mContext, R.string.comming_soon, Toast.LENGTH_SHORT).show();
                 }
             }
         });

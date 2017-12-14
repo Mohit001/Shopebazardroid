@@ -10,14 +10,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.login_registration.LoginActivity;
 import com.mohit.shopebazardroid.activity.products.ProductDetailActivity;
 import com.mohit.shopebazardroid.adapter.MyWishListAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.ConfirmDialogListner;
 import com.mohit.shopebazardroid.listener.DeleteWishlistProduct;
@@ -25,26 +28,27 @@ import com.mohit.shopebazardroid.model.request.AddRemoveWishListRequest;
 import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.ProductResponse;
 import com.mohit.shopebazardroid.model.response.RemoveCartResponse;
+import com.mohit.shopebazardroid.models.Product;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MyWishListFragment extends BaseFragment implements ApiResponse, DeleteWishlistProduct, ConfirmDialogListner {
     public static String TAG = MyWishListFragment.class.getSimpleName();
-    Context mContext;
-    RecyclerView mRecyclerView;
-
-    String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.EMAIL, "");
-    String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "0");
-
-    MyWishListAdapter adapter;
-    ArrayList<ProductEntity> arrayList;
-    int position;
-    String productId = "";
-
+    private Context mContext;
+    private RecyclerView mRecyclerView;
+    private String userid = getUserid();
+    private MyWishListAdapter adapter;
+    private List<Product> arrayList;
+    private int position;
+    private String productId = "";
+    private String wishlist_id="";
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
@@ -68,12 +72,14 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
     @Override
     public void onResume() {
         super.onResume();
+        getUserWishlist();
+    }
 
+    private void getUserWishlist(){
         if(isUserLogin()){
             HTTPWebRequest.MyWishList(mContext, getUserid(), AppConstants.APICode.MY_WISHLIST, this,
                     getFragmentManager());
         }
-
     }
 
     @Override
@@ -90,19 +96,12 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
 
                     try {
 
-                        ProductResponse response1 = new Gson().fromJson(response,
-                                ProductResponse.class);
+                        Type wishlistType = new TypeToken<BaseResponse<List<Product>>>(){}.getType();
+                        BaseResponse<List<Product>> baseResponse = gson.fromJson(response, wishlistType);
 
-
-                        if (response1.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                            Utility.toastMessage(mContext, R.string.subscription_over);
-                            MyApplication.clearPreference();
-                            startActivity(new Intent(mContext, LoginActivity.class));
-                            getActivity().finish();
-                            return;
-                        }
-                        if (response1.getStatus().equalsIgnoreCase("success")) {
-                            arrayList = response1.getResult().getProductlist();
+                        Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (baseResponse.getStatus() == ApiResponseStatus.WISHLIST_GET_SUCCESS.getStatus_code()) {
+                            arrayList = baseResponse.getInfo();
 
                             adapter = new MyWishListAdapter(mContext, arrayList, this);
                             mRecyclerView.setAdapter(adapter);
@@ -118,22 +117,14 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
                     break;
 
                 case AppConstants.APICode.REMOVE_FROM_WISHLIST:
-                    RemoveCartResponse removeCartResponse = gson.fromJson(response, RemoveCartResponse.class);
 
-                    if (removeCartResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                        Utility.toastMessage(mContext, R.string.subscription_over);
-                        MyApplication.clearPreference();
-                        startActivity(new Intent(mContext, LoginActivity.class));
-                        getActivity().finish();
-                        return;
+                    Type removeWishlistType = new TypeToken<BaseResponse<Integer>>(){}.getType();
+                    BaseResponse<Integer> removeWishlistResponse = gson.fromJson(response, removeWishlistType);
+                    Toast.makeText(mContext, removeWishlistResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    if(removeWishlistResponse.getStatus() == ApiResponseStatus.WISHLIST_REMOVE_SUCCESS.getStatus_code()){
+                        getUserWishlist();
                     }
 
-                    if (removeCartResponse.getStatus().equalsIgnoreCase("success")) {
-                        arrayList.remove(position);
-                        adapter.notifyDataSetChanged();
-                    } else {
-                        Utility.toastMessage(mContext, removeCartResponse.getResult().getMessage());
-                    }
                     break;
             }
         }
@@ -150,33 +141,32 @@ public class MyWishListFragment extends BaseFragment implements ApiResponse, Del
     }
 
     @Override
-    public void DeleteProduct(int pos, String product_id) {
-        position = pos;
-        productId = product_id;
-        Utility.showConfirmDialog(mContext, this, "Delete Product", "Are you sure you want to " +
-                "delete product from cart?", "Yes", "Cancel", getFragmentManager());
+    public void DeleteProduct(String wishlist_id) {
+        this.wishlist_id = wishlist_id;
+        Utility.showConfirmDialog(mContext, this,
+                "Remove Product",
+                "Are you sure you want to remove product from wishlist?",
+                "Yes", "Cancel", getFragmentManager());
     }
 
     @Override
     public void ItemClick(int pos, String product_id) {
 
-        int qty = Integer.parseInt(arrayList.get(pos).getQty().split("\\.", 2)[0]);
-
         Intent intent = new Intent(mContext, ProductDetailActivity.class);
-        intent.putExtra(AppConstants.RequestDataKey.PRODUCT, arrayList.get(position));
+        intent.putExtra(AppConstants.RequestDataKey.PRODUCT_ID, product_id);
         startActivity(intent);
     }
 
     @Override
     public void onPositiveButtonClick() {
         Utility.dismissConfirmDialog();
+        if(!TextUtils.isEmpty(wishlist_id) && !wishlist_id.equalsIgnoreCase("0")){
 
-        AddRemoveWishListRequest request = new AddRemoveWishListRequest();
-        request.setProduct_id(productId);
-        request.setCustomer_id(userid);
-
-        HTTPWebRequest.RemoveFromWishList(mContext, request, AppConstants
-                .APICode.REMOVE_FROM_WISHLIST, this, getFragmentManager());
+            HTTPWebRequest.RemoveFromWishList(mContext, wishlist_id, AppConstants
+                    .APICode.REMOVE_FROM_WISHLIST, this, getFragmentManager());
+        } else {
+            Toast.makeText(mContext, "wishlist id not set for delation", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

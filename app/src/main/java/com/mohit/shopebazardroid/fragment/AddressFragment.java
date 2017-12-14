@@ -102,8 +102,7 @@ public class AddressFragment extends BaseFragment implements AddressListner, Vie
 
     private void getAddressList() {
         if(isUserLogin()){
-            String userid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
-                    .USER_ID, "0");
+            String userid = getUserid();
             HTTPWebRequest.AddressList(mContext, userid, AppConstants.APICode.ADDRESS_LIST, this,
                     getFragmentManager());
         }

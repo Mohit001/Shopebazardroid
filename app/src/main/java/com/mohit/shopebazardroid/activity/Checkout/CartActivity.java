@@ -252,19 +252,29 @@ public class CartActivity extends BaseActivity implements View.OnClickListener, 
                 } else {
                     arrayList.clear();
                 }
-                arrayList.addAll(userCart.getUserCartProduct());
+                if(userCart.getUserCartProduct().size() > 0){
+                    arrayList.addAll(userCart.getUserCartProduct());
 
-                if (arrayList.size() > 0) {
-                    calculateGrosstotal();
-                    mAdapter = new CartAdapter(this, arrayList, this);
-                    recyclerView.setAdapter(mAdapter);
+                    if (arrayList.size() > 0) {
+                        calculateGrosstotal();
+                        mAdapter = new CartAdapter(this, arrayList, this);
+                        recyclerView.setAdapter(mAdapter);
+                    } else {
+                        if(mAdapter != null)
+                            mAdapter.notifyDataSetChanged();
+
+                        cart_gross_total_rl.setVisibility(View.GONE);
+                        Toast.makeText(mContext, "Cart is empty", Toast.LENGTH_SHORT).show();
+                    }
+                    checkoutTextView.setVisibility(View.VISIBLE);
                 } else {
-                    if(mAdapter != null)
-                        mAdapter.notifyDataSetChanged();
-
+                    Toast.makeText(mContext, "Your cart is empty.", Toast.LENGTH_SHORT).show();
+                    checkoutTextView.setVisibility(View.GONE);
                     cart_gross_total_rl.setVisibility(View.GONE);
-                    Toast.makeText(mContext, "Cart is empty", Toast.LENGTH_SHORT).show();
                 }
+
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(userCart.getUserCartProduct().size()));
+
                 break;
             /*case AppConstants.APICode.REMOVE_CART:
                 RemoveCartResponse removeCartResponse = gson.fromJson(response, RemoveCartResponse.class);

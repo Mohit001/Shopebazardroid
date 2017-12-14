@@ -143,6 +143,8 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
 
     private RelativeLayout userDetailsRelativeLayout;
+
+    private boolean callCategoryApi = true;
     private void setCurrentTheme() {
         int theme_code = MyApplication.preferenceGetInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, 1);
         setTheme(R.style.AppTheme);
@@ -201,15 +203,20 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         navigation_view = (LinearLayout) findViewById(R.id.navigation_view);
 
-
         setupEnvironment();
 
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_frame, new HomeFragment(),
+                        HomeFragment.TAG)
+                .commit();
     }
 
 
     private void setupEnvironment(){
         HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -237,6 +244,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 startActivity(new Intent(mContext, CartActivity.class));
             }
         });
+
         return true;
     }
 
@@ -286,20 +294,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
         if(adapter != null && arrayList != null){
 
-            HomeFragment fragment = (HomeFragment) getSupportFragmentManager().findFragmentByTag(HomeFragment.TAG);
-
-            if(fragment == null && !isUserLogin()){
-//                toolbar.setTitle(R.string.app_name);
-
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new HomeFragment(),
-                                HomeFragment.TAG)
-                        .commit();
-            } else{
-
-            }
-
             if(isUserLogin()){
                 Category childrens = new Category();
                 childrens.setCat_name("Logout");
@@ -313,14 +307,16 @@ public class NavigationDrawerActivity extends BaseActivity implements
             }
         }
 
-        String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
+        /*String email = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys
                 .EMAIL, "");
         UserDetailsRequest request = new UserDetailsRequest();
         request.setEmail(email);
         request.setStore_id(getStoreID());
         if (!TextUtils.isEmpty(email))
+        {
             HTTPWebRequest.UserDetail(mContext, request, AppConstants.APICode.USER_DETAILS,
                     this, getSupportFragmentManager());
+        }*/
 
     }
 
@@ -367,6 +363,7 @@ public class NavigationDrawerActivity extends BaseActivity implements
         }
 
 //        HTTPWebRequest.Basic(mContext, getFirebaseId(),AppConstants.APICode.BASIC, this);
+        callCategoryApi = false;
         setupEnvironment();
     }
 
@@ -423,6 +420,13 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 intent.putExtra(Category.KEY_TYPE, 0);
                 startActivity(intent);
             }
+
+            getSupportActionBar().setTitle(R.string.app_name);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
+                    .commit();
+
         } else {
             item.setVisible(false);
             cartBadget.setVisibility(View.VISIBLE);
@@ -576,10 +580,14 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
                 cmsArrayList.addAll(environment.getBasicCMSPage());
 
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
+                if(!TextUtils.isEmpty(environment.getImagePrefix()))
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, environment.getImagePrefix());
+                else
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "http://shopebazar.com/resources/productImage/");
+
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, environment.getCurrency_sign());
-                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOKEN, environment.getToken());
+                MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_ID, String.valueOf(environment.getCart_id()));
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.CART_TOTAL_ITEMS, String.valueOf(environment.getCartCount()));
                 if(textView != null){
                     textView.setText(String.valueOf(environment.getCartCount()));
@@ -590,7 +598,9 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_SALT, paymentInfo.getSalt());
                 MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.MERCHANT_IS_LIVE_MODE, String.valueOf(paymentInfo.getIs_live_mode()));
 
-                HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+                if(callCategoryApi){
+                    HTTPWebRequest.CategoryList(this, AppConstants.APICode.CATEGORYLIST, this, getSupportFragmentManager());
+                }
 
                 break;
             case AppConstants.APICode.USER_DETAILS:
@@ -638,7 +648,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
 
             case AppConstants.APICode.CATEGORYLIST:
                 loadAgain = 1;
-
                 if(!TextUtils.isEmpty(response)){
 
                     Type basicType = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
@@ -705,15 +714,6 @@ public class NavigationDrawerActivity extends BaseActivity implements
                 UserDetailsRequest req = new UserDetailsRequest();
                 req.setEmail(email);
                 req.setStore_id(getStoreID());
-
-                if (!TextUtils.isEmpty(email))
-                    HTTPWebRequest.UserDetail(mContext, req, AppConstants.APICode.USER_DETAILS,
-                            this, getSupportFragmentManager());
-//                toolbar.setTitle("Sales Genie");
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.main_frame, new HomeFragment(), HomeFragment.TAG)
-                        .commit();
 
 
                 break;

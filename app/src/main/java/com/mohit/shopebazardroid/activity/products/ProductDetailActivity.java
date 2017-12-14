@@ -3,11 +3,9 @@ package com.mohit.shopebazardroid.activity.products;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -39,6 +37,7 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
@@ -49,6 +48,7 @@ import com.mohit.shopebazardroid.activity.login_registration.SplashActivity;
 import com.mohit.shopebazardroid.adapter.RelatedProductListAdapter;
 import com.mohit.shopebazardroid.adapter.ReviewListAdapter;
 import com.mohit.shopebazardroid.adapter.SpinnerProductDetailAdapter;
+import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
 import com.mohit.shopebazardroid.model.request.CustomOptionRequest;
@@ -59,7 +59,6 @@ import com.mohit.shopebazardroid.model.response.ProductEntity;
 import com.mohit.shopebazardroid.model.response.RelatedProductList;
 import com.mohit.shopebazardroid.model.response.RelatedProductResponse;
 import com.mohit.shopebazardroid.model.response.ReviewList;
-import com.mohit.shopebazardroid.model.response.WishListResponse;
 import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.models.ProductImage;
 import com.mohit.shopebazardroid.models.UserCart;
@@ -110,7 +109,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     int themeCode;
 
     String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "1");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "");
+    String customerid = getUserid();
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 //    String product_list_attribute = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.PRODUCT_LIST_ATTRIBUTE, "product_list_attribute");
 
@@ -147,10 +146,10 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
     ArrayList<AppCompatSpinner> appCompatSpinnerArrayList;
 
-    private TextView txt_wishlist;
+    private TextView txt_rate_review;
     private String cartid = "";
     private Product product = null;
-
+    private ImageView addWishlist;
     public boolean isAddToWishlistCallback;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -163,7 +162,6 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
         themeCode = MyApplication.preferenceGetInteger(AppConstants.SharedPreferenceKeys.THEME_CODE, 0);
 
-//        productEntity = (ProductEntity) getIntent().getSerializableExtra(ProductEntity.KEY_OBJECT);
 
         baseCurrencyRate = MyApplication.preferenceGetFloat(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_RATE, 1);
         baseCurrencyCode = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.DISPLAY_CURRENCY_CODE, getString(R.string.rupee_sign));
@@ -174,12 +172,8 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
         pd_description_lbl.setTypeface(SplashActivity.opensans_semi_bold);
         pd_description_lbl.setOnClickListener(this);
 
-        SharedPreferences appSharedPrefs = PreferenceManager
-                .getDefaultSharedPreferences(mContext.getApplicationContext());
-        Gson gson = new Gson();
-        json = appSharedPrefs.getString("user", "");
-
-        Log.e(TAG, "Attributes: " + json);
+        addWishlist = (ImageView) findViewById(R.id.img_add_wishlist);
+        addWishlist.setOnClickListener(this);
 
 //        related_product_hlistview = (HListView) findViewById(R.id.related_product_hlistview);
 
@@ -201,8 +195,8 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
         rel_related_product = (RelativeLayout) findViewById(R.id.rel_related_product);
 
-        txt_wishlist = (TextView) findViewById(R.id.txt_wishlist);
-        txt_wishlist.setTypeface(SplashActivity.opensans_regular);
+        txt_rate_review = (TextView) findViewById(R.id.txt_rate_review);
+        txt_rate_review.setTypeface(SplashActivity.opensans_regular);
 
         option_layout = (LinearLayout) findViewById(R.id.option_layout);
         nameTextView = (TextView) findViewById(R.id.pd_productname_lbl);
@@ -234,14 +228,6 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
         minusImageView = (ImageView) findViewById(R.id.pd_quentity_minus_image);
         additionImageView = (ImageView) findViewById(R.id.pd_quentity_addition_image);
-
-        // network call
-//        HTTPWebRequest.ProductDetail(mContext, request, AppConstants.APICode.PRODUCT_DETAIL, this, getSupportFragmentManager());
-
-        product = (Product) getIntent().getSerializableExtra(AppConstants.RequestDataKey.PRODUCT);
-        if(product != null){
-            setupUI();
-        }
 
         // set banner height-width
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenHeight / 1);
@@ -295,7 +281,27 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 }));
 
 
+        // get product object
+        product = (Product) getIntent().getSerializableExtra(AppConstants.RequestDataKey.PRODUCT);
+        if(product != null){
+            setupUI();
+        } else {
+            // get product details
+            String product_id = getIntent().getStringExtra(AppConstants.RequestDataKey.PRODUCT_ID);
+            if(TextUtils.isEmpty(product_id)){
+                Toast.makeText(mContext, "Invalid product id", Toast.LENGTH_SHORT).show();
+                this.finish();
+            } else{
+                // call product details api
+                HTTPWebRequest.ProductDetail(this, getUserid(), product_id, AppConstants.APICode.PRODUCT_DETAIL, this, getSupportFragmentManager());
+            }
+        }
 
+        if(TextUtils.isEmpty(getUserid()) || getUserid().equalsIgnoreCase("0")){
+            addWishlist.setVisibility(View.GONE);
+        } else{
+            addWishlist.setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -314,6 +320,14 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
             oldpriceTextView.setVisibility(View.GONE);
         }
 
+        int fav_id = R.drawable.ic_favorite_outline;
+        if(product.getWishlist_id() == 0){
+            fav_id = R.drawable.ic_favorite_outline;
+        } else{
+            fav_id = R.drawable.ic_favorite_fill;
+        }
+
+        addWishlist.setImageDrawable(ContextCompat.getDrawable(this, fav_id));
         setupBannerSlider();
     }
 
@@ -663,9 +677,9 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
                 textSliderView
                         .description(banner.getImage_name())
-//                        .image(imagePrefix+banner.getImage_path())
-                        .image("http://demo.ajax-cart.com/photos/product/4/176/4.jpg")
-                        .setScaleType(BaseSliderView.ScaleType.CenterInside)
+                        .image(imagePrefix+banner.getImage_path())
+//                        .image("http://demo.ajax-cart.com/photos/product/4/176/4.jpg")
+                        .setScaleType(BaseSliderView.ScaleType.Fit)
                         .setOnSliderClickListener(this);
                 textSliderView.bundle(new Bundle());
                 textSliderView.getBundle().putString("extra", banner.getImage_name());
@@ -739,6 +753,17 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.img_add_wishlist:
+                if(product.getWishlist_id() == 0){
+                    // call add to wishlist api
+                    HTTPWebRequest.AddToWishList(this, getUserid(), String.valueOf(product.getPro_mst_id()),
+                            AppConstants.APICode.ADD_TO_WISHLIST, this, getSupportFragmentManager());
+                } else {
+                    // call remove from wihslist api
+                    HTTPWebRequest.RemoveFromWishList(this, String.valueOf(product.getWishlist_id()),
+                            AppConstants.APICode.REMOVE_FROM_WISHLIST,this, getSupportFragmentManager());
+                }
+                break;
             case R.id.pd_quentity_minus_image:
                 int qtyMinus = Integer.parseInt(quentityTextView.getText().toString().trim());
                 if (qtyMinus != 1) {
@@ -796,6 +821,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 List<UserCartProduct> list = new ArrayList<>();
                 list.add(userCartProduct);
                 userCart.setUserCartProduct(list);
+                userCart.setUnique_id(getFirebaseId());
 
                 String jsonRequest = new Gson().toJson(userCart);
                 HTTPWebRequest.AddUpdateCart(mContext, jsonRequest, AppConstants.APICode.ADDTOCART, this, getSupportFragmentManager());
@@ -809,6 +835,9 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
     @Override
     public void apiResponsePostProcessing(String response, int apiCode) {
         isAddToWishlistCallback = false;
+
+        Gson gson = new GsonBuilder().serializeNulls().create();
+
         Log.d("response", "response==" + response);
         if (response == null) {
             Utility.toastMessage(mContext, R.string.host_not_reachable);
@@ -820,7 +849,7 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
             case AppConstants.APICode.ADDTOCART:
 
                 Type addToCartType = new TypeToken<BaseResponse<UserCart>>(){}.getType();
-                BaseResponse<UserCart> baseResponse = new Gson().fromJson(response, addToCartType);
+                BaseResponse<UserCart> baseResponse = gson.fromJson(response, addToCartType);
                 Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
 
                 if (baseResponse.getStatus() == 1) {
@@ -835,13 +864,19 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
                 break;
             case AppConstants.APICode.PRODUCT_DETAIL:
 
-                RelatedProductsRequest request = new RelatedProductsRequest();
-//                request.setProductid(product_id);
+                Type productDetailType = new TypeToken<BaseResponse<Product>>(){}.getType();
+                BaseResponse<Product> productDetailsResponse = gson.fromJson(response, productDetailType);
+                if(productDetailsResponse.getStatus() == ApiResponseStatus.PRODUCT_FOUND.getStatus_code()){
+                    product = productDetailsResponse.getInfo();
+                    setupUI();
+                }
+
+                /*RelatedProductsRequest request = new RelatedProductsRequest();
                 request.setCustomer_id(customerid);
                 request.setStore_id(storeid);
 
                 // network call
-                HTTPWebRequest.RelatedProduct(mContext, request, AppConstants.APICode.RELATED_PRODUCT, this);
+                HTTPWebRequest.RelatedProduct(mContext, request, AppConstants.APICode.RELATED_PRODUCT, this);*/
 
                 break;
 
@@ -962,21 +997,20 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
                 break;
             case AppConstants.APICode.ADD_TO_WISHLIST:
-                WishListResponse wishListResponse = new Gson().fromJson(response, WishListResponse.class);
-                if (wishListResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(mContext, LoginActivity.class));
-                    finish();
-                    return;
+            case AppConstants.APICode.REMOVE_FROM_WISHLIST:
+                Type wishlistType = new TypeToken<BaseResponse<Integer>>(){}.getType();
+                BaseResponse<Integer> wishlistBaseResponse = gson.fromJson(response, wishlistType);
+                Toast.makeText(mContext, wishlistBaseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                product.setWishlist_id(wishlistBaseResponse.getInfo());
+
+                int iconid;
+                if(product.getWishlist_id() == 0){
+                    iconid = R.drawable.ic_favorite_outline;
+                } else {
+                    iconid = R.drawable.ic_favorite_fill;
                 }
 
-                if (wishListResponse.getStatus().equalsIgnoreCase("success")) {
-                    Utility.toastMessage(mContext, wishListResponse.getResult().getMessage());
-//                    img_add_wishlist.setImageResource(R.drawable.like_wishlist);
-                } else {
-                    Utility.toastMessage(mContext, wishListResponse.getResult().getMessage());
-                }
+                addWishlist.setImageDrawable(ContextCompat.getDrawable(this, iconid));
 
                 break;
 

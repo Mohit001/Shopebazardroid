@@ -73,8 +73,6 @@ public class SearchResultActivity extends BaseActivity implements ApiResponse, S
     boolean isClearclicked = false;
     boolean noProductFound = false;
 
-    String storeid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.STORE_ID, "store_id");
-    String customerid = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.USER_ID, "user_id");
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
 
     @Override
