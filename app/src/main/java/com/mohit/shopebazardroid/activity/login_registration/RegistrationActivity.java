@@ -22,7 +22,6 @@ import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.enums.ApiResponseStatus;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.models.Person;
-import com.mohit.shopebazardroid.models.Profile;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
@@ -208,17 +207,16 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
 //                emailEditText.setErrorEnabled(false);
 //                passwordEditText.setErrorEnabled(false);
 
-                Profile profile = new Profile();
-                profile.setFname(firstnameString);
-                profile.setLname(lastnameString);
-                profile.setMobile(mobileNumberString);
+
 
                 if(person == null)
                     person = new Person();
-
+                person.setFname(firstnameString);
+                person.setLname(lastnameString);
                 person.setEmail(emailString);
                 person.setPassword(passwordString);
-                person.setProfile(profile);
+                person.setPhone(mobileNumberString);
+
 
 
 
@@ -259,11 +257,12 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
                 Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                 if(baseResponse.getStatus() == 1){
-                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
-                    Profile profile = baseResponse.getInfo().getProfile();
-                    String fullname = profile.getFname() + " "+ profile.getLname();
+                    Person user = baseResponse.getInfo();
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(user.getUser_id()));
+
+                    String fullname = user.getFname() + " "+ user.getLname();
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
-                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, baseResponse.getInfo().getEmail());
+                    MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, user.getEmail());
 
                     setUserLoggedIn();
 
@@ -280,10 +279,9 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                     passwordEditText.getEditText().setText(person.getPassword());
                     confPasswordEditText.getEditText().setText(person.getPassword());
 
-                    Profile profile = person.getProfile();
-                    firstnameEditText.getEditText().setText(profile.getFname());
-                    lastnameEditText.getEditText().setText(profile.getLname());
-                    mobileNumberEditText.getEditText().setText(profile.getMobile());
+                    firstnameEditText.getEditText().setText(person.getFname());
+                    lastnameEditText.getEditText().setText(person.getLname());
+                    mobileNumberEditText.getEditText().setText(person.getPhone());
                     //set email non editable
                     emailEditText.setEnabled(false);
 
@@ -299,8 +297,8 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 Toast.makeText(mContext, updateProfileResponse.getMessage(), Toast.LENGTH_SHORT).show();
 
                 if (updateProfileResponse.getStatus() == ApiResponseStatus.UPDATE_PROFILE_SUCCESS.getStatus_code()) {
-                    Profile profile = updateProfileResponse.getInfo().getProfile();
-                    firstnameString =  profile.getFname() + " " + profile.getLname();
+                    Person user = updateProfileResponse.getInfo();
+                    firstnameString =  user.getFname() + " " + user.getLname();
                     MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME,
                             firstnameString);
                     NavigationDrawerActivity.userName.setText(firstnameString);

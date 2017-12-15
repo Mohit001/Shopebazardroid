@@ -30,7 +30,6 @@ import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
 import com.mohit.shopebazardroid.gcm.QuickstartPreferences;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.models.Person;
-import com.mohit.shopebazardroid.models.Profile;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
@@ -227,11 +226,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     BaseResponse<Person> baseResponse = new Gson().fromJson(response, type);
                     Toast.makeText(mContext, baseResponse.getMessage(), Toast.LENGTH_SHORT).show();
                     if(baseResponse.getStatus() == 1){
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(baseResponse.getInfo().getUser_id()));
-                        Profile profile = baseResponse.getInfo().getProfile();
-                        String fullname = profile.getFname() + " "+ profile.getLname();
+                        Person user = baseResponse.getInfo();
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.USER_ID, String.valueOf(user.getUser_id()));
+                        String fullname = user.getFname()+" "+ user.getLname();
                         MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.NAME, fullname);
-                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, baseResponse.getInfo().getEmail());
+                        MyApplication.preferencePutString(AppConstants.SharedPreferenceKeys.EMAIL, user.getEmail());
 
 
                         setUserLoggedIn();
