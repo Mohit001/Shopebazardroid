@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,8 +16,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.Animations.DescriptionAnimation;
 import com.daimajia.slider.library.SliderLayout;
@@ -25,6 +28,7 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
 import com.mohit.shopebazardroid.activity.Main.NavigationDrawerActivity;
@@ -36,7 +40,7 @@ import com.mohit.shopebazardroid.activity.products.ProductGridActivity;
 import com.mohit.shopebazardroid.activity.products.SearchResultActivity;
 import com.mohit.shopebazardroid.activity.products.SubcategoryActivity;
 import com.mohit.shopebazardroid.adapter.Home_BestSellersAdapter;
-import com.mohit.shopebazardroid.adapter.Home_CategoriesAdapter;
+import com.mohit.shopebazardroid.adapter.Home_CategoriesGridAdapter;
 import com.mohit.shopebazardroid.adapter.Home_FeatureProductsAdapter;
 import com.mohit.shopebazardroid.adapter.Home_OfferOfTheDayAdapter;
 import com.mohit.shopebazardroid.adapter.Home_TrendingNowAdapter;
@@ -55,10 +59,12 @@ import com.mohit.shopebazardroid.model.response.Result;
 import com.mohit.shopebazardroid.model.response.SearchRequest;
 import com.mohit.shopebazardroid.model.response.Userinfo;
 import com.mohit.shopebazardroid.models.Category;
+import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.mohit.shopebazardroid.utility.Utility;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -83,7 +89,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 //    BestSellingAdapter bestSellingAdapter;
 
     Home_OfferOfTheDayAdapter oftdAdapter;
-    Home_CategoriesAdapter categoriesAdapter;
+    Home_CategoriesGridAdapter categoriesAdapter;
+//    Home_CategoriesListAdapter categoriesAdapter;
     Home_TrendingNowAdapter trendingNowAdapter;
     Home_BestSellersAdapter bestSellingAdapter;
     Home_FeatureProductsAdapter featureProductAdapter;
@@ -112,7 +119,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
     String customerid = getUserid();
 
     RelativeLayout oftdMainRelativeLayout, trendingMainRelativeLayout, bestSellersMainRelativeLayout, featureProductMainRelativeLayout;
-
+    private LinearLayout categoriesLinearLayout;
     private EditText searchEditText;
     private ImageView searchImageView;
     private String searchTag;
@@ -149,8 +156,9 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
         mLayoutManager_trending = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         trendingNowHListView.setLayoutManager(mLayoutManager_trending);
 
+        categoriesLinearLayout = (LinearLayout) rootView.findViewById(R.id.categories_layout);
         categoriesHListview = (RecyclerView) rootView.findViewById(R.id.categories_hlistview);
-        mLayoutManager_categories = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
+        mLayoutManager_categories = new GridLayoutManager(mContext, 2);
         categoriesHListview.setLayoutManager(mLayoutManager_categories);
 
         offer_of_the_day_lbl = (TextView) rootView.findViewById(R.id.offer_of_the_day_lbl);
@@ -203,7 +211,6 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
         super.onActivityCreated(savedInstanceState);
         mContext = getActivity();
         activity = (NavigationDrawerActivity) getActivity();
-        categoriesArrayList = activity.getCategoryArraylist();
 
         searchEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -329,18 +336,12 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 
     private void setupCategoriesHListview() {
 
-        /*categoriesArrayList = new ArrayList<>();
-        CategoryChildrens entity;
-        for(int i=0; i<5; i++)
-        {
-            entity = new CategoryChildrens();
-            entity.setId(String.valueOf(i));
-            entity.setThumb("http://www.adweek.com/files/imagecache/node-detail/news_article/android-kitkat-hed3-2013.jpg");
-            categoriesArrayList.add(entity);
-        }*/
+        if(categoriesArrayList == null)
+            categoriesArrayList = new ArrayList<>();
+        else
+            categoriesArrayList.clear();
 
-//        categoriesAdapter = new Home_CategoriesAdapter(mContext, categoriesArrayList);
-//        categoriesHListview.setAdapter(categoriesAdapter);
+        HTTPWebRequest.CategoryList(mContext, AppConstants.APICode.CATEGORYLIST, this, getFragmentManager());
 
     }
 
@@ -689,6 +690,34 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                 }
                 break;
 
+            case AppConstants.APICode.CATEGORYLIST:
+
+                if(!TextUtils.isEmpty(response)){
+
+                    Type basicType = new TypeToken<BaseResponse<List<Category>>>(){}.getType();
+                    BaseResponse<List<Category>> categoryBaseResponse = new Gson().fromJson(response, basicType);
+                    if(categoryBaseResponse.getStatus() == 1){
+                        List<Category> categoryList = categoryBaseResponse.getInfo();
+
+                        if (categoriesArrayList != null && categoriesArrayList.size() > 0)
+                            categoriesArrayList.clear();
+
+
+                        categoriesArrayList.addAll(categoryList);
+//                        categoriesAdapter = new Home_CategoriesListAdapter(mContext, categoriesArrayList);
+                        categoriesAdapter = new Home_CategoriesGridAdapter(mContext, categoriesArrayList);
+                        categoriesHListview.setAdapter(categoriesAdapter);
+                        categoriesLinearLayout.setVisibility(View.VISIBLE);
+
+                    } else {
+                        Toast.makeText(mContext, categoryBaseResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Utility.toastMessage(mContext, R.string.host_not_reachable);
+                    return;
+                }
+
+                break;
         }
     }
 

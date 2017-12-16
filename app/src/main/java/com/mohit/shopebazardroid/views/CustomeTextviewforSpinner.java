@@ -2,8 +2,8 @@ package com.mohit.shopebazardroid.views;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 /**
  * Created by msp on 19/9/16.
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 
 
-public class CustomeTextviewforSpinner extends TextView {
+public class CustomeTextviewforSpinner extends AppCompatTextView {
 
     public CustomeTextviewforSpinner(Context context) {
         super(context);

@@ -307,7 +307,9 @@ public class ProductDetailActivity extends BaseActivity implements ViewPagerEx.O
 
     private void setupUI(){
 
-        descriptionShortTextView.loadData(Html.fromHtml(product.getPro_description()).toString(), "text/html", "UTF-8");
+        if(!TextUtils.isEmpty(product.getPro_description())){
+            descriptionShortTextView.loadData(Html.fromHtml(product.getPro_description()).toString(), "text/html", "UTF-8");
+        }
         nameTextView.setText(product.getPro_name());
 
         String rupeePrefix = getString(R.string.rupee_sign);
