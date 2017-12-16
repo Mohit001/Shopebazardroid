@@ -33,6 +33,7 @@ import com.mohit.shopebazardroid.models.Person;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
+import com.mohit.shopebazardroid.utility.CommonUtills;
 import com.mohit.shopebazardroid.utility.Utility;
 
 import java.lang.reflect.Type;
@@ -187,7 +188,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                 Person user = new Person();
                 user.setEmail(emailString);
-                user.setPassword(passwordString);
+                try {
+                    user.setPassword(CommonUtills.encrypt(passwordString));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Password encryption fail. Please contact to administrator", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String requestJson = new Gson().toJson(user);
 
                 // network call

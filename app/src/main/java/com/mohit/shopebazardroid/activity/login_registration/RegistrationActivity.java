@@ -25,6 +25,7 @@ import com.mohit.shopebazardroid.models.Person;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
+import com.mohit.shopebazardroid.utility.CommonUtills;
 import com.mohit.shopebazardroid.utility.Utility;
 
 import java.lang.reflect.Type;
@@ -214,9 +215,14 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 person.setFname(firstnameString);
                 person.setLname(lastnameString);
                 person.setEmail(emailString);
-                person.setPassword(passwordString);
                 person.setPhone(mobileNumberString);
-
+                try {
+                    person.setPassword(CommonUtills.encrypt(passwordString));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(mContext, "Password encryption fail. Please contact to administrator", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
 
 
@@ -275,9 +281,17 @@ public class RegistrationActivity extends BaseActivity implements View.OnClickLi
                 BaseResponse<Person> getProfileResponse = new Gson().fromJson(response, profileType);
                 if(getProfileResponse.getStatus() == 1){
                     person = getProfileResponse.getInfo();
+                    try {
+                        passwordEditText.getEditText().setText(CommonUtills.decrypt(person.getPassword()));
+                        confPasswordEditText.getEditText().setText(CommonUtills.encrypt(person.getPassword()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(mContext, "Password decryption fail. Please contact to administrator", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     emailEditText.getEditText().setText(person.getEmail());
-                    passwordEditText.getEditText().setText(person.getPassword());
-                    confPasswordEditText.getEditText().setText(person.getPassword());
+
 
                     firstnameEditText.getEditText().setText(person.getFname());
                     lastnameEditText.getEditText().setText(person.getLname());
