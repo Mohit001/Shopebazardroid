@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -46,7 +45,6 @@ import com.mohit.shopebazardroid.adapter.Home_OfferOfTheDayAdapter;
 import com.mohit.shopebazardroid.adapter.Home_TrendingNowAdapter;
 import com.mohit.shopebazardroid.listener.ApiResponse;
 import com.mohit.shopebazardroid.listener.RecyclerItemclicklistner;
-import com.mohit.shopebazardroid.model.request.BestSellingRequest;
 import com.mohit.shopebazardroid.model.request.FeatureProductRequest;
 import com.mohit.shopebazardroid.model.response.BannerEntity;
 import com.mohit.shopebazardroid.model.response.BannerResponse;
@@ -59,6 +57,7 @@ import com.mohit.shopebazardroid.model.response.Result;
 import com.mohit.shopebazardroid.model.response.SearchRequest;
 import com.mohit.shopebazardroid.model.response.Userinfo;
 import com.mohit.shopebazardroid.models.Category;
+import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.models.basemodel.BaseResponse;
 import com.mohit.shopebazardroid.network.HTTPWebRequest;
 import com.mohit.shopebazardroid.utility.AppConstants;
@@ -66,6 +65,7 @@ import com.mohit.shopebazardroid.utility.Utility;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -97,7 +97,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 
     ArrayList<ProductEntity> oftdArrayList;
     ArrayList<ProductEntity> trendingNowArrayList;
-    ArrayList<ProductEntity> bestSellingArrayList;
+    ArrayList<Product> bestSellingArrayList;
     ArrayList<ProductEntity> featureProductArrayList;
     List<Category> categoriesArrayList;
 
@@ -158,7 +158,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 
         categoriesLinearLayout = (LinearLayout) rootView.findViewById(R.id.categories_layout);
         categoriesHListview = (RecyclerView) rootView.findViewById(R.id.categories_hlistview);
-        mLayoutManager_categories = new GridLayoutManager(mContext, 2);
+//        mLayoutManager_categories = new GridLayoutManager(mContext, 2);
+        mLayoutManager_categories = new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false);
         categoriesHListview.setLayoutManager(mLayoutManager_categories);
 
         offer_of_the_day_lbl = (TextView) rootView.findViewById(R.id.offer_of_the_day_lbl);
@@ -228,6 +229,9 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 //        setupBannerSlider();
 
 
+        // this is dummy settings uncomment below to make api call
+        // and do necessery changes for api call related
+        setupBannerSlider();
 //        HTTPWebRequest.BannerHome(mContext, storeid, AppConstants.APICode.BANNERHOME, this);
 
         setupCategoriesHListview();
@@ -404,14 +408,41 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 
     private void setupBannerSlider() {
 
-        /*HashMap<String,String> url_maps = new HashMap<String, String>();
-        url_maps.put("jellybean", "http://samsung-updates.com/wp-content/uploads/2013/11/jellybean43.jpg");
-        url_maps.put("kitket", "http://cdn.thedroidguy.com/wp-content/uploads/2013/10/Android-KitKat-4.4.jpg");
-        url_maps.put("lollypop", "http://www.notebookcheck.net/fileadmin/Notebooks/News/_nc2/Google_Android_5.0.1_Lollipop_update_now_available.jpg");
-        url_maps.put("Marshmallow", "http://androidmarshmallow.androidmarshmall.netdna-cdn.com/wp-content/uploads/2016/01/Marshmallow_0.33392800_1450263759__thumb.jpg");
-        url_maps.put("All version", "http://ungaldrona.com/wp-content/uploads/2015/08/android_os_version1.png");*/
+        HashMap<String,String> url_maps = new HashMap<String, String>();
+        url_maps.put("Slider1", "http://shopebazar.com/resources/frontEnd/assets/img/preview/slider/slide-1.jpg");
+        url_maps.put("Slider2", "http://shopebazar.com/resources/frontEnd/assets/img/preview/slider/slide-2.jpg");
+        url_maps.put("Slider3", "http://shopebazar.com/resources/frontEnd/assets/img/preview/slider/slide-3.jpg");
 
-        for (String name : bannerHashMap.keySet()) {
+
+        // static from url for dynamic comment this and uncomment below code
+        for (String name : url_maps.keySet()) {
+            TextSliderView textSliderView = new TextSliderView(mContext);
+            // initialize a SliderLayout
+            textSliderView
+                    .description(name)
+                    .image(url_maps.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(this);
+
+            //add your extra information
+            textSliderView.bundle(new Bundle());
+            textSliderView.getBundle()
+                    .putString("extra", name);
+
+            mbannerSlider.addSlider(textSliderView);
+
+            mbannerSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+            mbannerSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+            mbannerSlider.setCustomAnimation(new DescriptionAnimation());
+//            mbannerSlider.setCustomAnimation(new ImageSlider_DescriptionAnimation());
+            mbannerSlider.setDuration(5000);
+            mbannerSlider.addOnPageChangeListener(this);
+        }
+
+
+
+        // dynamic from api
+        /*for (String name : bannerHashMap.keySet()) {
             TextSliderView textSliderView = new TextSliderView(mContext);
             // initialize a SliderLayout
             textSliderView
@@ -433,13 +464,17 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
 //            mbannerSlider.setCustomAnimation(new ImageSlider_DescriptionAnimation());
             mbannerSlider.setDuration(5000);
             mbannerSlider.addOnPageChangeListener(this);
-        }
+        }*/
     }
 
     @Override
     public void onSliderClick(BaseSliderView slider) {
+
+        // uncomment this to redirect on slider click
+
+
 //        Utility.toastMessage(mContext, "Slider click : "+bannerCurrentPosition);
-        String comasepratedCategoryId = "";
+        /*String comasepratedCategoryId = "";
         BannerEntity bannerEntity = bannerEntityArrayList.get(bannerCurrentPosition);
         ArrayList<String> arrayList = bannerEntity.getCategories();
         String tempCatid = "";
@@ -454,7 +489,7 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
         intent.putExtra(CategoryChildrens.KEY_ID, comasepratedCategoryId);
         intent.putExtra(CategoryChildrens.KEY_NAME, bannerEntity.getTitle());
         intent.putExtra(CategoryChildrens.KEY_TYPE, 1);
-        startActivity(intent);
+        startActivity(intent);*/
 
     }
 
@@ -629,35 +664,37 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                     featureProductMainRelativeLayout.setVisibility(View.GONE);
                 }
 
-                BestSellingRequest bestSellingRequest = new BestSellingRequest();
-                bestSellingRequest.setStore_id(storeid);
-                bestSellingRequest.setCustomer_id(customerid);
-                bestSellingRequest.setPage(String.valueOf(1));
-                bestSellingRequest.setPagesize(String.valueOf(10000));
 
-                HTTPWebRequest.BestSellingHome(mContext, bestSellingRequest, AppConstants.APICode.BEST_SELLER, this);
-
+//                HTTPWebRequest.BestSellingHome(mContext, bestSellingRequest, AppConstants.APICode.BEST_SELLER, this);
+//
                 break;
 
             case AppConstants.APICode.BEST_SELLER:
-                ProductResponse bestSellingResponse = new Gson().fromJson(response, ProductResponse.class);
-                if (bestSellingResponse.getCheckCustomerSubscriptionStatusResult().equalsIgnoreCase("0")) {
-                    Utility.toastMessage(mContext, R.string.subscription_over);
-                    MyApplication.clearPreference();
-                    startActivity(new Intent(mContext, LoginActivity.class));
-                    getActivity().finish();
-                    return;
-                }
 
-                if (bestSellingResponse.getStatus().equalsIgnoreCase("success")
-                        && bestSellingResponse.getResult().getProductlist() != null
-                        && bestSellingResponse.getResult().getProductlist().size() > 0) {
-                    bestSellersMainRelativeLayout.setVisibility(View.VISIBLE);
-                    bestSellingArrayList = bestSellingResponse.getResult().getProductlist();
-                    setupBestSellingHListview();
+
+                if(!TextUtils.isEmpty(response)){
+
+                    Type productListType = new TypeToken<BaseResponse<List<Product>>>(){}.getType();
+                    BaseResponse<List<Product>> baseResponse = new Gson().fromJson(response, productListType);
+
+                    if(baseResponse.getInfo().size() != 0){
+                        if(bestSellingArrayList == null)
+                            bestSellingArrayList = new ArrayList<>();
+                        else
+                            bestSellingArrayList.clear();
+
+
+                        bestSellersMainRelativeLayout.setVisibility(View.VISIBLE);
+                        bestSellingArrayList.addAll(baseResponse.getInfo());
+                        setupBestSellingHListview();
+
+                    } else {
+//                        Utility.toastMessage(mContext, "No product Found");
+                        bestSellersMainRelativeLayout.setVisibility(View.GONE);
+                    }
+
                 } else {
-//                    Utility.toastMessage(mContext, "No product Found");
-                    bestSellersMainRelativeLayout.setVisibility(View.GONE);
+//                    Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
                 }
 
                 break;
@@ -716,6 +753,8 @@ public class HomeFragment extends BaseFragment implements BaseSliderView.OnSlide
                     Utility.toastMessage(mContext, R.string.host_not_reachable);
                     return;
                 }
+
+                HTTPWebRequest.TopBestSellersProducts(mContext, getUserid(), AppConstants.APICode.BEST_SELLER, this);
 
                 break;
         }

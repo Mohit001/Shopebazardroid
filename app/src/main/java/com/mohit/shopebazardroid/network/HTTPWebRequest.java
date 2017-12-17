@@ -369,15 +369,18 @@ public class HTTPWebRequest {
         new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_TRENDINGNOW, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, false, fragmentManager).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiResponse);
     }
 
-    public static void BestSellingHome(Context context, BestSellingRequest request, int apiCode, ApiResponse apiResponse) {
+    public static void TopBestSellersProducts(Context context, String user_id, int apiCode, ApiResponse apiResponse) {
 
-        postDataParams = new HashMap<>();
-        postDataParams.put(AppConstants.RequestDataKey.STORE_ID, request.getStore_id());
-        postDataParams.put(AppConstants.RequestDataKey.CUSTOMER_ID, request.getCustomer_id());
-        postDataParams.put(AppConstants.RequestDataKey.PAGE_SIZE, String.valueOf(10));
-        postDataParams.put(AppConstants.RequestDataKey.PAGE, String.valueOf(1));
+        String url = UrlFormetter.getURL(context, R.string.api_top_best_sellers_product, user_id);
 
-        new BackgroundAsyncTask(context, postDataParams, AppConstants.APIURL.URL_BEST_SELLING, apiCode, false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiResponse);
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiResponse);
+    }
+
+    public static void AllBestSellersProducts(Context context, String user_id, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {
+
+        String url = UrlFormetter.getURL(context, R.string.api_all_best_sellers_product, user_id);
+
+        new OKHttpAsyncTask(context, url, AppConstants.DialogMessage.PLEASE_WAIT, apiCode, true, fragmentManager).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, apiResponse);
     }
 
     public static void BestSellingShowAll(Context context, BestSellingRequest request, int apiCode, ApiResponse apiResponse, FragmentManager fragmentManager) {

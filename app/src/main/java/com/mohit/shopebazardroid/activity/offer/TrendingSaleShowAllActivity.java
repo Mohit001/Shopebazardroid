@@ -158,17 +158,18 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
 
         MenuItem itemFilter = menu.findItem(R.id.action_filter);
 
-        if (type == 2)
-            itemFilter.setVisible(false);
+        /*if (type == 2)
+            itemFilter.setVisible(false);*/
+        itemFilter.setVisible(false);
 
 
-        if (ishideprice.equalsIgnoreCase("0")) {
+        /*if (ishideprice.equalsIgnoreCase("0")) {
             item.setVisible(true);
             itemFilter.setVisible(true);
         } else {
             item.setVisible(false);
             itemFilter.setVisible(false);
-        }
+        }*/
 
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
@@ -261,12 +262,15 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
 
                 isLoading = false;
 
+
+
+
                 if(!TextUtils.isEmpty(response)){
 
                     Type productListType = new TypeToken<BaseResponse<List<Product>>>(){}.getType();
                     BaseResponse<List<Product>> baseResponse = new Gson().fromJson(response, productListType);
 
-                    if(baseResponse.getInfo().size() == 0){
+                    if(baseResponse.getInfo().size() != 0){
                         if(arrayList == null)
                             arrayList = new ArrayList<>();
 
@@ -277,12 +281,11 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
                         setupGrid();
                     } else {
 //                        Utility.toastMessage(mContext, "No product Found");
-
+                        Toast.makeText(mContext, "No Product Found", Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
-                    Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
-                    this.finish();
+//                    Toast.makeText(mContext, R.string.host_not_reachable, Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -328,42 +331,6 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
         Collections.sort(arrayList, new Comparator<Product>() {
             @Override
             public int compare(Product lhs, Product rhs) {
-                if (TextUtils.isEmpty(""+lhs.getDiscount_price())) {
-                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
-                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
-                                .parseDouble(rhs.getPro_price()));
-                    else
-                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
-                                .parseDouble(""+rhs.getDiscount_price()));
-                } else {
-                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
-                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
-                                .parseDouble(rhs.getPro_price()));
-                    else
-                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
-                                .parseDouble(""+rhs.getDiscount_price()));
-                }
-            }
-        });
-
-//        mAdapter.notifyDataSetChanged();
-
-        recyclerView.invalidate();
-        mAdapter = new ProductGridAdapter(mContext, arrayList);
-        recyclerView.setAdapter(mAdapter);
-
-        Log.d(TAG, "onClick: sort end");
-    }
-
-    @Override
-    public void onDescendingSortSelect() {
-
-        sortDialog.dismiss();
-
-        Log.d(TAG, "onClick: sort");
-        Collections.sort(arrayList, new Comparator<Product>() {
-            @Override
-            public int compare(Product lhs, Product rhs) {
                 if (TextUtils.isEmpty(""+rhs.getDiscount_price())) {
                     if (TextUtils.isEmpty(""+lhs.getDiscount_price()))
                         return Double.compare(Double.parseDouble(rhs.getPro_price()), Double
@@ -382,6 +349,42 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
 
             }
         });
+//        mAdapter.notifyDataSetChanged();
+
+        recyclerView.invalidate();
+        mAdapter = new ProductGridAdapter(mContext, arrayList);
+        recyclerView.setAdapter(mAdapter);
+
+        Log.d(TAG, "onClick: sort end");
+    }
+
+    @Override
+    public void onDescendingSortSelect() {
+
+        sortDialog.dismiss();
+
+        Log.d(TAG, "onClick: sort");
+        Collections.sort(arrayList, new Comparator<Product>() {
+            @Override
+            public int compare(Product lhs, Product rhs) {
+                if (TextUtils.isEmpty(""+lhs.getDiscount_price())) {
+                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(rhs.getPro_price()));
+                    else
+                        return Double.compare(Double.parseDouble(lhs.getPro_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
+                } else {
+                    if (TextUtils.isEmpty(""+rhs.getDiscount_price()))
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(rhs.getPro_price()));
+                    else
+                        return Double.compare(Double.parseDouble(""+lhs.getDiscount_price()), Double
+                                .parseDouble(""+rhs.getDiscount_price()));
+                }
+            }
+        });
+
 
 //        Collections.reverse(arrayList);
         Log.d(TAG, "onClick: " + new Gson().toJson(arrayList));
@@ -474,7 +477,7 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
         else if (type == 1)
             HTTPWebRequest.TrendingnowFilter(mContext, request, AppConstants.APICode.TRENDING_NOW, this, getSupportFragmentManager());
         else if (type == 2)
-            HTTPWebRequest.BestSellingFilter(mContext, request, AppConstants.APICode.BEST_SELLER, this, getSupportFragmentManager());
+            HTTPWebRequest.AllBestSellersProducts(mContext, getUserid(), AppConstants.APICode.BEST_SELLER, this, getSupportFragmentManager());
         else
             Utility.toastMessage(mContext, "Invalid arguments.");
 
@@ -546,7 +549,7 @@ public class TrendingSaleShowAllActivity extends BaseActivity implements ApiResp
         else if (type == 1)
             HTTPWebRequest.TrendingnowShowAll(mContext, trandingRequest, AppConstants.APICode.TRENDING_NOW, this, getSupportFragmentManager());
         else if (type == 2)
-            HTTPWebRequest.BestSellingShowAll(mContext, bestSellingRequest, AppConstants.APICode.BEST_SELLER, this, getSupportFragmentManager());
+            HTTPWebRequest.AllBestSellersProducts(mContext, getUserid(), AppConstants.APICode.BEST_SELLER, this, getSupportFragmentManager());
         else if (type == 3)
             HTTPWebRequest.FeatureProductsShowAll(mContext, featureProductRequest, AppConstants.APICode.FEATURE_PRODUCT, this, getSupportFragmentManager());
         else

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-     <string name="api_base_url">http://192.168.0.4:8080/shppebazar/rest/</string>
+     <!--<string name="api_base_url">http://192.168.0.4:8080/shppebazar/rest/</string>-->
     <!--<string name="api_base_url">http://192.168.0.219:8080/shppebazar/rest/</string>-->
     <!--<string name="api_base_url">http://52.91.52.204/shopebazarapi/rest/</string>-->
-    <!--<string name="api_base_url">http://shopebazar.com/shopebazarapi/rest/</string>-->
+    <string name="api_base_url">http://shopebazar.com/shopebazarapi/rest/</string>
 
     <!-- app environment user_id=0 for guest user-->
     <string name="api_environment">user/environment/%1$s</string>
@@ -48,5 +48,7 @@
     <string name="api_my_wishlist">wishlist/get/%1$s</string>
     <string name="api_remove_from_wishlist">wishlist/remove/%1$s</string>
     <string name="api_add_to_wishlist">wishlist/add/%1$s/%2$s</string>
+    <string name="api_top_best_sellers_product">Category/getTopBestSellersProduct/%1$s</string>
+    <string name="api_all_best_sellers_product">Category/getAllBestSellersProduct/%1$s</string>
 
 </resources>

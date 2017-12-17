@@ -60,8 +60,8 @@
         <com.daimajia.slider.library.SliderLayout
             android:id="@+id/slider"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:visibility="gone"
+            android:layout_height="150dp"
+            android:visibility="visible"
             android:layout_marginLeft="@dimen/margin_5"
             android:layout_marginRight="@dimen/margin_5"
             android:layout_marginTop="@dimen/margin_5" />
@@ -99,12 +99,94 @@
 
         </LinearLayout>
 
+
+        <RelativeLayout
+            android:visibility="visible"
+            android:id="@+id/rel_bestselling"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/categories_layout"
+            android:layout_marginTop="@dimen/margin_10">
+
+            <RelativeLayout
+                android:id="@+id/rel_best_selling"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/best_selling_product_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/black"/>
+
+                <ImageView
+                    android:id="@+id/img_best_selling"
+                    android:tint="@color/colorPrimary"
+                    android:layout_width="@dimen/dimen_30"
+                    android:layout_height="30dp"
+                    android:visibility="gone"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/best_selling" />
+
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/best_selling_product_divider"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/best_selling_lbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/bestseller_products"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/best_selling_showall_lbl"
+                    android:layout_below="@id/best_selling_lbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="@string/show_all"
+                    android:layout_centerHorizontal="true"
+                    android:padding="8dp"
+                    android:gravity="center_horizontal"
+                    android:minWidth="100dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+
+            <!--<it.sephiroth.android.library.widget.HListView-->
+            <!--android:id="@+id/best_selling_hlistview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/rel_best_selling"-->
+            <!--android:layout_marginBottom="@dimen/margin_5"-->
+            <!--android:layout_marginLeft="@dimen/margin_5"-->
+            <!--android:layout_marginRight="@dimen/margin_5"-->
+            <!--android:layout_marginTop="@dimen/margin_10"-->
+            <!--app:hlv_dividerWidth="@dimen/margin_5" />-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/best_selling_hlistview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rel_best_selling"
+                android:layout_marginLeft="@dimen/margin_5"
+                android:layout_marginRight="@dimen/margin_5"
+                android:layout_marginTop="@dimen/margin_10" />
+
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/rel_offer"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/categories_layout"
+            android:layout_below="@id/rel_bestselling"
             android:layout_marginTop="@dimen/margin_10">
 
             <RelativeLayout
@@ -351,86 +433,6 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
-            android:visibility="gone"
-            android:id="@+id/rel_bestselling"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rel_featureproduct"
-            android:layout_marginTop="@dimen/margin_10">
-
-            <RelativeLayout
-                android:id="@+id/rel_best_selling"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
-
-                <TextView
-                    android:id="@+id/best_selling_product_divider"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black"/>
-
-                <ImageView
-                    android:id="@+id/img_best_selling"
-                    android:tint="@color/colorPrimary"
-                    android:layout_width="@dimen/dimen_30"
-                    android:layout_height="30dp"
-                    android:visibility="gone"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/best_selling" />
-
-                <TextView
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/best_selling_product_divider"
-                    android:layout_marginTop="8dp"
-                    android:id="@+id/best_selling_lbl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/bestseller_products"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:textSize="15sp" />
-
-                <TextView
-                    android:id="@+id/best_selling_showall_lbl"
-                    android:layout_below="@id/best_selling_lbl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:text="@string/show_all"
-                    android:layout_centerHorizontal="true"
-                    android:padding="8dp"
-                    android:gravity="center_horizontal"
-                    android:minWidth="100dp"
-                    android:textColor="@color/black"
-                    android:textSize="15sp" />
-
-            </RelativeLayout>
-
-
-            <!--<it.sephiroth.android.library.widget.HListView-->
-            <!--android:id="@+id/best_selling_hlistview"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_below="@id/rel_best_selling"-->
-            <!--android:layout_marginBottom="@dimen/margin_5"-->
-            <!--android:layout_marginLeft="@dimen/margin_5"-->
-            <!--android:layout_marginRight="@dimen/margin_5"-->
-            <!--android:layout_marginTop="@dimen/margin_10"-->
-            <!--app:hlv_dividerWidth="@dimen/margin_5" />-->
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/best_selling_hlistview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/rel_best_selling"
-                android:layout_marginLeft="@dimen/margin_5"
-                android:layout_marginRight="@dimen/margin_5"
-                android:layout_marginTop="@dimen/margin_10" />
-
-        </RelativeLayout>
 
 
 

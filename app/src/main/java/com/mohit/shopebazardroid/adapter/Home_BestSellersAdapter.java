@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.mohit.shopebazardroid.MyApplication;
 import com.mohit.shopebazardroid.R;
-import com.mohit.shopebazardroid.model.response.ProductEntity;
+import com.mohit.shopebazardroid.models.Product;
 import com.mohit.shopebazardroid.utility.AppConstants;
 import com.squareup.picasso.Picasso;
 
@@ -25,7 +25,7 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
 
     public static String TAG = Home_BestSellersAdapter.class.getSimpleName();
     Context mContext;
-    ArrayList<ProductEntity> arrayList;
+    ArrayList<Product> arrayList;
 
     float baseCurrencyRate;
 
@@ -33,7 +33,7 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
     String ishideprice = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IS_HIDE_PRICE, "0");
     String imagePrefix = MyApplication.preferenceGetString(AppConstants.SharedPreferenceKeys.IMAGE_PREFIX, "");
 
-    public Home_BestSellersAdapter(Context mContext, ArrayList<ProductEntity> arrayList) {
+    public Home_BestSellersAdapter(Context mContext, ArrayList<Product> arrayList) {
         this.mContext = mContext;
         this.arrayList = arrayList;
     }
@@ -95,9 +95,9 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        ProductEntity entity = arrayList.get(position);
+        Product entity = arrayList.get(position);
 
-        holder.name_lbl.setText(entity.getName());
+        holder.name_lbl.setText(entity.getPro_name());
 
 //        holder.adp_oftd_lable.setText(entity.getName());
 //        holder.adp_latest_price.setText(baseCurrencyCode + " " + entity.getSpecial_price());
@@ -105,23 +105,23 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
 //        holder.adp_old_price.setPaintFlags(holder.adp_old_price.getPaintFlags() | Paint
 //                .STRIKE_THRU_TEXT_FLAG);
 
-        if(TextUtils.isEmpty(entity.getPrice()) && TextUtils.isEmpty(entity.getSpecial_price())){
+        if(TextUtils.isEmpty(entity.getPro_price()) && entity.getDiscount_price() == 0){
             Log.d(TAG, "price and special proce is empty");
         } else{
 
-            if (TextUtils.isEmpty(entity.getSpecial_price()) ) {
-                Float tempLatestPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
+            if (entity.getDiscount_price() == 0) {
+                Float tempLatestPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
                 holder.pd_latest_price_lbl.setText(baseCurrencyCode + " " + (String.format("%.2f",
                         tempLatestPrice)));
                 holder.pd_old_price_lbl.setVisibility(View.GONE);
 
             } else {
 
-                Float tempLatestPrice = Float.parseFloat(entity.getSpecial_price()) * baseCurrencyRate;
+                Float tempLatestPrice = entity.getDiscount_price() * baseCurrencyRate;
                 holder.pd_latest_price_lbl.setText(baseCurrencyCode + " " + (String.format("%.2f",
                         tempLatestPrice)));
 
-                Float tempOldPrice = Float.parseFloat(entity.getPrice()) * baseCurrencyRate;
+                Float tempOldPrice = Float.parseFloat(entity.getPro_price()) * baseCurrencyRate;
                 holder.pd_old_price_lbl.setText(baseCurrencyCode + " " + (String.format("%.2f",
                         tempOldPrice)));
                 holder.pd_old_price_lbl.setPaintFlags(holder.pd_old_price_lbl.getPaintFlags() | Paint
@@ -138,7 +138,7 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
 
 
 //        if(!TextUtils.isEmpty(entity.getImageurl()))
-        if (!TextUtils.isEmpty(entity.getThumbnail())) {
+        if (!TextUtils.isEmpty(entity.getPro_image())) {
 //            Log.d(TAG, "Position"+position);
 //            Log.d(TAG, "getView: "+entity.toString());
             try {
@@ -150,7 +150,7 @@ public class Home_BestSellersAdapter extends RecyclerView.Adapter<Home_BestSelle
 //                        .into(holder.mImageView);
 
                 Picasso.with(mContext)
-                        .load(imagePrefix+entity.getThumbnail())
+                        .load(imagePrefix+entity.getPro_image())
                         .placeholder(R.drawable.ic_placeholder)
                         .error(R.drawable.ic_placeholder)
                         .into(holder.productgrid_image);
